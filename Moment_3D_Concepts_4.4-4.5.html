@@ -1,0 +1,1947 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Moment of a Force in 3-D — Concepts (Sections 4.4–4.5)</title>
+    <style>
+:root {
+  --navy: #15273c;
+  --ink: #1f3448;
+  --muted: #617487;
+  --line: #dce5ed;
+  --bg: #f3f6f9;
+  --white: #fff;
+  --teal: #147b91;
+  --blue: #1f6fb2;
+  --purple: #7a3db8;
+  --red: #d1343a;
+  --green: #0d8a6f;
+  --orange: #e0662c;
+  --soft: #f8fafc;
+  --shadow: 0 8px 28px rgba(16, 37, 59, 0.06);
+}
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  font: 15px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+}
+button,
+input,
+select {
+  font: inherit;
+}
+button {
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+:focus-visible {
+  outline: 3px solid #78afde;
+  outline-offset: 2px;
+}
+header.top {
+  background: var(--navy);
+  color: #fff;
+  padding: 22px clamp(18px, 4vw, 56px) 20px;
+}
+header.top .eyebrow {
+  font-size: 11.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8fd3e2;
+  font-weight: 800;
+}
+header.top h1 {
+  margin: 4px 0 6px;
+  font-size: clamp(24px, 3vw, 34px);
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+header.top p {
+  margin: 0;
+  color: #c6d3df;
+  max-width: 920px;
+}
+nav.toc {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  padding: 8px clamp(12px, 3vw, 48px);
+}
+nav.toc a {
+  white-space: nowrap;
+  text-decoration: none;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 7px 11px;
+  border-radius: 8px;
+}
+nav.toc a:hover,
+nav.toc a.on {
+  background: #e8f3f6;
+  color: var(--teal);
+}
+main {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 22px clamp(12px, 3vw, 40px) 60px;
+}
+section.card {
+  background: #fff;
+  border: 1px solid #e2e9f0;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  margin: 0 0 22px;
+  overflow: hidden;
+}
+.card-head {
+  padding: 18px 22px 12px;
+  border-bottom: 1px solid #edf2f6;
+}
+.card-head .kicker {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--teal);
+  text-transform: uppercase;
+}
+.card-head h2 {
+  margin: 3px 0 4px;
+  font-size: 21px;
+  letter-spacing: -0.02em;
+}
+.card-head p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+.card-body {
+  padding: 18px 22px 22px;
+}
+.grid2 {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: 22px;
+}
+.grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+@media (max-width: 900px) {
+  .grid2,
+  .grid3 {
+    grid-template-columns: 1fr;
+  }
+}
+.figure {
+  background: #fcfdfe;
+  border: 1px solid #e6ecf2;
+  border-radius: 12px;
+  padding: 6px;
+}
+.figure svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.caption {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin: 6px 4px 0;
+}
+.btn {
+  border: 1px solid #cfdbe5;
+  background: #fff;
+  color: var(--ink);
+  border-radius: 9px;
+  padding: 8px 13px;
+  font-weight: 700;
+  font-size: 13.5px;
+}
+.btn:hover {
+  background: #f2f7fa;
+}
+.btn.primary {
+  background: var(--navy);
+  color: #fff;
+  border-color: var(--navy);
+}
+.btn.primary:hover {
+  background: #22405f;
+}
+.btn.on {
+  background: #e3f3f6;
+  border-color: #8ccbd8;
+  color: #0e6577;
+}
+.btnrow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+label.ctl {
+  display: block;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+}
+select,
+input[type="number"] {
+  border: 1px solid #cfdbe5;
+  border-radius: 9px;
+  padding: 7px 9px;
+  background: #fff;
+  color: var(--ink);
+  min-width: 0;
+}
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--teal);
+}
+.note {
+  font-size: 13.5px;
+  color: var(--muted);
+}
+.eq {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 13.5px;
+  background: #f6f9fb;
+  border: 1px solid #e5ecf2;
+  border-radius: 9px;
+  padding: 9px 11px;
+  margin: 6px 0;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.eq b {
+  color: var(--navy);
+}
+.keybox {
+  border-left: 4px solid var(--teal);
+  background: #f2fafb;
+  border-radius: 0 10px 10px 0;
+  padding: 10px 14px;
+  margin: 10px 0;
+  font-size: 14px;
+}
+.keybox.warn {
+  border-color: #d69a2d;
+  background: #fff9ec;
+}
+.readout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  font-size: 13.5px;
+  background: #fff7f1;
+  border: 1px solid #f6d7c4;
+  border-radius: 10px;
+  padding: 8px 12px;
+  margin-top: 8px;
+}
+.readout i {
+  color: #9a7a66;
+  font-style: normal;
+  font-size: 12px;
+}
+.pill {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: #eef3f7;
+  color: var(--muted);
+}
+table.nice {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 14px;
+}
+table.nice th,
+table.nice td {
+  border-bottom: 1px solid #e8eef3;
+  padding: 7px 8px;
+  text-align: left;
+  vertical-align: middle;
+}
+table.nice th {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+.feedback {
+  margin-top: 8px;
+  font-weight: 700;
+  font-size: 14px;
+}
+.feedback.good {
+  color: #0d7a52;
+}
+.feedback.bad {
+  color: #b5372c;
+}
+input.ok {
+  border-color: #3fb27f;
+  background: #effbf5;
+}
+input.bad {
+  border-color: #e0775f;
+  background: #fff3f0;
+}
+.footer {
+  color: var(--muted);
+  font-size: 12.5px;
+  text-align: center;
+  margin-top: 26px;
+}
+@media print {
+  nav.toc,
+  .noprint {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+  }
+  section.card {
+    box-shadow: none;
+    break-inside: avoid;
+  }
+}
+
+table.vin{border-collapse:collapse;margin:10px 0;font-size:14px}
+table.vin th,table.vin td{padding:3px 5px;text-align:center}
+table.vin input{width:78px;padding:4px 6px;border:1px solid var(--line);border-radius:7px;font:inherit;text-align:right}
+table.vin td.u{color:var(--muted);text-align:left}
+.det{display:inline-grid;grid-template-columns:repeat(3,auto);gap:3px 16px;padding:4px 12px;border-left:2px solid var(--ink);border-right:2px solid var(--ink);margin:6px 0;font-variant-numeric:tabular-nums}
+.det span{text-align:right}.det .cr{color:var(--blue)}.det .cf{color:var(--red)}.det .cu{color:var(--green)}
+.eqline{display:inline-block;margin-right:6px;vertical-align:middle}
+.expand{font-size:13.5px;margin:6px 0;line-height:1.7;overflow-x:auto}
+table.ctab{border-collapse:collapse;width:100%;font-size:13.5px;margin:8px 0}
+table.ctab th,table.ctab td{border:1px solid var(--line);padding:5px 6px;text-align:center}
+table.ctab td.hl{background:#fdeeee}
+table.ctab tr.tot td{background:#f3eefc}
+.slab{display:block;margin:10px 0 2px;font-size:13.5px}
+.muted{color:var(--muted);font-size:12.5px}
+.qz{border-top:1px solid var(--line);padding:8px 0}
+.qz:first-child{border-top:0}
+
+    </style>
+  </head>
+  <body>
+    <header class="top">
+      <div class="eyebrow">Chapter 4 · Force System Resultants · Sections 4.4 &amp; 4.5</div>
+      <h1>Moment of a Force in 3-D — Concepts</h1>
+      <p>
+        The moment of a force about a point as the cross product <b>M</b><sub>O</sub> = <b>r</b> × <b>F</b>, and
+        the moment about a specified axis as the scalar triple product M<sub>a</sub> = <b>u</b><sub>a</sub> · (<b>r</b> × <b>F</b>).
+        Every figure can be rotated: drag it with the mouse or a finger.
+      </p>
+    </header>
+    <nav class="toc" id="toc">
+      <a href="#s1">1 · M = r × F</a><a href="#s2">2 · Transmissibility</a><a href="#s3">3 · What each term means</a
+      ><a href="#s4">4 · System of forces</a><a href="#s5">5 · Moment about an axis (4.5)</a
+      ><a href="#s6">6 · Concept check</a><a href="#s7">7 · Procedure</a>
+    </nav>
+    <main>
+      <!-- 1 -->
+      <section class="card" id="s1">
+        <div class="card-head">
+          <div class="kicker">1 · Section 4.4 · Eqs. 4–6 to 4–8</div>
+          <h2>The moment of a force about a point: M<sub>O</sub> = r × F</h2>
+          <p>
+            <b style="color: var(--blue)">r</b> runs from O to <i>any</i> point on the line of action of
+            <b style="color: var(--red)">F</b>. The magnitude is M<sub>O</sub> = rF sin θ = Fd, and the direction
+            follows the right-hand rule: curl the fingers from r toward F and the thumb gives
+            <b style="color: var(--purple)">M<sub>O</sub></b>, perpendicular to the plane of r and F.
+          </p>
+        </div>
+        <div class="card-body">
+          <div class="btnrow" id="s1presets">
+            <button class="btn on" data-p="ex45">Ex. 4.5 (tree and cable)</button>
+            <button class="btn" data-p="ex44">Ex. 4.4 (2-D bracket)</button>
+            <button class="btn" data-p="custom">My own numbers</button>
+          </div>
+          <div class="grid2" style="margin-top: 12px">
+            <div>
+              <div class="figure"><svg id="f1"></svg></div>
+              <div class="caption">Drag to rotate. The shaded triangle is the plane of r and F; M<sub>O</sub> is perpendicular to it.</div>
+              <div class="btnrow" style="margin-top: 8px">
+                <button class="btn" data-view="f1" data-v="book">Book view</button>
+                <button class="btn" data-view="f1" data-v="top">Look down z</button>
+                <button class="btn" data-view="f1" data-v="edge">Look along M<sub>O</sub></button>
+                <button class="btn on" id="f1plane">Plane on</button>
+                <button class="btn" id="f1box">Component box</button>
+              </div>
+            </div>
+            <div>
+              <div class="note" id="s1desc"></div>
+              <table class="vin" id="s1in"></table>
+              <div class="eqb" id="s1det"></div>
+              <div class="readout" id="s1out"></div>
+              <div class="btnrow"><button class="btn" id="s1swap">Try F × r instead</button></div>
+              <div class="feedback" id="s1swapfb" style="display: none"></div>
+            </div>
+          </div>
+          <div class="keybox" style="margin-top: 12px">
+            <b>Check against the book.</b> Ex. 4.5: <b>M</b><sub>O</sub> = {−16.5<b>i</b> + 5.51<b>j</b>} kN·m.
+            Ex. 4.4: <b>M</b><sub>O</sub> = {−98.6<b>k</b>} N·m. For 2-D problems the book prefers the scalar method
+            (M = Fd); the vector method pays off in 3-D, where the arm d is hard to find.
+          </div>
+        </div>
+      </section>
+
+      <!-- 2 -->
+      <section class="card" id="s2">
+        <div class="card-head">
+          <div class="kicker">2 · Principle of transmissibility (Fig. 4–13)</div>
+          <h2>Any point on the line of action gives the same moment</h2>
+          <p>
+            M<sub>O</sub> = r<sub>1</sub> × F = r<sub>2</sub> × F = r<sub>3</sub> × F. A force can slide along its
+            line of action without changing its moment about O: it is a <i>sliding vector</i>. Move the point of
+            application with the slider and watch r change while M<sub>O</sub> stays fixed.
+          </p>
+        </div>
+        <div class="card-body">
+          <div class="grid2">
+            <div>
+              <div class="figure"><svg id="f2"></svg></div>
+              <div class="caption">Uses the force from Section 1 (Ex. 4.5 by default). Points A and B of the book are marked.</div>
+            </div>
+            <div>
+              <label class="slab">Point on the line of action: <b id="s2tv"></b></label>
+              <input type="range" id="s2t" min="-0.5" max="1.5" step="0.01" value="0" style="width: 100%" />
+              <div class="btnrow">
+                <button class="btn" data-t="0">At A (r<sub>A</sub>)</button>
+                <button class="btn" data-t="1">At B (r<sub>B</sub>)</button>
+                <button class="btn" data-t="closest">Closest point (r ⟂ F)</button>
+              </div>
+              <div class="readout" id="s2out"></div>
+              <div class="note">
+                At the closest point r is perpendicular to F, so |r| equals the moment arm d and M<sub>O</sub> = Fd
+                directly. Everywhere else |r| &gt; d, but sin θ shrinks to compensate.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3 -->
+      <section class="card" id="s3">
+        <div class="card-head">
+          <div class="kicker">3 · Physical meaning of Eq. 4–8 (Fig. 4–14b)</div>
+          <h2>Each term is one force component times one coordinate</h2>
+          <p>
+            (M<sub>O</sub>)<sub>x</sub> = r<sub>y</sub>F<sub>z</sub> − r<sub>z</sub>F<sub>y</sub>: F<sub>x</sub> is
+            parallel to the x axis and gives nothing; F<sub>z</sub> acts at distance r<sub>y</sub> from the x axis;
+            F<sub>y</sub> acts at height r<sub>z</sub>. Pick a component to see its own moment about O.
+          </p>
+        </div>
+        <div class="card-body">
+          <div class="grid2">
+            <div>
+              <div class="figure"><svg id="f3"></svg></div>
+              <div class="btnrow" style="margin-top: 8px" id="s3pick">
+                <button class="btn" data-c="0">F<sub>x</sub> only</button>
+                <button class="btn on" data-c="1">F<sub>y</sub> only</button>
+                <button class="btn" data-c="2">F<sub>z</sub> only</button>
+                <button class="btn" data-c="all">All three</button>
+              </div>
+            </div>
+            <div>
+              <p>Contributions to <b>M</b><sub>O</sub> (same r and F as Section 1). A blank cell is zero because the component is parallel to that axis.</p>
+              <table class="ctab" id="s3tab"></table>
+              <div class="note" id="s3note"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4 -->
+      <section class="card" id="s4">
+        <div class="card-head">
+          <div class="kicker">4 · Resultant moment of a system of forces · Eq. 4–9</div>
+          <h2>(M<sub>R</sub>)<sub>O</sub> = Σ(r × F)</h2>
+          <p>Moments about the same point add as vectors. Data of Ex. 4.6 (bent rod with flange at O); edit any force.</p>
+        </div>
+        <div class="card-body">
+          <div class="grid2">
+            <div>
+              <div class="figure"><svg id="f4"></svg></div>
+              <div class="btnrow" style="margin-top: 8px">
+                <button class="btn on" id="s4each">Show each r × F</button>
+                <button class="btn" data-view="f4" data-v="book">Book view</button>
+              </div>
+            </div>
+            <div>
+              <table class="vin" id="s4in"></table>
+              <table class="ctab" id="s4tab"></table>
+              <div class="readout" id="s4out"></div>
+              <div class="keybox">Book answer: (M<sub>R</sub>)<sub>O</sub> = {30<b>i</b> − 40<b>j</b> + 60<b>k</b>} lb·ft; α = 67.4°, β = 121°, γ = 39.8°.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5 -->
+      <section class="card" id="s5">
+        <div class="card-head">
+          <div class="kicker">5 · Section 4.5 · Eqs. 4–10 to 4–12</div>
+          <h2>Moment about a specified axis: M<sub>a</sub> = u<sub>a</sub> · (r × F)</h2>
+          <p>
+            A nut or a shaft can only turn about one axis. Only the <b>projection</b> of M<sub>O</sub> onto that
+            axis matters. Take any point O on the axis, compute M<sub>O</sub> = r × F, then project with the unit
+            vector u<sub>a</sub>. Scalar form: M<sub>a</sub> = F d<sub>a</sub>, with d<sub>a</sub> the shortest distance
+            between the line of action and the axis.
+          </p>
+        </div>
+        <div class="card-body">
+          <div class="btnrow" id="s5presets">
+            <button class="btn on" data-p="ex48">Ex. 4.8 (rod about AB)</button>
+            <button class="btn" data-p="ex49">Ex. 4.9 (pipe about OA)</button>
+            <button class="btn" data-p="par">F parallel to axis</button>
+            <button class="btn" data-p="thru">F through the axis</button>
+          </div>
+          <div class="grid2" style="margin-top: 12px">
+            <div>
+              <div class="figure"><svg id="f5"></svg></div>
+              <div class="caption">
+                Grey dash-dot line: the axis a. Faint purple: M<sub>O</sub> about the chosen axis point. Solid purple
+                on the axis: M<sub>a</sub> = (u<sub>a</sub>·M<sub>O</sub>) u<sub>a</sub>.
+              </div>
+              <label class="slab">Slide the axis point along the axis: <b id="s5sv"></b></label>
+              <input type="range" id="s5s" min="-0.5" max="1.5" step="0.01" value="0" style="width: 100%" />
+              <label class="slab">Slide the force point along its line of action: <b id="s5tv"></b></label>
+              <input type="range" id="s5t" min="-1" max="1" step="0.01" value="0" style="width: 100%" />
+              <div class="btnrow"><button class="btn" id="s5flip">Reverse u<sub>a</sub></button></div>
+            </div>
+            <div>
+              <div class="note" id="s5desc"></div>
+              <div class="eqb" id="s5det"></div>
+              <div class="readout" id="s5out"></div>
+              <div class="feedback" id="s5fb"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6 -->
+      <section class="card" id="s6">
+        <div class="card-head">
+          <div class="kicker">6 · Concept check</div>
+          <h2>Test yourself</h2>
+        </div>
+        <div class="card-body" id="quiz"></div>
+      </section>
+
+      <!-- 7 -->
+      <section class="card" id="s7">
+        <div class="card-head">
+          <div class="kicker">7 · Procedure and important points</div>
+          <h2>How to solve these problems</h2>
+        </div>
+        <div class="card-body grid2">
+          <div>
+            <h3>Moment about a point (4.4)</h3>
+            <ol>
+              <li>Set up x, y, z axes. Write <b>F</b> as a Cartesian vector, usually F <b>u</b> with <b>u</b> from two points on its line.</li>
+              <li>Write <b>r</b> from O to <i>any</i> convenient point on the line of action (choose one that makes zeros).</li>
+              <li>Evaluate the determinant |<b>i j k</b>; r<sub>x</sub> r<sub>y</sub> r<sub>z</sub>; F<sub>x</sub> F<sub>y</sub> F<sub>z</sub>|. Keep the order r × F.</li>
+              <li>For several forces, add the r × F vectors (Eq. 4–9). Direction angles come from the unit vector of the result.</li>
+            </ol>
+          </div>
+          <div>
+            <h3>Moment about an axis (4.5)</h3>
+            <ol>
+              <li>Find <b>u</b><sub>a</sub> from two points on the axis.</li>
+              <li>Pick <b>r</b> from any point on the axis to any point on the line of action of <b>F</b>.</li>
+              <li>M<sub>a</sub> = |u<sub>ax</sub> u<sub>ay</sub> u<sub>az</sub>; r<sub>x</sub> r<sub>y</sub> r<sub>z</sub>; F<sub>x</sub> F<sub>y</sub> F<sub>z</sub>|.</li>
+              <li>A positive M<sub>a</sub> acts along +<b>u</b><sub>a</sub>; negative, opposite. As a vector: <b>M</b><sub>a</sub> = M<sub>a</sub><b>u</b><sub>a</sub>.</li>
+              <li>No moment if F is parallel to the axis or its line of action passes through the axis.</li>
+            </ol>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="footer">Based on Hibbeler, <i>Engineering Mechanics: Statics</i>, 16th ed., Sections 4.4–4.5, Examples 4.4–4.9.</footer>
+
+    <script>
+/* ===== StaticsDraw (SD): shared high-quality figure engine with collision-free labels ===== */
+const SD = (() => {
+  "use strict";
+  const COL = {
+    ink: "#1b2b3d",
+    member: "#24466e",
+    memberEdge: "#13304f",
+    memberFill: "#dbe5f0",
+    load: "#d1343a",
+    reaction: "#0d8a6f",
+    internal: "#6a46c2",
+    contact: "#d27a12",
+    cable: "#4f6377",
+    dim: "#6f7f92",
+    support: "#5b6f86",
+    supportFill: "#e9eff6",
+    hatch: "#8d9bab",
+    tension: "#1f6fb2",
+    compression: "#c2412d",
+    zero: "#8995a3",
+    unknown: "#6a46c2",
+    muted: "#9aa8b6",
+    cut: "#e0662c",
+    paper: "#ffffff",
+  };
+  const FONT = 'system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif';
+  let _ctx = null;
+  function measure(text, size = 13, weight = 650, italic = false) {
+    if (!_ctx) {
+      try {
+        _ctx = document.createElement("canvas").getContext("2d");
+      } catch (e) {
+        _ctx = null;
+      }
+    }
+    if (!_ctx) return String(text).length * size * 0.6;
+    _ctx.font = `${italic ? "italic " : ""}${weight} ${size}px ${FONT}`;
+    return _ctx.measureText(String(text)).width;
+  }
+  const esc = (s) =>
+    String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+  const f1 = (v) => (Math.abs(v) < 5e-4 ? "0" : (+v.toFixed(2)).toString());
+  // Rich text: "A_x" -> A with subscript x ; "F_{AB}" -> F with subscript AB.
+  function rich(text) {
+    const parts = [];
+    const re = /_\{([^}]*)\}|_([A-Za-z0-9])/g;
+    let last = 0,
+      m;
+    const s = String(text);
+    while ((m = re.exec(s))) {
+      if (m.index > last) parts.push({ t: s.slice(last, m.index) });
+      parts.push({ t: m[1] ?? m[2], sub: true });
+      last = re.lastIndex;
+    }
+    if (last < s.length) parts.push({ t: s.slice(last) });
+    return parts;
+  }
+  function richWidth(text, size, weight, italic) {
+    return rich(text).reduce((w, p) => w + measure(p.t, p.sub ? size * 0.74 : size, weight, italic), 0);
+  }
+  function richSVG(text, size) {
+    return rich(text)
+      .map((p) =>
+        p.sub
+          ? `<tspan font-size="${(size * 0.74).toFixed(1)}" dy="${(size * 0.28).toFixed(1)}">${esc(p.t)}</tspan><tspan dy="${(-size * 0.28).toFixed(1)}">​</tspan>`
+          : `<tspan>${esc(p.t)}</tspan>`,
+      )
+      .join("");
+  }
+  // ---------- geometry helpers ----------
+  function segRectHit(a, b, r, pad) {
+    const x1 = r.x1 - pad,
+      y1 = r.y1 - pad,
+      x2 = r.x2 + pad,
+      y2 = r.y2 + pad;
+    // Liang–Barsky clip
+    let t0 = 0,
+      t1 = 1;
+    const dx = b.x - a.x,
+      dy = b.y - a.y;
+    const p = [-dx, dx, -dy, dy],
+      q = [a.x - x1, x2 - a.x, a.y - y1, y2 - a.y];
+    for (let i = 0; i < 4; i++) {
+      if (Math.abs(p[i]) < 1e-12) {
+        if (q[i] < 0) return 0;
+      } else {
+        const t = q[i] / p[i];
+        if (p[i] < 0) {
+          if (t > t1) return 0;
+          if (t > t0) t0 = t;
+        } else {
+          if (t < t0) return 0;
+          if (t < t1) t1 = t;
+        }
+      }
+    }
+    return (t1 - t0) * Math.hypot(dx, dy);
+  }
+  function circRectHit(c, r, pad) {
+    const nx = Math.max(r.x1, Math.min(c.x, r.x2)),
+      ny = Math.max(r.y1, Math.min(c.y, r.y2));
+    const d = Math.hypot(c.x - nx, c.y - ny);
+    return d < c.r + pad ? c.r + pad - d + 2 : 0;
+  }
+  function rectOverlap(a, b) {
+    return Math.max(0, Math.min(a.x2, b.x2) - Math.max(a.x1, b.x1)) * Math.max(0, Math.min(a.y2, b.y2) - Math.max(a.y1, b.y1));
+  }
+  // ---------- Figure ----------
+  class Fig {
+    /* opts: width, height, bounds [xmin,ymin,xmax,ymax] in model units (y up), margin {l,r,t,b} or number,
+       maxScale (px per unit), cls, bg */
+    constructor(opts = {}) {
+      this.W = opts.width || 760;
+      this.H = opts.height || 420;
+      const m = opts.margin ?? 50;
+      this.m = typeof m === "number" ? { l: m, r: m, t: m, b: m } : { l: 50, r: 50, t: 50, b: 50, ...m };
+      this.layers = { back: [], mid: [], front: [], top: [] };
+      this.segs = []; // obstacles {a,b,w}
+      this.circs = []; // {x,y,r}
+      this.rects = []; // {x1,y1,x2,y2}
+      this.labels = []; // pending labels
+      this.defs = new Set();
+      this.id = "sd" + Math.random().toString(36).slice(2, 8);
+      this.bg = opts.bg ?? "#ffffff";
+      this.cls = opts.cls || "";
+      this.aria = opts.aria || "Figure";
+      this.fontScale = opts.fontScale || 1;
+      if (opts.bounds) this.fit(opts.bounds, opts.maxScale, opts.align);
+      else {
+        this.s = 1;
+        this.ox = 0;
+        this.oy = 0;
+      }
+    }
+    fit([x0, y0, x1, y1], maxScale = 1e9, align = "center") {
+      const aw = this.W - this.m.l - this.m.r,
+        ah = this.H - this.m.t - this.m.b;
+      const w = Math.max(1e-9, x1 - x0),
+        h = Math.max(1e-9, y1 - y0);
+      this.s = Math.min(aw / w, ah / h, maxScale);
+      const used = { w: w * this.s, h: h * this.s };
+      this.ox = this.m.l + (aw - used.w) / 2 - x0 * this.s;
+      // y: model y up -> screen
+      this.oy = this.m.t + (ah - used.h) / 2 + y1 * this.s;
+      if (align === "bottom") this.oy = this.H - this.m.b + y0 * this.s;
+    }
+    P(p) {
+      return { x: this.ox + p[0] * this.s, y: this.oy - p[1] * this.s };
+    }
+    // ---- raw add ----
+    add(svg, layer = "mid") {
+      this.layers[layer].push(svg);
+    }
+    obstacleSeg(a, b, w = 4) {
+      this.segs.push({ a, b, w });
+    }
+    obstacleCirc(x, y, r) {
+      this.circs.push({ x, y, r });
+    }
+    obstacleRect(x1, y1, x2, y2) {
+      this.rects.push({ x1: Math.min(x1, x2), y1: Math.min(y1, y2), x2: Math.max(x1, x2), y2: Math.max(y1, y2) });
+    }
+    // ---- primitives in SCREEN coords ----
+    sLine(a, b, { color = COL.ink, w = 2, dash = "", cap = "round", layer = "mid", obstacle = true, opacity = 1, extra = "" } = {}) {
+      this.add(
+        `<line x1="${a.x.toFixed(2)}" y1="${a.y.toFixed(2)}" x2="${b.x.toFixed(2)}" y2="${b.y.toFixed(2)}" stroke="${color}" stroke-width="${w}" stroke-linecap="${cap}"${dash ? ` stroke-dasharray="${dash}"` : ""}${opacity < 1 ? ` opacity="${opacity}"` : ""} ${extra}/>`,
+        layer,
+      );
+      if (obstacle) this.obstacleSeg(a, b, w);
+    }
+    sPoly(pts, { color = COL.ink, w = 2, fill = "none", close = false, layer = "mid", obstacle = true, dash = "", join = "round", extra = "" } = {}) {
+      const d = pts.map((p, i) => `${i ? "L" : "M"}${p.x.toFixed(2)} ${p.y.toFixed(2)}`).join(" ") + (close ? " Z" : "");
+      this.add(
+        `<path d="${d}" fill="${fill}" stroke="${color}" stroke-width="${w}" stroke-linejoin="${join}" stroke-linecap="round"${dash ? ` stroke-dasharray="${dash}"` : ""} ${extra}/>`,
+        layer,
+      );
+      if (obstacle) for (let i = 0; i < pts.length - 1 + (close ? 1 : 0); i++) this.obstacleSeg(pts[i], pts[(i + 1) % pts.length], w);
+    }
+    sCircle(c, r, { fill = "#fff", stroke = COL.ink, w = 2, layer = "mid", obstacle = true, extra = "" } = {}) {
+      this.add(`<circle cx="${c.x.toFixed(2)}" cy="${c.y.toFixed(2)}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="${w}" ${extra}/>`, layer);
+      if (obstacle) this.obstacleCirc(c.x, c.y, r + w / 2);
+    }
+    // arrowhead polygon at tip with direction u (unit, screen)
+    head(tip, u, color, size = 11, layer = "front") {
+      const n = { x: -u.y, y: u.x },
+        b = { x: tip.x - u.x * size, y: tip.y - u.y * size },
+        w = size * 0.42;
+      this.add(
+        `<path d="M${tip.x.toFixed(2)} ${tip.y.toFixed(2)} L${(b.x + n.x * w).toFixed(2)} ${(b.y + n.y * w).toFixed(2)} L${(b.x + u.x * size * 0.18).toFixed(2)} ${(b.y + u.y * size * 0.18).toFixed(2)} L${(b.x - n.x * w).toFixed(2)} ${(b.y - n.y * w).toFixed(2)} Z" fill="${color}" stroke="${color}" stroke-width="0.8" stroke-linejoin="round"/>`,
+        layer,
+      );
+    }
+    /* Arrow between two screen points (head at b) */
+    sArrow(a, b, { color = COL.load, w = 2.6, size = 11, layer = "front", halo = true, both = false, obstacle = true, dash = "" } = {}) {
+      const L = Math.hypot(b.x - a.x, b.y - a.y);
+      if (L < 1e-6) return;
+      const u = { x: (b.x - a.x) / L, y: (b.y - a.y) / L };
+      const b2 = { x: b.x - u.x * size * 0.8, y: b.y - u.y * size * 0.8 };
+      const a2 = both ? { x: a.x + u.x * size * 0.8, y: a.y + u.y * size * 0.8 } : a;
+      if (halo)
+        this.add(
+          `<line x1="${a2.x.toFixed(2)}" y1="${a2.y.toFixed(2)}" x2="${b2.x.toFixed(2)}" y2="${b2.y.toFixed(2)}" stroke="#fff" stroke-width="${w + 3.5}" stroke-linecap="round" opacity="0.9"/>`,
+          layer,
+        );
+      this.add(
+        `<line x1="${a2.x.toFixed(2)}" y1="${a2.y.toFixed(2)}" x2="${b2.x.toFixed(2)}" y2="${b2.y.toFixed(2)}" stroke="${color}" stroke-width="${w}" stroke-linecap="round"${dash ? ` stroke-dasharray="${dash}"` : ""}/>`,
+        layer,
+      );
+      this.head(b, u, color, size, layer);
+      if (both) this.head(a, { x: -u.x, y: -u.y }, color, size, layer);
+      if (obstacle) this.obstacleSeg(a, b, w + 4);
+    }
+    // ---- labels ----
+    /* Queue a label. anchor: screen point; cands: array of {x,y} label centers (preferred first) or null for default ring.
+       opts: color, size, weight, italic, bg (pill), prio */
+    label(text, anchor, opts = {}) {
+      const size = (opts.size || 13) * this.fontScale,
+        weight = opts.weight || 700,
+        italic = !!opts.italic;
+      const w = richWidth(text, size, weight, italic) + (opts.bg ? 12 : 4),
+        h = size + (opts.bg ? 8 : 3);
+      let cands = opts.cands;
+      if (!cands) {
+        const d = opts.dist ?? 14;
+        cands = [];
+        const dirs = opts.dirs || [
+          [0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1],
+        ];
+        for (const k of [1, 1.6, 2.3, 3.2])
+          for (const [dx, dy] of dirs) {
+            const n = Math.hypot(dx, dy);
+            cands.push({ x: anchor.x + (dx / n) * (d * k + (Math.abs(dx / n) * w) / 2), y: anchor.y + (dy / n) * (d * k + (Math.abs(dy / n) * h) / 2) });
+          }
+      }
+      this.labels.push({ text, anchor, cands, w, h, size, weight, italic, color: opts.color || COL.ink, bg: opts.bg, prio: opts.prio ?? 5, leader: opts.leader ?? true, fixed: !!opts.fixed });
+    }
+    placeLabels() {
+      const placed = [];
+      const order = this.labels.map((l, i) => ({ l, i })).sort((a, b) => b.l.prio - a.l.prio || a.i - b.i);
+      const out = [];
+      for (const { l } of order) {
+        let best = null,
+          bestScore = Infinity;
+        l.cands.forEach((c, ci) => {
+          const r = { x1: c.x - l.w / 2, y1: c.y - l.h / 2, x2: c.x + l.w / 2, y2: c.y + l.h / 2 };
+          let s = ci * 0.6 + Math.hypot(c.x - l.anchor.x, c.y - l.anchor.y) * 0.02;
+          const out = Math.max(0, 4 - r.x1) + Math.max(0, 4 - r.y1) + Math.max(0, r.x2 - this.W + 4) + Math.max(0, r.y2 - this.H + 4);
+          if (out > 0) s += 5000 + out * 100;
+          for (const p of placed) s += rectOverlap(r, { x1: p.x1 - 3, y1: p.y1 - 3, x2: p.x2 + 3, y2: p.y2 + 3 }) * 30;
+          for (const q of this.rects) s += rectOverlap(r, q) * 8;
+          for (const g of this.segs) {
+            const len = segRectHit(g.a, g.b, r, g.w / 2 + 1.5);
+            if (len > 0) s += 140 + len * 6;
+          }
+          for (const k of this.circs) {
+            const d = circRectHit(k, r, 1.5);
+            if (d > 0) s += 140 + d * 10;
+          }
+          if (s < bestScore) {
+            bestScore = s;
+            best = { c, r };
+          }
+        });
+        if (l.fixed) best = { c: l.cands[0], r: { x1: l.cands[0].x - l.w / 2, y1: l.cands[0].y - l.h / 2, x2: l.cands[0].x + l.w / 2, y2: l.cands[0].y + l.h / 2 } };
+        placed.push(best.r);
+        l.at = best.c;
+        l.rect = best.r;
+        out.push(l);
+      }
+      return out;
+    }
+    renderLabels() {
+      const ls = this.placeLabels();
+      const s = [];
+      for (const l of ls) {
+        const { x, y } = l.at;
+        if (l.bg) {
+          s.push(
+            `<rect x="${(l.rect.x1).toFixed(1)}" y="${(l.rect.y1).toFixed(1)}" width="${l.w.toFixed(1)}" height="${l.h.toFixed(1)}" rx="${(l.h / 2).toFixed(1)}" fill="${l.bg === true ? "#fff" : l.bg}" stroke="${l.color}" stroke-opacity="0.35" stroke-width="1"/>`,
+          );
+        }
+        s.push(
+          `<text x="${x.toFixed(1)}" y="${(y + l.size * 0.36).toFixed(1)}" text-anchor="middle" font-size="${l.size.toFixed(1)}" font-weight="${l.weight}"${l.italic ? ' font-style="italic"' : ""} fill="${l.color}"${l.bg ? "" : ' paint-order="stroke" stroke="#fff" stroke-width="3.6" stroke-linejoin="round"'}>${richSVG(l.text, l.size)}</text>`,
+        );
+      }
+      return s.join("");
+    }
+    inner() {
+      const labels = this.renderLabels();
+      return `${this.bg ? `<rect x="0" y="0" width="${this.W}" height="${this.H}" fill="${this.bg}"/>` : ""}${this.layers.back.join("")}${this.layers.mid.join("")}${this.layers.front.join("")}<g class="sd-labels">${labels}</g>${this.layers.top.join("")}`;
+    }
+    mount(svgEl) {
+      svgEl.setAttribute("viewBox", `0 0 ${this.W} ${this.H}`);
+      svgEl.setAttribute("font-family", FONT);
+      svgEl.innerHTML = this.inner();
+    }
+    svg(extraAttrs = "") {
+      const labels = this.renderLabels();
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${this.W} ${this.H}" class="${this.cls}" role="img" aria-label="${esc(this.aria)}" font-family='${FONT}' ${extraAttrs}>${this.bg ? `<rect x="0" y="0" width="${this.W}" height="${this.H}" fill="${this.bg}"/>` : ""}${this.layers.back.join("")}${this.layers.mid.join("")}${this.layers.front.join("")}<g class="sd-labels">${labels}</g>${this.layers.top.join("")}</svg>`;
+    }
+    // ================= MODEL-SPACE drawing helpers =================
+    /* Structural member as a rounded bar through model points */
+    member(pts, { w = 11, color = COL.member, fill = COL.memberFill, layer = "mid", dash = "" } = {}) {
+      const S = pts.map((p) => this.P(p));
+      this.sPoly(S, { color, w, layer, obstacle: false, dash });
+      this.sPoly(S, { color: fill, w: Math.max(2, w - 5.5), layer, obstacle: false, dash });
+      for (let i = 0; i < S.length - 1; i++) this.obstacleSeg(S[i], S[i + 1], w);
+      return S;
+    }
+    /* Thin truss bar (screen width) */
+    bar(a, b, { w = 6, color = COL.member, layer = "mid", dash = "", halo = true } = {}) {
+      const A = this.P(a),
+        B = this.P(b);
+      if (halo) this.sLine(A, B, { color: "#fff", w: w + 4, layer, obstacle: false });
+      this.sLine(A, B, { color, w, layer, dash, obstacle: false });
+      this.obstacleSeg(A, B, w);
+      return [A, B];
+    }
+    cable(pts, { w = 2.4, color = COL.cable, layer = "mid" } = {}) {
+      const S = pts.map((p) => this.P(p));
+      this.sPoly(S, { color, w, layer });
+      return S;
+    }
+    /* Pin joint marker */
+    pin(p, { r = 6.5, layer = "front", fill = "#fff", stroke = COL.memberEdge } = {}) {
+      const c = this.P(p);
+      this.sCircle(c, r, { fill, stroke, w: 2.2, layer });
+      this.add(`<circle cx="${c.x.toFixed(2)}" cy="${c.y.toFixed(2)}" r="${(r * 0.32).toFixed(2)}" fill="${stroke}"/>`, layer);
+      return c;
+    }
+    // ground hatch in screen coords along segment a->b, hatch on side n (screen normal)
+    hatch(a, b, n, { layer = "back", len = 8, gap = 7, color = COL.hatch } = {}) {
+      this.sLine(a, b, { color: COL.support, w: 2, layer });
+      const L = Math.hypot(b.x - a.x, b.y - a.y),
+        u = { x: (b.x - a.x) / L, y: (b.y - a.y) / L };
+      for (let t = 3; t <= L - 2; t += gap) {
+        const p = { x: a.x + u.x * t, y: a.y + u.y * t };
+        this.sLine(p, { x: p.x + n.x * len - u.x * len * 0.7, y: p.y + n.y * len - u.y * len * 0.7 }, { color, w: 1.2, layer, obstacle: false });
+      }
+      this.obstacleRect(Math.min(a.x, b.x, a.x + n.x * len), Math.min(a.y, b.y, a.y + n.y * len), Math.max(a.x, b.x, a.x + n.x * len), Math.max(a.y, b.y, a.y + n.y * len));
+    }
+    /* Pin support: triangle pointing to the joint. side: 'down' (ground below), 'up', 'left' (wall on left), 'right' */
+    pinSupport(p, side = "down", { size = 1 } = {}) {
+      const c = this.P(p);
+      const n = { down: { x: 0, y: 1 }, up: { x: 0, y: -1 }, left: { x: -1, y: 0 }, right: { x: 1, y: 0 } }[side];
+      const t = { x: -n.y, y: n.x };
+      const h = 24 * size,
+        hw = 15 * size;
+      const tri = [
+        { x: c.x + n.x * 4, y: c.y + n.y * 4 },
+        { x: c.x + n.x * h + t.x * hw, y: c.y + n.y * h + t.y * hw },
+        { x: c.x + n.x * h - t.x * hw, y: c.y + n.y * h - t.y * hw },
+      ];
+      this.sPoly(tri, { color: COL.support, w: 1.8, fill: COL.supportFill, close: true, layer: "back" });
+      const g1 = { x: c.x + n.x * h + t.x * (hw + 8), y: c.y + n.y * h + t.y * (hw + 8) },
+        g2 = { x: c.x + n.x * h - t.x * (hw + 8), y: c.y + n.y * h - t.y * (hw + 8) };
+      this.hatch(g1, g2, n, { layer: "back" });
+      this.pin(p);
+      return { base: { x: c.x + n.x * (h + 9), y: c.y + n.y * (h + 9) }, n };
+    }
+    rollerSupport(p, side = "down", { size = 1 } = {}) {
+      const c = this.P(p);
+      const n = { down: { x: 0, y: 1 }, up: { x: 0, y: -1 }, left: { x: -1, y: 0 }, right: { x: 1, y: 0 } }[side];
+      const t = { x: -n.y, y: n.x };
+      const h = 18 * size,
+        hw = 14 * size,
+        rr = 4.3 * size;
+      const tri = [
+        { x: c.x + n.x * 4, y: c.y + n.y * 4 },
+        { x: c.x + n.x * h + t.x * hw, y: c.y + n.y * h + t.y * hw },
+        { x: c.x + n.x * h - t.x * hw, y: c.y + n.y * h - t.y * hw },
+      ];
+      this.sPoly(tri, { color: COL.support, w: 1.8, fill: COL.supportFill, close: true, layer: "back" });
+      for (const k of [-1, 0, 1]) {
+        const q = { x: c.x + n.x * (h + rr) + t.x * k * 9 * size, y: c.y + n.y * (h + rr) + t.y * k * 9 * size };
+        this.sCircle(q, rr, { fill: "#fff", stroke: COL.support, w: 1.5, layer: "back" });
+      }
+      const gy = h + 2 * rr + 1;
+      this.hatch({ x: c.x + n.x * gy + t.x * (hw + 8), y: c.y + n.y * gy + t.y * (hw + 8) }, { x: c.x + n.x * gy - t.x * (hw + 8), y: c.y + n.y * gy - t.y * (hw + 8) }, n, { layer: "back" });
+      this.pin(p);
+      return { base: { x: c.x + n.x * (gy + 9), y: c.y + n.y * (gy + 9) }, n };
+    }
+    /* Fixed (built-in) wall at model point p; wall on given side */
+    fixedSupport(p, side = "left", { half = 34 } = {}) {
+      const c = this.P(p);
+      const n = { left: { x: -1, y: 0 }, right: { x: 1, y: 0 }, down: { x: 0, y: 1 }, up: { x: 0, y: -1 } }[side];
+      const t = { x: -n.y, y: n.x };
+      const a = { x: c.x + t.x * half, y: c.y + t.y * half },
+        b = { x: c.x - t.x * half, y: c.y - t.y * half };
+      this.add(
+        `<path d="M${a.x} ${a.y} L${b.x} ${b.y} L${b.x + n.x * 12} ${b.y + n.y * 12} L${a.x + n.x * 12} ${a.y + n.y * 12} Z" fill="#eef2f7" stroke="none"/>`,
+        "back",
+      );
+      this.hatch(a, b, n, { layer: "back", len: 10 });
+    }
+    /* plain wall/ceiling/ground surface between model points, hatch toward side vector given in screen terms */
+    surface(p1, p2, side = "down", opts = {}) {
+      const a = this.P(p1),
+        b = this.P(p2);
+      const n = { down: { x: 0, y: 1 }, up: { x: 0, y: -1 }, left: { x: -1, y: 0 }, right: { x: 1, y: 0 } }[side];
+      this.add(
+        `<path d="M${a.x} ${a.y} L${b.x} ${b.y} L${b.x + n.x * 11} ${b.y + n.y * 11} L${a.x + n.x * 11} ${a.y + n.y * 11} Z" fill="#eef2f7"/>`,
+        "back",
+      );
+      this.hatch(a, b, n, { layer: "back", ...opts });
+    }
+    pulley(p, rPx, { layer = "mid", hub = true } = {}) {
+      const c = this.P(p);
+      this.add(`<circle cx="${c.x}" cy="${c.y}" r="${rPx}" fill="#f4f7fb" stroke="${COL.memberEdge}" stroke-width="2.6"/>`, layer);
+      this.add(`<circle cx="${c.x}" cy="${c.y}" r="${(rPx - 4).toFixed(1)}" fill="none" stroke="#9fb1c4" stroke-width="1.1"/>`, layer);
+      if (hub) {
+        this.add(`<circle cx="${c.x}" cy="${c.y}" r="${Math.max(4, rPx * 0.2).toFixed(1)}" fill="#dfe7f0" stroke="${COL.memberEdge}" stroke-width="1.6"/>`, layer);
+        this.add(`<circle cx="${c.x}" cy="${c.y}" r="1.8" fill="${COL.memberEdge}"/>`, layer);
+      }
+      this.obstacleCirc(c.x, c.y, rPx + 1);
+      return c;
+    }
+    /* Force arrow in model space.
+       at: model point; dir: [dx,dy] model direction of the FORCE; mode 'push' (head at point) or 'pull' (tail at point)
+       opts: len (px), gap (px from point), color, label, labelOpts, offset (screen lateral px) */
+    force(at, dir, opts = {}) {
+      const c = this.P(at);
+      const L = Math.hypot(dir[0], dir[1]);
+      if (L < 1e-12) return null;
+      const u = { x: dir[0] / L, y: -dir[1] / L };
+      const n = { x: -u.y, y: u.x };
+      const len = opts.len ?? 58,
+        gap = opts.gap ?? 8,
+        off = opts.offset || 0;
+      const base = { x: c.x + n.x * off, y: c.y + n.y * off };
+      let a, b;
+      if ((opts.mode || "push") === "push") {
+        b = { x: base.x - u.x * gap, y: base.y - u.y * gap };
+        a = { x: b.x - u.x * len, y: b.y - u.y * len };
+      } else {
+        a = { x: base.x + u.x * gap, y: base.y + u.y * gap };
+        b = { x: a.x + u.x * len, y: a.y + u.y * len };
+      }
+      const color = opts.color || COL.load;
+      this.sArrow(a, b, { color, w: opts.w || 2.6, size: opts.head || 11, dash: opts.dash || "" });
+      if (opts.label) this.forceLabel(opts.label, a, b, u, color, opts.labelOpts || {});
+      return { a, b, u };
+    }
+    forceLabel(text, a, b, u, color, lo = {}) {
+      // candidates: beyond the free end (tail for push / head for pull), then beside the shaft
+      const mode = lo.end || "tail";
+      const n = { x: -u.y, y: u.x };
+      const size = (lo.size || 13.5) * this.fontScale;
+      const w = richWidth(text, size, lo.weight || 750, !!lo.italic) + 4,
+        h = size + 3;
+      const free = mode === "head" ? b : a;
+      const sgn = mode === "head" ? 1 : -1;
+      const ext = (k) => ({ x: free.x + sgn * u.x * (k + Math.abs(u.x) * w / 2 + Math.abs(u.y) * h / 2), y: free.y + sgn * u.y * (k + Math.abs(u.x) * w / 2 + Math.abs(u.y) * h / 2) });
+      const mid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+      const side = (p, k) => [
+        { x: p.x + n.x * (k + Math.abs(n.x) * w / 2 + Math.abs(n.y) * h / 2), y: p.y + n.y * (k + Math.abs(n.x) * w / 2 + Math.abs(n.y) * h / 2) },
+        { x: p.x - n.x * (k + Math.abs(n.x) * w / 2 + Math.abs(n.y) * h / 2), y: p.y - n.y * (k + Math.abs(n.x) * w / 2 + Math.abs(n.y) * h / 2) },
+      ];
+      const nearFree = { x: free.x * 0.75 + mid.x * 0.25, y: free.y * 0.75 + mid.y * 0.25 };
+      const cands = [ext(5), ...side(nearFree, 7), ...side(mid, 7), ext(14), ...side(nearFree, 16), ...side(mid, 18), ext(26), ...side(free, 26), ...side(mid, 32), ext(40)];
+      this.labels.push({ text, anchor: free, cands, w, h, size, weight: lo.weight || 750, italic: !!lo.italic, color, bg: lo.bg, prio: lo.prio ?? 8 });
+    }
+    /* couple moment arc at model point; ccw true => counterclockwise */
+    couple(at, ccw, { r = 26, color = COL.load, label = "", start = 200, span = 250 } = {}) {
+      const c = this.P(at);
+      const a0 = (start * Math.PI) / 180,
+        a1 = a0 + ((ccw ? -1 : 1) * span * Math.PI) / 180; // screen angles (y down): ccw visually = negative screen angle
+      const p0 = { x: c.x + r * Math.cos(a0), y: c.y + r * Math.sin(a0) },
+        p1 = { x: c.x + r * Math.cos(a1), y: c.y + r * Math.sin(a1) };
+      const large = span > 180 ? 1 : 0,
+        sweep = ccw ? 0 : 1;
+      this.add(`<path d="M${p0.x.toFixed(2)} ${p0.y.toFixed(2)} A ${r} ${r} 0 ${large} ${sweep} ${p1.x.toFixed(2)} ${p1.y.toFixed(2)}" fill="none" stroke="#fff" stroke-width="6" opacity=".9"/>`, "front");
+      this.add(`<path d="M${p0.x.toFixed(2)} ${p0.y.toFixed(2)} A ${r} ${r} 0 ${large} ${sweep} ${p1.x.toFixed(2)} ${p1.y.toFixed(2)}" fill="none" stroke="${color}" stroke-width="2.6"/>`, "front");
+      // tangent at end
+      const tang = ccw ? { x: Math.sin(a1), y: -Math.cos(a1) } : { x: -Math.sin(a1), y: Math.cos(a1) };
+      this.head({ x: p1.x + tang.x * 4, y: p1.y + tang.y * 4 }, tang, color, 11);
+      this.obstacleCirc(c.x, c.y, r + 2);
+      if (label) {
+        const cands = [];
+        for (const k of [10, 20, 32])
+          for (let ang = -90; ang < 270; ang += 45) {
+            const t = (ang * Math.PI) / 180;
+            const size = 13.5 * this.fontScale;
+            const w = richWidth(label, size, 750) + 4;
+            cands.push({ x: c.x + (r + k + w / 2) * Math.cos(t), y: c.y + (r + k + 8) * Math.sin(t) });
+          }
+        this.label(label, c, { cands, color, size: 13.5, weight: 750, prio: 8 });
+      }
+    }
+    /* Dimension line between model points p1,p2 offset (screen px) along normal (left of p1->p2 in screen) */
+    dim(p1, p2, text, { off = 30, color = COL.dim, ext = true } = {}) {
+      const a = this.P(p1),
+        b = this.P(p2);
+      const L = Math.hypot(b.x - a.x, b.y - a.y);
+      if (L < 1) return;
+      const u = { x: (b.x - a.x) / L, y: (b.y - a.y) / L },
+        n = { x: u.y, y: -u.x };
+      const A = { x: a.x + n.x * off, y: a.y + n.y * off },
+        B = { x: b.x + n.x * off, y: b.y + n.y * off };
+      if (ext) {
+        const sg = Math.sign(off) || 1;
+        this.sLine({ x: a.x + n.x * sg * 6, y: a.y + n.y * sg * 6 }, { x: A.x + n.x * sg * 6, y: A.y + n.y * sg * 6 }, { color, w: 1, layer: "back", obstacle: true, opacity: 0.8 });
+        this.sLine({ x: b.x + n.x * sg * 6, y: b.y + n.y * sg * 6 }, { x: B.x + n.x * sg * 6, y: B.y + n.y * sg * 6 }, { color, w: 1, layer: "back", obstacle: true, opacity: 0.8 });
+      }
+      this.sArrow(A, B, { color, w: 1.2, size: 8, both: true, halo: false, layer: "back", obstacle: false });
+      this.obstacleSeg(A, B, 2);
+      const size = 12.5 * this.fontScale;
+      const w = richWidth(text, size, 650, true) + 10;
+      const mid = { x: (A.x + B.x) / 2, y: (A.y + B.y) / 2 };
+      // text sits on the line with a white background
+      this.label(text, mid, { cands: [mid, { x: mid.x + n.x * 11, y: mid.y + n.y * 11 }, { x: mid.x - n.x * 11, y: mid.y - n.y * 11 }], color, size: 12.5, weight: 650, italic: true, bg: "#fff", prio: 9 });
+      this._dimBg = (this._dimBg || 0) + 1;
+      void w;
+    }
+    /* Uniform distributed load on segment p1->p2 (model), arrows pointing along dir (model, unit), height px */
+    distLoad(p1, p2, dir, label, { h = 40, n = 8, color = COL.load } = {}) {
+      const a = this.P(p1),
+        b = this.P(p2);
+      const L = Math.hypot(dir[0], dir[1]);
+      const u = { x: dir[0] / L, y: -dir[1] / L };
+      const ta = { x: a.x - u.x * (h + 3), y: a.y - u.y * (h + 3) },
+        tb = { x: b.x - u.x * (h + 3), y: b.y - u.y * (h + 3) };
+      this.add(`<path d="M${a.x - u.x * 3} ${a.y - u.y * 3} L${ta.x} ${ta.y} L${tb.x} ${tb.y} L${b.x - u.x * 3} ${b.y - u.y * 3} Z" fill="${color}" fill-opacity="0.07"/>`, "back");
+      this.sLine(ta, tb, { color, w: 1.8, layer: "front" });
+      for (let i = 0; i <= n; i++) {
+        const t = i / n;
+        const tip = { x: a.x + (b.x - a.x) * t - u.x * 3, y: a.y + (b.y - a.y) * t - u.y * 3 };
+        const tail = { x: tip.x - u.x * h, y: tip.y - u.y * h };
+        this.sArrow(tail, tip, { color, w: 1.6, size: 8, halo: false, obstacle: false });
+      }
+      this.obstacleRect(Math.min(ta.x, tb.x, a.x, b.x), Math.min(ta.y, tb.y, a.y, b.y), Math.max(ta.x, tb.x, a.x, b.x), Math.max(ta.y, tb.y, a.y, b.y));
+      if (label) {
+        const mid = { x: (ta.x + tb.x) / 2, y: (ta.y + tb.y) / 2 };
+        const size = 13.5 * this.fontScale;
+        const hh = size + 3;
+        this.label(label, mid, { cands: [{ x: mid.x - u.x * (hh / 2 + 6), y: mid.y - u.y * (hh / 2 + 6) }, { x: mid.x - u.x * (hh / 2 + 16), y: mid.y - u.y * (hh / 2 + 16) }], color, size: 13.5, weight: 750, prio: 8 });
+      }
+    }
+    /* joint/point name label near model point */
+    name(p, text, opts = {}) {
+      const c = this.P(p);
+      this.label(text, c, { color: COL.ink, size: 15, weight: 800, italic: false, dist: opts.dist ?? 13, prio: opts.prio ?? 6, dirs: opts.dirs, cands: opts.cands });
+    }
+    /* free text at screen point (fixed) */
+    text(x, y, t, { size = 12, color = COL.dim, weight = 600, anchor = "start", italic = false, layer = "top" } = {}) {
+      this.add(`<text x="${x}" y="${y}" font-size="${size}" font-weight="${weight}" fill="${color}" text-anchor="${anchor}"${italic ? ' font-style="italic"' : ""}>${richSVG(t, size)}</text>`, layer);
+      const w = richWidth(t, size, weight, italic);
+      const x1 = anchor === "middle" ? x - w / 2 : anchor === "end" ? x - w : x;
+      this.obstacleRect(x1 - 2, y - size, x1 + w + 2, y + 4);
+    }
+  }
+  return { Fig, COL, measure, esc, rich, richSVG, richWidth, f1 };
+})();
+
+    </script>
+    <script>
+/* ===== SD3: 3-D layer on top of SD (oblique-free orthographic view, z up, right-handed) =====
+   Hibbeler orientation by default: x toward the viewer (down-left), y to the right, z up.
+   View: yaw θ about z, elevation φ. Screen right e1 = (−sinθ, cosθ, 0);
+   screen up e2 = (−cosθ·sinφ, −sinθ·sinφ, cosφ); toward viewer d = (cosθ·cosφ, sinθ·cosφ, sinφ). */
+const SD3 = (() => {
+  "use strict";
+  const { Fig, COL } = SD;
+  const D2R = Math.PI / 180;
+  const V = {
+    add: (a, b) => [a[0] + b[0], a[1] + b[1], a[2] + b[2]],
+    sub: (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]],
+    mul: (a, k) => [a[0] * k, a[1] * k, a[2] * k],
+    dot: (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2],
+    cross: (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]],
+    norm: (a) => Math.hypot(a[0], a[1], a[2]),
+    unit: (a) => {
+      const n = Math.hypot(a[0], a[1], a[2]);
+      return n < 1e-12 ? [0, 0, 0] : [a[0] / n, a[1] / n, a[2] / n];
+    },
+  };
+  COL.moment = COL.moment || "#6a46c2";
+  COL.position = COL.position || "#1f6fb2";
+  COL.axis = COL.axis || "#4f6377";
+
+  function basis(yaw, pitch) {
+    const t = yaw * D2R,
+      f = pitch * D2R;
+    return {
+      e1: [-Math.sin(t), Math.cos(t), 0],
+      e2: [-Math.cos(t) * Math.sin(f), -Math.sin(t) * Math.sin(f), Math.cos(f)],
+      d: [Math.cos(t) * Math.cos(f), Math.sin(t) * Math.cos(f), Math.sin(f)],
+    };
+  }
+
+  class Fig3 extends Fig {
+    /* opts: as SD.Fig plus yaw (deg, default 35), pitch (deg, default 22), pts3: model points to fit */
+    constructor(opts = {}) {
+      const yaw = opts.yaw ?? 35,
+        pitch = opts.pitch ?? 22;
+      const B = basis(yaw, pitch);
+      const pts = opts.pts3 && opts.pts3.length ? opts.pts3 : [[0, 0, 0], [1, 1, 1]];
+      // 3-D bounding box of the given points; fit its 8 projected corners ("box", default)
+      // or its bounding sphere ("sphere": scale stays constant while the view is rotated)
+      const lo = [1e9, 1e9, 1e9], hi = [-1e9, -1e9, -1e9];
+      for (const p of pts) for (let k = 0; k < 3; k++) { lo[k] = Math.min(lo[k], p[k]); hi[k] = Math.max(hi[k], p[k]); }
+      let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+      if (opts.fit === "sphere") {
+        const c = V.mul(V.add(lo, hi), 0.5), R = V.norm(V.sub(hi, lo)) / 2;
+        const cu = V.dot(c, B.e1), cv = V.dot(c, B.e2);
+        [x0, y0, x1, y1] = [cu - R, cv - R, cu + R, cv + R];
+      } else {
+        for (let m = 0; m < 8; m++) {
+          const p = [m & 1 ? hi[0] : lo[0], m & 2 ? hi[1] : lo[1], m & 4 ? hi[2] : lo[2]];
+          const u = V.dot(p, B.e1), v = V.dot(p, B.e2);
+          x0 = Math.min(x0, u); x1 = Math.max(x1, u); y0 = Math.min(y0, v); y1 = Math.max(y1, v);
+        }
+      }
+      super({ ...opts, bounds: [x0, y0, x1, y1] });
+      this.yaw = yaw;
+      this.pitch = pitch;
+      this.B = B;
+    }
+    proj(p) {
+      return [V.dot(p, this.B.e1), V.dot(p, this.B.e2)];
+    }
+    P3(p) {
+      return this.P(this.proj(p));
+    }
+    depth(p) {
+      return V.dot(p, this.B.d);
+    }
+    /* screen-space unit direction of a 3-D direction (null if along the line of sight) */
+    sdir(dir) {
+      const u = V.dot(dir, this.B.e1), v = -V.dot(dir, this.B.e2);
+      const n = Math.hypot(u, v);
+      return n < 1e-6 ? null : { x: u / n, y: v / n };
+    }
+    line3(a, b, o = {}) {
+      this.sLine(this.P3(a), this.P3(b), o);
+    }
+    poly3(pts, o = {}) {
+      this.sPoly(pts.map((p) => this.P3(p)), o);
+    }
+    /* coordinate axes from origin O with labels x, y, z */
+    axes(len = 1, { origin = [0, 0, 0], color = COL.axis, neg = 0, names = ["x", "y", "z"], obstacle = true } = {}) {
+      const dirs = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
+      dirs.forEach((d, i) => {
+        const L = Array.isArray(len) ? len[i] : len;
+        const a = V.add(origin, V.mul(d, -neg * L)), b = V.add(origin, V.mul(d, L));
+        const A = this.P3(a), Bp = this.P3(b);
+        if (Math.hypot(Bp.x - A.x, Bp.y - A.y) < 4) return;
+        this.sArrow(A, Bp, { color, w: 1.6, size: 9, halo: false, layer: "back", obstacle });
+        const u = this.sdir(d) || { x: 0, y: -1 };
+        this.label(names[i], Bp, { color, size: 15, weight: 700, italic: true, prio: 9, cands: [{ x: Bp.x + u.x * 12, y: Bp.y + u.y * 12 }, { x: Bp.x + u.x * 12 + 10, y: Bp.y + u.y * 12 }, { x: Bp.x + u.x * 12 - 10, y: Bp.y + u.y * 12 }, { x: Bp.x + u.x * 20, y: Bp.y + u.y * 20 + 10 }] });
+      });
+    }
+    /* arrow from a to b (model). opts: color, w, label, labelOpts, dash */
+    vec3(a, b, opts = {}) {
+      const A = this.P3(a), Bp = this.P3(b);
+      const L = Math.hypot(Bp.x - A.x, Bp.y - A.y);
+      const color = opts.color || COL.load;
+      if (L < 3 || opts._los) {
+        // along the line of sight: dot = toward the viewer, cross = away
+        const toward = V.dot(opts._los || V.sub(b, a), this.B.d) > 0;
+        this.sCircle(A, 7, { fill: "#fff", stroke: color, w: 2, layer: "top" });
+        if (toward) this.sCircle(A, 2.2, { fill: color, stroke: color, w: 1, layer: "top" });
+        else {
+          this.sLine({ x: A.x - 4, y: A.y - 4 }, { x: A.x + 4, y: A.y + 4 }, { color, w: 2, layer: "top" });
+          this.sLine({ x: A.x - 4, y: A.y + 4 }, { x: A.x + 4, y: A.y - 4 }, { color, w: 2, layer: "top" });
+        }
+        this.obstacleCirc(A.x, A.y, 9);
+        if (opts.label) this.label(opts.label, A, { color, size: 14, weight: 750, prio: 7 });
+        return { a: A, b: A, u: { x: 0, y: -1 } };
+      }
+      const u = { x: (Bp.x - A.x) / L, y: (Bp.y - A.y) / L };
+      this.sArrow(A, Bp, { color, w: opts.w || 2.6, size: opts.head || 11, dash: opts.dash || "", halo: opts.halo ?? true });
+      if (opts.label) this.forceLabel(opts.label, A, Bp, u, color, opts.labelOpts || {});
+      return { a: A, b: Bp, u };
+    }
+    /* force F (vector, model units of force) acting at point p, drawn with screen length len px.
+       mode "pull": tail at p; "push": tip at p. */
+    force3(p, F, opts = {}) {
+      const dir = V.unit(F);
+      const s = this.sdir(dir);
+      const len = opts.len ?? 70;
+      const P = this.P3(p);
+      // foreshortening: drawn length = len × projected fraction, so the 3-D direction reads correctly.
+      // Nearly along the line of sight (fraction < 0.15): draw the dot / cross symbol instead.
+      const frac = Math.hypot(V.dot(dir, this.B.e1), V.dot(dir, this.B.e2));
+      if (!s || frac < 0.15) return this.vec3(p, p, { ...opts, _los: dir });
+      const l = len * frac;
+      let a, b;
+      if ((opts.mode || "pull") === "pull") {
+        a = P;
+        b = { x: P.x + s.x * l, y: P.y + s.y * l };
+      } else {
+        b = { x: P.x - s.x * (opts.gap ?? 4), y: P.y - s.y * (opts.gap ?? 4) };
+        a = { x: b.x - s.x * l, y: b.y - s.y * l };
+      }
+      const color = opts.color || COL.load;
+      this.sArrow(a, b, { color, w: opts.w || 2.6, size: opts.head || 11, dash: opts.dash || "" });
+      if (opts.label) this.forceLabel(opts.label, a, b, s, color, opts.labelOpts || {});
+      return { a, b, u: s };
+    }
+    /* moment vector at p along M: double-headed arrow (Hibbeler style) + curl showing the right-hand sense */
+    moment3(p, M, opts = {}) {
+      const color = opts.color || COL.moment;
+      const dir = V.unit(M);
+      const r = this.force3(p, M, { ...opts, color, mode: "pull", len: opts.len ?? 64, label: null });
+      if (r.a === r.b) {
+        // moment along the line of sight: show it as a curved arrow in the screen plane
+        const toward = V.dot(dir, this.B.d) > 0, R0 = 20, pts = [];
+        for (let i = 0; i <= 24; i++) {
+          const th = (toward ? 1 : -1) * (0.3 + (i / 24) * 4.9);
+          pts.push({ x: r.a.x + R0 * Math.cos(th), y: r.a.y - R0 * Math.sin(th) });
+        }
+        this.sPoly(pts, { color, w: 2.2, layer: "front", obstacle: true });
+        const pe = pts[24], pq = pts[23], L = Math.hypot(pe.x - pq.x, pe.y - pq.y) || 1;
+        this.head(pe, { x: (pe.x - pq.x) / L, y: (pe.y - pq.y) / L }, color, 10, "front");
+        this.obstacleCirc(r.a.x, r.a.y, R0 + 3);
+        if (opts.label) this.label(opts.label, r.a, { color, size: 14, weight: 750, prio: 7, dist: R0 + 6 });
+        return r;
+      }
+      const s = this.sdir(dir);
+      if (s) this.head({ x: r.b.x - s.x * 9, y: r.b.y - s.y * 9 }, s, color, 11, "front");
+      // curl: circle of radius rho (model units) in the plane ⟂ M, centred on the shaft
+      if (opts.curl !== false) {
+        const rho = opts.rho ?? 0.12 * (opts.curlScale || 1);
+        let t1 = V.cross(dir, [0, 0, 1]);
+        if (V.norm(t1) < 0.2) t1 = V.cross(dir, [1, 0, 0]);
+        t1 = V.unit(t1);
+        const t2 = V.cross(dir, t1);
+        const frac = opts.curlAt ?? 0.55;
+        const cScreen = { x: r.a.x + (r.b.x - r.a.x) * frac, y: r.a.y + (r.b.y - r.a.y) * frac };
+        // centre in model space: back-project along screen (only direction of curl matters)
+        const pts = [];
+        const n = 28, a0 = 0.25, a1 = 2 * Math.PI - 0.55;
+        for (let i = 0; i <= n; i++) {
+          const th = a0 + ((a1 - a0) * i) / n;
+          const q = V.add(V.mul(t1, Math.cos(th) * rho), V.mul(t2, Math.sin(th) * rho));
+          const Q = this.P3(q), O = this.P3([0, 0, 0]);
+          pts.push({ x: cScreen.x + Q.x - O.x, y: cScreen.y + Q.y - O.y });
+        }
+        this.sPoly(pts, { color, w: 1.8, layer: "front", obstacle: false });
+        { // the curl is an obstacle for labels
+          const xs = pts.map((q) => q.x), ys = pts.map((q) => q.y);
+          this.obstacleRect(Math.min(...xs) - 2, Math.min(...ys) - 2, Math.max(...xs) + 2, Math.max(...ys) + 2);
+        }
+        const pe = pts[pts.length - 1], pq = pts[pts.length - 2];
+        const L = Math.hypot(pe.x - pq.x, pe.y - pq.y) || 1;
+        this.head(pe, { x: (pe.x - pq.x) / L, y: (pe.y - pq.y) / L }, color, 8, "front");
+      }
+      if (opts.label) this.forceLabel(opts.label, r.a, r.b, r.u, color, opts.labelOpts || {});
+      return r;
+    }
+    /* dashed component box of a vector from origin o to point p (shows x, y, z components) */
+    compBox(o, p, { color = COL.dim, w = 1.2 } = {}) {
+      const [x, y, z] = V.sub(p, o);
+      const q = (a, b, c) => V.add(o, [a, b, c]);
+      const e = [
+        [q(x, 0, 0), q(x, y, 0)], [q(0, y, 0), q(x, y, 0)], [q(x, y, 0), q(x, y, z)],
+        [q(0, 0, z), q(x, 0, z)], [q(0, 0, z), q(0, y, z)], [q(x, 0, z), q(x, y, z)], [q(0, y, z), q(x, y, z)],
+        [q(x, 0, 0), q(x, 0, z)], [q(0, y, 0), q(0, y, z)],
+      ];
+      for (const [a, b] of e) if (V.norm(V.sub(a, b)) > 1e-9) this.line3(a, b, { color, w, dash: "4 4", layer: "back", obstacle: false });
+    }
+    /* named point */
+    point3(p, name, opts = {}) {
+      const c = this.P3(p);
+      if (opts.dot !== false) this.sCircle(c, opts.r ?? 3.6, { fill: opts.fill || COL.ink, stroke: COL.ink, w: 1, layer: "front" });
+      if (name) this.label(name, c, { color: COL.ink, size: 15, weight: 800, dist: opts.dist ?? 12, prio: opts.prio ?? 6, cands: opts.cands, dirs: opts.dirs });
+    }
+    /* 3-D rod/bar between model points */
+    rod3(a, b, { w = 7, color = COL.member } = {}) {
+      this.bar(this.proj(a), this.proj(b), { w, color });
+    }
+    /* angle arc between two directions u, v from point o, radius rho (model) */
+    angle3(o, u, v, rho, label, { color = COL.dim } = {}) {
+      u = V.unit(u);
+      v = V.unit(v);
+      const th = Math.acos(Math.max(-1, Math.min(1, V.dot(u, v))));
+      let w = V.sub(v, V.mul(u, V.dot(u, v)));
+      if (V.norm(w) < 1e-9) return;
+      w = V.unit(w);
+      const pts = [];
+      for (let i = 0; i <= 20; i++) {
+        const t = (th * i) / 20;
+        pts.push(this.P3(V.add(o, V.mul(V.add(V.mul(u, Math.cos(t)), V.mul(w, Math.sin(t))), rho))));
+      }
+      this.sPoly(pts, { color, w: 1.3, obstacle: false, layer: "back" });
+      if (label) {
+        const m = pts[10];
+        this.label(label, m, { color, size: 13, weight: 650, italic: true, prio: 4, dist: 9 });
+      }
+    }
+  }
+
+  /* drag-to-rotate. svgEl: element; get(): {yaw,pitch}; set(yaw,pitch) redraws. Returns detach fn. */
+  function attachRotate(svgEl, get, set, { minPitch = -10, maxPitch = 80 } = {}) {
+    if (svgEl._sd3rot) svgEl._sd3rot();
+    let drag = null;
+    const down = (e) => {
+      const v = get();
+      drag = { x: e.clientX, y: e.clientY, yaw: v.yaw, pitch: v.pitch };
+      try { svgEl.setPointerCapture(e.pointerId); } catch (_) {}
+      e.preventDefault();
+    };
+    const move = (e) => {
+      if (!drag) return;
+      const yaw = drag.yaw - (e.clientX - drag.x) * 0.5;
+      const pitch = Math.max(minPitch, Math.min(maxPitch, drag.pitch + (e.clientY - drag.y) * 0.4));
+      set(((yaw % 360) + 360) % 360, pitch);
+    };
+    const up = () => (drag = null);
+    svgEl.addEventListener("pointerdown", down);
+    svgEl.addEventListener("pointermove", move);
+    svgEl.addEventListener("pointerup", up);
+    svgEl.addEventListener("pointercancel", up);
+    svgEl.style.touchAction = "none";
+    svgEl.style.cursor = "grab";
+    const detach = () => {
+      svgEl.removeEventListener("pointerdown", down);
+      svgEl.removeEventListener("pointermove", move);
+      svgEl.removeEventListener("pointerup", up);
+      svgEl.removeEventListener("pointercancel", up);
+      svgEl._sd3rot = null;
+    };
+    svgEl._sd3rot = detach;
+    return detach;
+  }
+
+  /* number formatting for vectors: {a i + b j + c k} */
+  function fmtVec(v, unit = "", dp = 2, html = true) {
+    const f = (x) => {
+      const r = Math.abs(x) < 0.5 * 10 ** -dp ? 0 : x;
+      return (+r.toFixed(dp)).toString();
+    };
+    const parts = [];
+    ["i", "j", "k"].forEach((e, i) => {
+      const c = v[i];
+      const s = f(Math.abs(c));
+      const sign = c < 0 && s !== "0" ? "−" : "+";
+      parts.push({ sign, s, e });
+    });
+    let out = "{";
+    parts.forEach((p, i) => {
+      out += (i === 0 ? (p.sign === "−" ? "−" : "") : ` ${p.sign} `) + p.s + (html ? "<b>" + p.e + "</b>" : p.e);
+    });
+    return out + "}" + (unit ? " " + unit : "");
+  }
+
+  return { Fig3, V, basis, attachRotate, fmtVec };
+})();
+
+    </script>
+    <script>
+/* Ch. 4.4–4.5 concept page: moment of a force (vector) and moment about an axis. Needs sd.js + sd3.js. */
+(() => {
+  "use strict";
+  const V = SD3.V, COL = SD.COL;
+  const $ = (id) => document.getElementById(id);
+  const MIN = (x) => String(x).replace(/-/g, "−");
+  // book-style rounding: 3 significant figures (4 for small numbers < 10 inside determinants)
+  function sig(x, n = 3) {
+    if (!isFinite(x)) return "—";
+    if (Math.abs(x) < 1e-9) return "0";
+    const d = Math.max(0, n - 1 - Math.floor(Math.log10(Math.abs(x))));
+    return MIN(+x.toFixed(Math.min(d, 5)));
+  }
+  const vstr = (v, u = "", n = 3) => {
+    let s = "{";
+    ["i", "j", "k"].forEach((e, k) => {
+      const c = v[k];
+      if (Math.abs(c) < 1e-9 && !(k === 2 && s === "{")) return;
+      const t = sig(Math.abs(c), n);
+      s += (s === "{" ? (c < 0 ? "−" : "") : c < 0 ? " − " : " + ") + t + "<b>" + e + "</b>";
+    });
+    if (s === "{") s += "0";
+    return s + "}" + (u ? " " + u : "");
+  };
+  const deg = (x) => (x * 180) / Math.PI;
+  const sub = (s) => s.replace(/_\{?([A-Za-z0-9]+)\}?/g, "<sub>$1</sub>");
+
+  /* ---------- views (one per figure) ---------- */
+  const BOOK = { yaw: 35, pitch: 22 };
+  const views = { f1: { ...BOOK }, f2: { ...BOOK }, f3: { ...BOOK }, f4: { ...BOOK }, f5: { ...BOOK } };
+  const draws = {};
+  function viewAlong(d) {
+    d = V.unit(d);
+    if (V.norm(d) < 0.5) return { ...BOOK };
+    return { yaw: ((deg(Math.atan2(d[1], d[0])) % 360) + 360) % 360, pitch: deg(Math.asin(Math.max(-1, Math.min(1, d[2])))) };
+  }
+  function setView(id, v) {
+    if (v === "book") views[id] = { ...BOOK };
+    else if (v === "top") views[id] = { yaw: 270, pitch: 89 };
+    else if (v === "edge") views[id] = viewAlong(S1.M());
+    draws[id]();
+  }
+  function rot(id) {
+    SD3.attachRotate($(id), () => views[id], (y, p) => { views[id] = { yaw: y, pitch: p }; draws[id](); }, { minPitch: -30, maxPitch: 89 });
+  }
+  function boundPts(list, L) {
+    const neg = list.some((p) => p.some((c) => c < -1e-9));
+    const pts = [...list, [L, 0, 0], [0, L, 0], [0, 0, L]];
+    if (neg) pts.push([-0.45 * L, 0, 0], [0, -0.45 * L, 0], [0, 0, -0.45 * L]);
+    return { pts, neg: neg ? 0.45 : 0 };
+  }
+  function sizeOf(list) {
+    return Math.max(1e-6, ...list.map((p) => V.norm(p)));
+  }
+  function newFig(id, list, L, opts = {}) {
+    const b = boundPts(list, L);
+    const f = new SD3.Fig3({ width: 620, height: opts.h || 440, margin: 46, fit: "sphere", yaw: views[id].yaw, pitch: views[id].pitch, pts3: b.pts });
+    f.axes(L, { neg: b.neg });
+    return f;
+  }
+  function vecInputs(tableId, rows, onEdit) {
+    // rows: [{key,label,unit,get,set}]
+    const t = $(tableId);
+    t.innerHTML =
+      "<tr><th></th><th>x</th><th>y</th><th>z</th><th></th></tr>" +
+      rows
+        .map(
+          (r) =>
+            `<tr><th>${r.label}</th>${[0, 1, 2].map((k) => `<td><input type="number" step="any" data-k="${r.key}" data-i="${k}"></td>`).join("")}<td class="u">${r.unit()}</td></tr>`,
+        )
+        .join("");
+    const refresh = () => {
+      rows.forEach((r) => {
+        const v = r.get();
+        t.querySelectorAll(`input[data-k="${r.key}"]`).forEach((inp) => (inp.value = +(+v[inp.dataset.i]).toFixed(4)));
+      });
+      t.querySelectorAll("td.u").forEach((td, i) => (td.innerHTML = rows[i].unit()));
+    };
+    t.addEventListener("input", (e) => {
+      const inp = e.target;
+      if (!inp.dataset.k) return;
+      const x = parseFloat(inp.value);
+      if (!isFinite(x)) return;
+      const r = rows.find((q) => q.key === inp.dataset.k);
+      const v = r.get().slice();
+      v[+inp.dataset.i] = x;
+      r.set(v);
+      onEdit();
+    });
+    return refresh;
+  }
+  function det3(rows, hl) {
+    // rows: array of 3 arrays of strings
+    return `<div class="det">${rows.map((r, i) => r.map((c) => `<span class="${hl && hl[i] ? hl[i] : ""}">${c}</span>`).join("")).join("")}</div>`;
+  }
+  function btnGroup(container, attr, cb) {
+    container.addEventListener("click", (e) => {
+      const b = e.target.closest("button");
+      if (!b || b.dataset[attr] === undefined) return;
+      container.querySelectorAll("button").forEach((x) => x.classList.toggle("on", x === b));
+      cb(b.dataset[attr]);
+    });
+  }
+
+  /* =====================================================================
+     Section 1: M = r × F
+     ===================================================================== */
+  const PRE1 = {
+    ex45: {
+      r: [0, 0, 12],
+      F: V.mul(V.unit([4, 12, -12]), 2),
+      lu: "m", fu: "kN",
+      B: [4, 12, 0],
+      rods: [[[0, 0, 0], [0, 0, 12], 9]],
+      cable: [[0, 0, 12], [4, 12, 0]],
+      names: { A: "A", B: "B" },
+      desc: "Ex. 4.5: a cable from the top of the tree, A (0, 0, 12) m, to the tractor at B (4, 12, 0) m pulls with F = 2 kN. F = 2 kN · u<sub>AB</sub>, u<sub>AB</sub> = {4<b>i</b> + 12<b>j</b> − 12<b>k</b>}/17.09.",
+    },
+    ex44: {
+      r: [0.4, -0.2, 0],
+      F: [400 * Math.sin(Math.PI / 6), -400 * Math.cos(Math.PI / 6), 0],
+      lu: "m", fu: "N",
+      B: null,
+      rods: [[[0, 0, 0], [0.4, -0.2, 0], 7], [[0, 0, 0], [0, -0.2, 0], 7], [[0, -0.2, 0], [0.4, -0.2, 0], 7]],
+      names: { A: "A" },
+      desc: "Ex. 4.4: angle bracket pinned at O; the tip A is 0.4 m right of and 0.2 m below O. F = 400 N at 30° from the vertical: F = {400 sin 30° <b>i</b> − 400 cos 30° <b>j</b>} N. Use “Look down z” for the book’s 2-D view.",
+    },
+  };
+  const S1 = {
+    preset: "ex45", r: PRE1.ex45.r.slice(), F: PRE1.ex45.F.slice(), lu: "m", fu: "kN", plane: true, box: false, swap: false,
+    M() { return V.cross(this.r, this.F); },
+    geo() { return this.preset === "custom" ? { rods: [], names: { A: "A" }, B: null } : PRE1[this.preset]; },
+  };
+  const ref1 = vecInputs("s1in", [
+    { key: "r", label: "<b>r</b>", unit: () => S1.lu, get: () => S1.r, set: (v) => (S1.r = v) },
+    { key: "F", label: "<b>F</b>", unit: () => S1.fu, get: () => S1.F, set: (v) => (S1.F = v) },
+  ], () => {
+    if (S1.preset !== "custom") {
+      S1.preset = "custom";
+      $("s1presets").querySelectorAll("button").forEach((b) => b.classList.toggle("on", b.dataset.p === "custom"));
+    }
+    S1.swap = false;
+    upd1(false);
+  });
+  function setPre1(p) {
+    S1.preset = p;
+    if (p !== "custom") {
+      const P = PRE1[p];
+      S1.r = P.r.slice(); S1.F = P.F.slice(); S1.lu = P.lu; S1.fu = P.fu;
+      views.f1 = p === "ex44" ? { yaw: 270, pitch: 89 } : { ...BOOK };
+      views.f2 = { ...views.f1 }; views.f3 = { ...views.f1 };
+    }
+    S1.swap = false;
+    $("s2t").value = 0;
+    upd1(true);
+  }
+  function drawBase(f, L, geo, A) {
+    for (const [a, b, w] of geo.rods || []) f.rod3(a, b, { w });
+    if (geo.cable) f.line3(geo.cable[0], geo.cable[1], { color: COL.cable, w: 2, dash: "6 4" });
+  }
+  function lineOfAction(f, A, F, L) {
+    const u = V.unit(F);
+    f.line3(V.add(A, V.mul(u, -0.7 * L)), V.add(A, V.mul(u, 1.1 * L)), { color: "#c98a8d", w: 1.2, dash: "2 5", layer: "back", obstacle: false });
+  }
+  function draw1() {
+    const r = S1.r, F = S1.F, M = S1.M(), geo = S1.geo();
+    const O = [0, 0, 0];
+    const extra = geo.B ? [geo.B] : [];
+    const L = Math.max(sizeOf([r, ...extra]), 0.2);
+    const u = V.unit(F);
+    const f = newFig("f1", [O, r, ...extra, V.add(r, V.mul(u, 0.5 * L))], L * 0.95);
+    if (S1.plane && V.norm(M) > 1e-9) f.poly3([O, r, V.add(r, V.mul(u, 0.55 * L))], { close: true, fill: "rgba(122,61,184,0.10)", color: "rgba(122,61,184,0.35)", w: 1, layer: "back", obstacle: false });
+    if (S1.box) f.compBox(O, r);
+    drawBase(f, L, geo);
+    lineOfAction(f, r, F, L);
+    f.vec3(O, r, { color: COL.position, label: "r", w: 2.4 });
+    f.force3(r, F, { label: "F", len: 86 });
+    if (V.norm(M) > 1e-9) {
+      f.moment3(O, M, { label: "M_O", rho: 0.07 * L, len: 84 });
+      if (S1.swap) f.moment3(O, V.mul(M, -1), { label: "F × r", rho: 0.07 * L, len: 84, color: "#9b8fb0", dash: "5 4" });
+    }
+    f.point3(O, "O");
+    f.point3(r, geo.names.A);
+    if (geo.B) f.point3(geo.B, geo.names.B);
+    f.mount($("f1"));
+  }
+  draws.f1 = draw1;
+  function upd1(refreshInputs) {
+    if (refreshInputs) ref1();
+    const r = S1.r, F = S1.F, M = S1.M();
+    $("s1desc").innerHTML = S1.preset === "custom" ? "Your own r and F. r goes from O to any point on the line of action of F." : PRE1[S1.preset].desc;
+    const n4 = (x) => sig(x, 4);
+    $("s1det").innerHTML =
+      `<div class="eqline"><b>M</b><sub>O</sub> = <b>r</b> × <b>F</b> = </div>` +
+      det3([["<b>i</b>", "<b>j</b>", "<b>k</b>"], r.map(n4), F.map(n4)], ["", "cr", "cf"]) +
+      `<div class="expand">
+        <div><b>i</b>: r<sub>y</sub>F<sub>z</sub> − r<sub>z</sub>F<sub>y</sub> = (${n4(r[1])})(${n4(F[2])}) − (${n4(r[2])})(${n4(F[1])}) = <b>${sig(M[0])}</b></div>
+        <div><b>j</b>: −(r<sub>x</sub>F<sub>z</sub> − r<sub>z</sub>F<sub>x</sub>) = −[(${n4(r[0])})(${n4(F[2])}) − (${n4(r[2])})(${n4(F[0])})] = <b>${sig(M[1])}</b></div>
+        <div><b>k</b>: r<sub>x</sub>F<sub>y</sub> − r<sub>y</sub>F<sub>x</sub> = (${n4(r[0])})(${n4(F[1])}) − (${n4(r[1])})(${n4(F[0])}) = <b>${sig(M[2])}</b></div>
+      </div>`;
+    const mu = `${S1.fu}·${S1.lu}`;
+    const rn = V.norm(r), Fn = V.norm(F), Mn = V.norm(M);
+    const th = rn > 0 && Fn > 0 ? Math.acos(Math.max(-1, Math.min(1, V.dot(r, F) / (rn * Fn)))) : 0;
+    $("s1out").innerHTML = `<div><b>M</b><sub>O</sub> = <span id="s1M">${vstr(M, mu)}</span></div>
+      <div>|M<sub>O</sub>| = <b id="s1Mn">${sig(Mn)}</b> ${mu} &nbsp;·&nbsp; r = ${sig(rn)} ${S1.lu}, F = ${sig(Fn)} ${S1.fu}, θ = ${sig(deg(th))}°</div>
+      <div>Check: rF sin θ = ${sig(rn * Fn * Math.sin(th))} ${mu}; moment arm d = M<sub>O</sub>/F = <b>${sig(Fn > 0 ? Mn / Fn : 0)}</b> ${S1.lu}</div>`;
+    $("s1swapfb").style.display = S1.swap ? "" : "none";
+    if (S1.swap) {
+      $("s1swapfb").className = "feedback bad";
+      $("s1swapfb").innerHTML = `<b>F</b> × <b>r</b> = ${vstr(V.mul(M, -1), mu)}: same size, opposite direction (dashed grey). The cross product is not commutative; always write r × F.`;
+    }
+    draw1();
+    upd2();
+    upd3();
+  }
+  btnGroup($("s1presets"), "p", setPre1);
+  $("f1plane").onclick = (e) => { S1.plane = !S1.plane; e.target.classList.toggle("on", S1.plane); e.target.textContent = S1.plane ? "Plane on" : "Plane off"; draw1(); };
+  $("f1box").onclick = (e) => { S1.box = !S1.box; e.target.classList.toggle("on", S1.box); draw1(); };
+  $("s1swap").onclick = () => { S1.swap = !S1.swap; upd1(false); };
+  document.querySelectorAll("[data-view]").forEach((b) => (b.onclick = () => setView(b.dataset.view, b.dataset.v)));
+
+  /* =====================================================================
+     Section 2: transmissibility
+     ===================================================================== */
+  function seg2() {
+    // second reference point along the line of action: book point B if any, else A + u·L
+    const geo = S1.geo();
+    if (geo.B && V.norm(V.cross(V.sub(geo.B, S1.r), S1.F)) < 1e-6 * (1 + V.norm(geo.B))) return V.sub(geo.B, S1.r);
+    return V.mul(V.unit(S1.F), Math.max(sizeOf([S1.r]), 0.2));
+  }
+  function P2() {
+    return V.add(S1.r, V.mul(seg2(), +$("s2t").value));
+  }
+  function draw2() {
+    const A = S1.r, F = S1.F, geo = S1.geo(), O = [0, 0, 0];
+    const P = P2(), M = V.cross(P, F);
+    const Bp = V.add(A, seg2());
+    const L = Math.max(sizeOf([A, Bp, P]), 0.2);
+    const f = newFig("f2", [O, A, Bp, P, V.add(A, V.mul(seg2(), -0.5)), V.add(A, V.mul(seg2(), 1.5))], L * 0.95);
+    drawBase(f, L, geo);
+    f.line3(V.add(A, V.mul(seg2(), -0.6)), V.add(A, V.mul(seg2(), 1.6)), { color: "#c98a8d", w: 1.2, dash: "2 5", layer: "back", obstacle: false });
+    if (V.norm(V.sub(P, A)) > 1e-6 * L) f.vec3(O, A, { color: "#9fbbd8", w: 1.6, dash: "5 4" });
+    f.vec3(O, P, { color: COL.position, label: "r", w: 2.4 });
+    f.force3(P, F, { label: "F", len: 80 });
+    if (V.norm(M) > 1e-9) f.moment3(O, M, { label: "M_O", rho: 0.07 * L, len: 84 });
+    f.point3(O, "O");
+    f.point3(A, "A");
+    if (geo.B) f.point3(Bp, "B");
+    f.point3(P, "", { r: 5, fill: "#fff" });
+    f.mount($("f2"));
+  }
+  draws.f2 = draw2;
+  function upd2() {
+    const P = P2(), F = S1.F, M = V.cross(P, F), mu = `${S1.fu}·${S1.lu}`;
+    const rn = V.norm(P), Fn = V.norm(F);
+    const th = rn > 0 && Fn > 0 ? Math.acos(Math.max(-1, Math.min(1, V.dot(P, F) / (rn * Fn)))) : 0;
+    $("s2tv").textContent = "t = " + (+$("s2t").value).toFixed(2);
+    $("s2out").innerHTML = `<div><b>r</b> = ${vstr(P, S1.lu)} &nbsp; (|r| = ${sig(rn)} ${S1.lu}, θ = ${sig(deg(th))}°)</div>
+      <div><b>M</b><sub>O</sub> = <b>r</b> × <b>F</b> = <span id="s2M">${vstr(M, mu)}</span></div>
+      <div>|r| sin θ = d = ${sig(rn * Math.sin(th))} ${S1.lu} — the same for every point on the line.</div>`;
+    draw2();
+  }
+  $("s2t").addEventListener("input", upd2);
+  document.querySelectorAll("[data-t]").forEach(
+    (b) =>
+      (b.onclick = () => {
+        let t = b.dataset.t;
+        if (t === "closest") {
+          const s = seg2();
+          t = -V.dot(S1.r, s) / V.dot(s, s);
+        }
+        $("s2t").value = Math.max(-0.5, Math.min(1.5, +t));
+        upd2();
+      }),
+  );
+
+  /* =====================================================================
+     Section 3: component meaning
+     ===================================================================== */
+  let pick3 = "1";
+  const E = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
+  const CNAME = ["F_x", "F_y", "F_z"];
+  function draw3() {
+    const r = S1.r, F = S1.F, O = [0, 0, 0], geo = S1.geo();
+    const L = Math.max(sizeOf([r]), 0.2);
+    const f = newFig("f3", [O, r], L * 0.95);
+    f.compBox(O, r);
+    for (const [a, b, w] of geo.rods || []) f.rod3(a, b, { w: Math.min(w, 6), color: "#9fb3c8" });
+    f.vec3(O, r, { color: COL.position, label: "r", w: 2.2 });
+    const Fm = V.norm(F);
+    let Msel = [0, 0, 0];
+    [0, 1, 2].forEach((k) => {
+      const c = V.mul(E[k], F[k]);
+      if (Math.abs(F[k]) < 1e-9 * (1 + Fm)) return;
+      const on = pick3 === "all" || +pick3 === k;
+      f.force3(r, c, { label: on ? CNAME[k] : null, len: 30 + 60 * Math.abs(F[k]) / Fm, color: on ? COL.load : "#e3b3b5", w: on ? 2.6 : 1.6, dash: on ? "" : "5 4" });
+      if (on) Msel = V.add(Msel, V.cross(r, c));
+    });
+    if (V.norm(Msel) > 1e-9) f.moment3(O, Msel, { label: pick3 === "all" ? "M_O" : "r × " + CNAME[+pick3], rho: 0.07 * L, len: 80 });
+    f.point3(O, "O");
+    f.point3(r, "A");
+    f.mount($("f3"));
+  }
+  draws.f3 = draw3;
+  function upd3() {
+    const r = S1.r, F = S1.F, mu = `${S1.fu}·${S1.lu}`;
+    // contribution of component k of F to moment about axis i:  (r × e_k F_k)_i
+    const formula = [
+      ["", "−r<sub>z</sub>F<sub>y</sub>", "r<sub>y</sub>F<sub>z</sub>"],
+      ["r<sub>z</sub>F<sub>x</sub>", "", "−r<sub>x</sub>F<sub>z</sub>"],
+      ["−r<sub>y</sub>F<sub>x</sub>", "r<sub>x</sub>F<sub>y</sub>", ""],
+    ]; // [axis i][component k]
+    let h = `<tr><th></th><th>F<sub>x</sub></th><th>F<sub>y</sub></th><th>F<sub>z</sub></th><th>total</th></tr>`;
+    for (let i = 0; i < 3; i++) {
+      h += `<tr><th>about ${"xyz"[i]}</th>`;
+      let tot = 0;
+      for (let k = 0; k < 3; k++) {
+        const v = V.cross(r, V.mul(E[k], F[k]))[i];
+        tot += v;
+        const on = pick3 === "all" || +pick3 === k;
+        h += `<td class="${on ? "hl" : ""}">${formula[i][k] ? formula[i][k] + " = " + sig(v) : "—"}</td>`;
+      }
+      h += `<td><b>${sig(tot)}</b></td></tr>`;
+    }
+    $("s3tab").innerHTML = h;
+    const k = pick3;
+    $("s3note").innerHTML =
+      k === "all"
+        ? `Adding the three columns row by row gives Eq. 4–8: <b>M</b><sub>O</sub> = ${vstr(S1.M(), mu)}.`
+        : `${sub(CNAME[+k])} has no moment about the ${"xyz"[+k]} axis (it is parallel to it). Its moment about O is r × ${sub(CNAME[+k])} = ${vstr(V.cross(r, V.mul(E[+k], F[+k])), mu)}, perpendicular to both r and ${sub(CNAME[+k])}.`;
+    draw3();
+  }
+  btnGroup($("s3pick"), "c", (c) => { pick3 = c; upd3(); });
+
+  /* =====================================================================
+     Section 4: system of forces (Ex. 4.6)
+     ===================================================================== */
+  const S4 = { rA: [0, 5, 0], rB: [4, 5, -2], F1: [-60, 40, 20], F2: [80, 40, -30], each: true };
+  const ref4 = vecInputs("s4in", [
+    { key: "F1", label: "<b>F</b><sub>1</sub> at A", unit: () => "lb", get: () => S4.F1, set: (v) => (S4.F1 = v) },
+    { key: "F2", label: "<b>F</b><sub>2</sub> at B", unit: () => "lb", get: () => S4.F2, set: (v) => (S4.F2 = v) },
+    { key: "rA", label: "<b>r</b><sub>A</sub>", unit: () => "ft", get: () => S4.rA, set: (v) => (S4.rA = v) },
+    { key: "rB", label: "<b>r</b><sub>B</sub>", unit: () => "ft", get: () => S4.rB, set: (v) => (S4.rB = v) },
+  ], () => upd4());
+  function res4() {
+    const M1 = V.cross(S4.rA, S4.F1), M2 = V.cross(S4.rB, S4.F2);
+    return { M1, M2, M: V.add(M1, M2) };
+  }
+  function draw4() {
+    const O = [0, 0, 0], { rA, rB, F1, F2 } = S4, { M1, M2, M } = res4();
+    const bend = [rA[0], rA[1], rB[2]];
+    const L = Math.max(sizeOf([rA, rB]), 1);
+    const f = newFig("f4", [O, rA, rB, bend], L * 0.9);
+    f.rod3(O, rA, { w: 8 }); f.rod3(rA, bend, { w: 8 }); f.rod3(bend, rB, { w: 8 });
+    f.vec3(O, rA, { color: COL.position, label: "r_A", w: 2 });
+    f.vec3(O, rB, { color: COL.position, label: "r_B", w: 2 });
+    f.force3(rA, F1, { label: "F_1", len: 80 });
+    f.force3(rB, F2, { label: "F_2", len: 80 });
+    if (S4.each) {
+      if (V.norm(M1) > 1e-9) f.moment3(O, M1, { label: "r_A × F_1", rho: 0.05 * L, len: 60 * V.norm(M1) / Math.max(V.norm(M1), V.norm(M2), V.norm(M)), color: "#b9a5e3", curl: false });
+      if (V.norm(M2) > 1e-9) f.moment3(O, M2, { label: "r_B × F_2", rho: 0.05 * L, len: 60 * V.norm(M2) / Math.max(V.norm(M1), V.norm(M2), V.norm(M)), color: "#b9a5e3", curl: false });
+    }
+    if (V.norm(M) > 1e-9) f.moment3(O, M, { label: "(M_R)_O", rho: 0.06 * L, len: 90 });
+    f.point3(O, "O"); f.point3(rA, "A"); f.point3(rB, "B");
+    f.mount($("f4"));
+  }
+  draws.f4 = draw4;
+  function upd4() {
+    const { M1, M2, M } = res4();
+    const row = (n, v) => `<tr><th>${n}</th>${v.map((x) => `<td>${sig(x)}</td>`).join("")}</tr>`;
+    $("s4tab").innerHTML = `<tr><th></th><th><b>i</b></th><th><b>j</b></th><th><b>k</b></th></tr>` + row("r<sub>A</sub> × F<sub>1</sub>", M1) + row("r<sub>B</sub> × F<sub>2</sub>", M2) + `<tr class="tot"><th>Σ</th>${M.map((x) => `<td><b>${sig(x)}</b></td>`).join("")}</tr>`;
+    const n = V.norm(M);
+    const ang = n > 0 ? M.map((c) => deg(Math.acos(c / n))) : [NaN, NaN, NaN];
+    $("s4out").innerHTML = `<div>(<b>M</b><sub>R</sub>)<sub>O</sub> = <span id="s4M">${vstr(M, "lb·ft")}</span></div>
+      <div>|(M<sub>R</sub>)<sub>O</sub>| = <b>${sig(n)}</b> lb·ft · α = <span id="s4a">${sig(ang[0])}</span>°, β = ${sig(ang[1])}°, γ = ${sig(ang[2])}° (from <b>u</b> = <b>M</b>/M)</div>`;
+    draw4();
+  }
+  $("s4each").onclick = (e) => { S4.each = !S4.each; e.target.classList.toggle("on", S4.each); draw4(); };
+
+  /* =====================================================================
+     Section 5: moment about an axis
+     ===================================================================== */
+  const ex48 = { A: [0, 0, 0], B: [0.4, 0.2, 0], C: [0.6, 0, 0.3], D: [0.6, 0, 0] };
+  const ex49 = { O: [0, 0, 0], A: [0.3, 0.4, 0], B: [0.1, 0.4, 0], C: [0.1, 0.4, 0.3], D: [0.5, 0, 0.5] };
+  const rods48 = [[ex48.B, ex48.A], [ex48.A, [0, 0, 0.3]], [[0, 0, 0.3], ex48.C]];
+  const PRE5 = {
+    ex48: {
+      P0: ex48.A, P1: ex48.B, ax: ["A", "B"], Q: ex48.D, F: [0, 0, -300], rods: rods48, names: [["C", ex48.C], ["D", ex48.D]],
+      line: [ex48.C, ex48.D], book: 80.5,
+      desc: "Ex. 4.8: F = {−300<b>k</b>} N acts at C, so its line of action passes through D (0.6, 0, 0) m. The rod can only turn about the axis AB: u<sub>B</sub> = {0.4<b>i</b> + 0.2<b>j</b>}/0.4472 = 0.8944<b>i</b> + 0.4472<b>j</b>. The book uses r<sub>D</sub> = {0.6<b>i</b>} m. Book answer: M<sub>AB</sub> = 80.50 N·m, <b>M</b><sub>AB</sub> = {72<b>i</b> + 36<b>j</b>} N·m.",
+    },
+    ex49: {
+      P0: ex49.O, P1: ex49.A, ax: ["O", "A"], Q: ex49.D, F: V.mul(V.unit(V.sub(ex49.D, ex49.C)), 300),
+      rods: [[ex49.O, ex49.A], [ex49.A, ex49.B], [ex49.B, ex49.C]], names: [["B", ex49.B], ["C", ex49.C], ["D", ex49.D]],
+      line: [ex49.C, ex49.D], cable: true, book: 100,
+      desc: "Ex. 4.9: a 300-N force acts along CD. F = 300 N · {0.4<b>i</b> − 0.4<b>j</b> + 0.2<b>k</b>}/0.6 = {200<b>i</b> − 200<b>j</b> + 100<b>k</b>} N. Axis OA: u<sub>OA</sub> = 0.6<b>i</b> + 0.8<b>j</b>. The book uses r<sub>OD</sub> = {0.5<b>i</b> + 0.5<b>k</b>} m. Book answer: M<sub>OA</sub> = 100 N·m. Slide both points: r<sub>OD</sub>, r<sub>OC</sub>, r<sub>AD</sub> and r<sub>AC</sub> all give 100 N·m.",
+    },
+    par: {
+      P0: ex48.A, P1: ex48.B, ax: ["A", "B"], Q: ex48.C, F: V.mul(V.unit(V.sub(ex48.B, ex48.A)), 300), rods: rods48, names: [["C", ex48.C]], book: 0,
+      desc: "The same rod, but now a 300-N force at C acts parallel to AB. M<sub>O</sub> is not zero, but it is perpendicular to the axis, so its projection is zero: a force parallel to an axis cannot turn a body about that axis.",
+    },
+    thru: {
+      P0: ex48.A, P1: ex48.B, ax: ["A", "B"], Q: ex48.C, F: V.mul(V.unit(V.sub(ex48.A, ex48.C)), 300), rods: rods48, names: [["C", ex48.C]], book: 0,
+      desc: "The same rod, with a 300-N force at C directed toward A, so its line of action passes through the axis. Choosing the axis point at A gives r ∥ F and M<sub>A</sub> = 0. Every other choice gives a nonzero M<sub>O</sub> but still M<sub>a</sub> = 0.",
+    },
+  };
+  const S5 = { preset: "ex48", flip: false };
+  function g5() {
+    const P = PRE5[S5.preset];
+    let u = V.unit(V.sub(P.P1, P.P0));
+    if (S5.flip) u = V.mul(u, -1);
+    const s = +$("s5s").value, t = +$("s5t").value;
+    const axLen = V.norm(V.sub(P.P1, P.P0));
+    const Q = V.add(P.P0, V.mul(V.sub(P.P1, P.P0), s)); // point on the axis
+    const segF = P.line ? V.sub(P.line[0], P.line[1]) : V.mul(V.unit(P.F), 0.3);
+    const R = V.add(P.Q, V.mul(segF, t)); // point on the line of action
+    const r = V.sub(R, Q), F = P.F;
+    const MQ = V.cross(r, F), Ma = V.dot(u, MQ);
+    // scalar check: Ma = F_perp · d_a
+    const uF = V.unit(F), n = V.cross(u, uF), sn = V.norm(n);
+    const da = sn > 1e-9 ? Math.abs(V.dot(V.sub(P.Q, P.P0), n)) / sn : V.norm(V.cross(V.sub(P.Q, P.P0), u));
+    return { P, u, Q, R, r, F, MQ, Ma, sn, da, axLen };
+  }
+  function draw5() {
+    const { P, u, Q, R, r, F, MQ, Ma, axLen } = g5();
+    const all = [P.P0, P.P1, Q, R, ...(P.rods || []).flat(), ...P.names.map((n) => n[1])];
+    const L = Math.max(sizeOf(all), 0.2);
+    const f = newFig("f5", all, L * 0.95);
+    for (const [a, b] of P.rods) f.rod3(a, b, { w: 7 });
+    const ud = V.unit(V.sub(P.P1, P.P0));
+    f.line3(V.add(P.P0, V.mul(ud, -0.45 * L)), V.add(P.P1, V.mul(ud, 0.45 * L)), { color: "#5b6f86", w: 1.4, dash: "10 4 2 4", layer: "back", obstacle: false });
+    if (P.line) f.line3(V.add(P.line[0], V.mul(V.sub(P.line[0], P.line[1]), 1.2)), V.add(P.line[1], V.mul(V.sub(P.line[0], P.line[1]), -1.2)), { color: P.cable ? COL.cable : "#c98a8d", w: P.cable ? 2 : 1.2, dash: "2 5", layer: "back", obstacle: false });
+    else f.line3(V.add(R, V.mul(V.unit(F), -0.5 * L)), V.add(R, V.mul(V.unit(F), 0.7 * L)), { color: "#c98a8d", w: 1.2, dash: "2 5", layer: "back", obstacle: false });
+    f.vec3(Q, V.add(Q, V.mul(u, 0.22 * L)), { color: "#2f8f6f", label: "u_a", w: 2.2 });
+    if (V.norm(r) > 1e-6 * L) f.vec3(Q, R, { color: COL.position, label: "r", w: 2.2 });
+    f.force3(R, F, { label: "F", len: 80 });
+    if (V.norm(MQ) > 1e-9) f.moment3(Q, MQ, { label: "M_O", rho: 0.05 * L, len: 70, color: "#c7b6ea", curl: false });
+    if (Math.abs(Ma) > 1e-9) f.moment3(Q, V.mul(u, Ma), { label: "M_a", rho: 0.06 * L, len: 70 * Math.max(0.35, Math.abs(Ma) / Math.max(V.norm(MQ), 1e-9)) });
+    f.point3(P.P0, P.ax[0]);
+    f.point3(P.P1, P.ax[1]);
+    for (const [nm, p] of P.names) if (nm !== P.ax[0] && nm !== P.ax[1]) f.point3(p, nm);
+    if (V.norm(V.sub(Q, P.P0)) > 1e-6 && V.norm(V.sub(Q, P.P1)) > 1e-6) f.point3(Q, "", { r: 5, fill: "#fff" });
+    if (V.norm(V.sub(R, P.Q)) > 1e-6) f.point3(R, "", { r: 5, fill: "#fff" });
+    f.mount($("f5"));
+  }
+  draws.f5 = draw5;
+  function upd5() {
+    const g = g5(), { P, u, r, F, MQ, Ma } = g;
+    const n4 = (x) => sig(x, 4);
+    $("s5sv").textContent = "s = " + (+$("s5s").value).toFixed(2);
+    $("s5tv").textContent = "t = " + (+$("s5t").value).toFixed(2);
+    $("s5desc").innerHTML = P.desc;
+    $("s5det").innerHTML = `<div class="eqline">M<sub>a</sub> = <b>u</b><sub>a</sub> · (<b>r</b> × <b>F</b>) = </div>` + det3([u.map(n4), r.map(n4), F.map(n4)], ["cu", "cr", "cf"]) +
+      `<div class="expand">= ${n4(u[0])}[(${n4(r[1])})(${n4(F[2])}) − (${n4(r[2])})(${n4(F[1])})] − ${n4(u[1])}[(${n4(r[0])})(${n4(F[2])}) − (${n4(r[2])})(${n4(F[0])})] + ${n4(u[2])}[(${n4(r[0])})(${n4(F[1])}) − (${n4(r[1])})(${n4(F[0])})] = <b>${sig(Ma, 4)}</b> N·m</div>`;
+    const Fn = V.norm(F);
+    $("s5out").innerHTML = `<div><b>r</b> (axis point → force point) = ${vstr(r, "m")}</div>
+      <div><b>M</b><sub>O</sub> about the chosen axis point = ${vstr(MQ, "N·m")} <span class="muted">(changes as you slide)</span></div>
+      <div>M<sub>a</sub> = <b id="s5Ma">${sig(Ma, 4)}</b> N·m &nbsp;→&nbsp; <b>M</b><sub>a</sub> = M<sub>a</sub><b>u</b><sub>a</sub> = <span id="s5Mv">${vstr(V.mul(u, Ma), "N·m")}</span> <span class="muted">(does not change)</span></div>
+      <div>Scalar check (Eq. 4–10): F<sub>⊥</sub> = F sin φ = ${sig(Fn * g.sn)} N, d<sub>a</sub> = ${sig(g.da)} m, F<sub>⊥</sub>d<sub>a</sub> = ${sig(Fn * g.sn * g.da)} N·m</div>`;
+    const fb = $("s5fb");
+    if (Math.abs(Ma) < 1e-9) { fb.className = "feedback good"; fb.innerHTML = "M<sub>a</sub> = 0: the force cannot turn the body about this axis."; }
+    else if (Ma > 0) { fb.className = "feedback good"; fb.innerHTML = "M<sub>a</sub> &gt; 0: <b>M</b><sub>a</sub> points the same way as <b>u</b><sub>a</sub>. Point the right thumb along it; the fingers show the sense of twist."; }
+    else { fb.className = "feedback bad"; fb.innerHTML = "M<sub>a</sub> &lt; 0: <b>M</b><sub>a</sub> points opposite to <b>u</b><sub>a</sub>. The vector <b>M</b><sub>a</sub> = M<sub>a</sub><b>u</b><sub>a</sub> is the same as before reversing u<sub>a</sub>."; }
+    draw5();
+  }
+  btnGroup($("s5presets"), "p", (p) => { S5.preset = p; S5.flip = false; $("s5s").value = 0; $("s5t").value = 0; views.f5 = { ...BOOK }; upd5(); });
+  $("s5s").addEventListener("input", upd5);
+  $("s5t").addEventListener("input", upd5);
+  $("s5flip").onclick = () => { S5.flip = !S5.flip; upd5(); };
+
+  /* =====================================================================
+     Section 6: quiz
+     ===================================================================== */
+  const QZ = [
+    { q: "For M<sub>O</sub> = r × F, the vector r must go from O to …", a: ["the point where F is drawn in the figure only", "any point on the line of action of F", "the point of the body closest to O", "the tip of the force arrow"], c: 1, e: "Transmissibility: any point on the line of action gives the same r × F. Choose the one that gives the simplest r." },
+    { q: "You compute F × r instead of r × F. The result is …", a: ["the same vector", "zero", "the same magnitude, opposite direction", "perpendicular to r × F"], c: 2, e: "The cross product is anticommutative: F × r = −(r × F)." },
+    { q: "The force component F<sub>x</sub> contributes to (M<sub>O</sub>)<sub>x</sub> …", a: ["r<sub>y</sub>F<sub>x</sub>", "r<sub>z</sub>F<sub>x</sub>", "nothing, because it is parallel to the x axis", "r<sub>x</sub>F<sub>x</sub>"], c: 2, e: "A force parallel to an axis has no moment about it. F<sub>x</sub> contributes only to M<sub>y</sub> (r<sub>z</sub>F<sub>x</sub>) and M<sub>z</sub> (−r<sub>y</sub>F<sub>x</sub>)." },
+    { q: "M<sub>O</sub> = r × F is always perpendicular to …", a: ["r only", "F only", "the plane containing r and F", "the x–y plane"], c: 2, e: "A cross product is perpendicular to both of its factors, so to their plane." },
+    { q: "u<sub>a</sub> · (r × F) comes out as −40 N·m. This means …", a: ["the calculation is wrong; M<sub>a</sub> is a magnitude", "M<sub>a</sub> acts opposite to u<sub>a</sub>", "the force is parallel to the axis", "r was drawn from the wrong end"], c: 1, e: "The sign gives the sense along the axis: negative means opposite to u<sub>a</sub>." },
+    { q: "In Ex. 4.9 the book uses r<sub>OD</sub>. Using r<sub>AC</sub> (from A on the axis to C on the line of action) instead gives …", a: ["100 N·m, the same answer", "a different answer, because A is not O", "zero", "−100 N·m"], c: 0, e: "r may start at any point of the axis and end at any point of the line of action. Try it with the two sliders in Section 5." },
+  ];
+  $("quiz").innerHTML = QZ.map((z, i) => `<div class="qz" data-q="${i}"><p><b>${i + 1}.</b> ${z.q}</p><div class="btnrow">${z.a.map((a, j) => `<button class="btn" data-a="${j}">${a}</button>`).join("")}</div><div class="feedback" style="display:none"></div></div>`).join("");
+  $("quiz").addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-a]");
+    if (!b) return;
+    const box = b.closest(".qz"), z = QZ[+box.dataset.q], ok = +b.dataset.a === z.c;
+    box.querySelectorAll("button").forEach((x) => x.classList.toggle("on", x === b));
+    const fb = box.querySelector(".feedback");
+    fb.style.display = "";
+    fb.className = "feedback " + (ok ? "good" : "bad");
+    fb.innerHTML = (ok ? "<b>Correct.</b> " : "<b>Not quite.</b> ") + z.e;
+  });
+
+  /* ---------- start ---------- */
+  ["f1", "f2", "f3", "f4", "f5"].forEach(rot);
+  ref4();
+  setPre1("ex45");
+  upd4();
+  upd5();
+  window.M3 = { S1, S4, S5, views, setPre1, res4, g5, upd1, upd2, upd5, draws, setPre5: (p) => $("s5presets").querySelector(`[data-p="${p}"]`).click() };
+})();
+
+    </script>
+  </body>
+</html>
