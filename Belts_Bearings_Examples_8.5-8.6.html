@@ -1,0 +1,1205 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Belt and Bearing Friction — Worked Examples (Sections 8.5–8.6)</title>
+    <style>
+:root {
+  --navy: #15273c;
+  --ink: #1f3448;
+  --muted: #617487;
+  --line: #dce5ed;
+  --bg: #f3f6f9;
+  --white: #fff;
+  --teal: #147b91;
+  --blue: #1f6fb2;
+  --purple: #7a3db8;
+  --red: #d1343a;
+  --green: #0d8a6f;
+  --orange: #e0662c;
+  --soft: #f8fafc;
+  --shadow: 0 8px 28px rgba(16, 37, 59, 0.06);
+}
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  font: 15px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+}
+button,
+input,
+select {
+  font: inherit;
+}
+button {
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+:focus-visible {
+  outline: 3px solid #78afde;
+  outline-offset: 2px;
+}
+header.top {
+  background: var(--navy);
+  color: #fff;
+  padding: 22px clamp(18px, 4vw, 56px) 20px;
+}
+header.top .eyebrow {
+  font-size: 11.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8fd3e2;
+  font-weight: 800;
+}
+header.top h1 {
+  margin: 4px 0 6px;
+  font-size: clamp(24px, 3vw, 34px);
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+header.top p {
+  margin: 0;
+  color: #c6d3df;
+  max-width: 920px;
+}
+nav.toc {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  padding: 8px clamp(12px, 3vw, 48px);
+}
+nav.toc a {
+  white-space: nowrap;
+  text-decoration: none;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 7px 11px;
+  border-radius: 8px;
+}
+nav.toc a:hover,
+nav.toc a.on {
+  background: #e8f3f6;
+  color: var(--teal);
+}
+main {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 22px clamp(12px, 3vw, 40px) 60px;
+}
+section.card {
+  background: #fff;
+  border: 1px solid #e2e9f0;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  margin: 0 0 22px;
+  overflow: hidden;
+}
+.card-head {
+  padding: 18px 22px 12px;
+  border-bottom: 1px solid #edf2f6;
+}
+.card-head .kicker {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--teal);
+  text-transform: uppercase;
+}
+.card-head h2 {
+  margin: 3px 0 4px;
+  font-size: 21px;
+  letter-spacing: -0.02em;
+}
+.card-head p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+.card-body {
+  padding: 18px 22px 22px;
+}
+.grid2 {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: 22px;
+}
+.grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+@media (max-width: 900px) {
+  .grid2,
+  .grid3 {
+    grid-template-columns: 1fr;
+  }
+}
+.figure {
+  background: #fcfdfe;
+  border: 1px solid #e6ecf2;
+  border-radius: 12px;
+  padding: 6px;
+}
+.figure svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.caption {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin: 6px 4px 0;
+}
+.btn {
+  border: 1px solid #cfdbe5;
+  background: #fff;
+  color: var(--ink);
+  border-radius: 9px;
+  padding: 8px 13px;
+  font-weight: 700;
+  font-size: 13.5px;
+}
+.btn:hover {
+  background: #f2f7fa;
+}
+.btn.primary {
+  background: var(--navy);
+  color: #fff;
+  border-color: var(--navy);
+}
+.btn.primary:hover {
+  background: #22405f;
+}
+.btn.on {
+  background: #e3f3f6;
+  border-color: #8ccbd8;
+  color: #0e6577;
+}
+.btnrow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+label.ctl {
+  display: block;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+}
+select,
+input[type="number"] {
+  border: 1px solid #cfdbe5;
+  border-radius: 9px;
+  padding: 7px 9px;
+  background: #fff;
+  color: var(--ink);
+  min-width: 0;
+}
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--teal);
+}
+.note {
+  font-size: 13.5px;
+  color: var(--muted);
+}
+.eq {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 13.5px;
+  background: #f6f9fb;
+  border: 1px solid #e5ecf2;
+  border-radius: 9px;
+  padding: 9px 11px;
+  margin: 6px 0;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.eq b {
+  color: var(--navy);
+}
+.keybox {
+  border-left: 4px solid var(--teal);
+  background: #f2fafb;
+  border-radius: 0 10px 10px 0;
+  padding: 10px 14px;
+  margin: 10px 0;
+  font-size: 14px;
+}
+.keybox.warn {
+  border-color: #d69a2d;
+  background: #fff9ec;
+}
+.readout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  font-size: 13.5px;
+  background: #fff7f1;
+  border: 1px solid #f6d7c4;
+  border-radius: 10px;
+  padding: 8px 12px;
+  margin-top: 8px;
+}
+.readout i {
+  color: #9a7a66;
+  font-style: normal;
+  font-size: 12px;
+}
+.pill {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: #eef3f7;
+  color: var(--muted);
+}
+table.nice {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 14px;
+}
+table.nice th,
+table.nice td {
+  border-bottom: 1px solid #e8eef3;
+  padding: 7px 8px;
+  text-align: left;
+  vertical-align: middle;
+}
+table.nice th {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+.feedback {
+  margin-top: 8px;
+  font-weight: 700;
+  font-size: 14px;
+}
+.feedback.good {
+  color: #0d7a52;
+}
+.feedback.bad {
+  color: #b5372c;
+}
+input.ok {
+  border-color: #3fb27f;
+  background: #effbf5;
+}
+input.bad {
+  border-color: #e0775f;
+  background: #fff3f0;
+}
+.footer {
+  color: var(--muted);
+  font-size: 12.5px;
+  text-align: center;
+  margin-top: 26px;
+}
+@media print {
+  nav.toc,
+  .noprint {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+  }
+  section.card {
+    box-shadow: none;
+    break-inside: avoid;
+  }
+}
+
+.ex-layout {
+  display: grid;
+  grid-template-columns: 270px minmax(0, 1fr);
+  gap: 0;
+  align-items: start;
+}
+.ex-nav {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  max-height: 100vh;
+  overflow-y: auto;
+  background: #fff;
+  border-right: 1px solid var(--line);
+  min-height: 100vh;
+}
+.ex-nav-inner {
+  padding: 16px 12px 30px;
+}
+.nav-group {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin: 14px 8px 6px;
+}
+.nav-item {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  border: 1px solid transparent;
+  background: none;
+  border-radius: 10px;
+  padding: 8px 9px;
+  color: var(--ink);
+}
+.nav-item:hover {
+  background: #f3f8fa;
+}
+.nav-item.active {
+  background: #e8f4f7;
+  border-color: #b9dfe7;
+}
+.nav-item .nav-no {
+  font-weight: 800;
+  color: #9aa8b6;
+  font-size: 12px;
+  padding-top: 2px;
+}
+.nav-item b {
+  display: block;
+  font-size: 13.5px;
+  line-height: 1.3;
+}
+.nav-item small {
+  color: var(--muted);
+  font-size: 12px;
+}
+.ex-main {
+  max-width: 1120px;
+  padding: 22px clamp(12px, 2.5vw, 34px) 60px;
+  margin: 0;
+}
+.fields,
+.answers {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+}
+.inwrap {
+  display: flex;
+  align-items: center;
+  border: 1px solid #cfdbe5;
+  border-radius: 9px;
+  background: #fff;
+  overflow: hidden;
+}
+.inwrap input {
+  border: 0;
+  flex: 1;
+  min-width: 0;
+  padding: 8px 9px;
+  border-radius: 0;
+}
+.inwrap em {
+  font-style: normal;
+  font-size: 12px;
+  color: var(--muted);
+  padding: 0 9px;
+  background: #f4f7fa;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+}
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-top: 12px;
+}
+.tab {
+  border: 1px solid #dbe4ec;
+  border-bottom: 0;
+  background: #f5f8fb;
+  border-radius: 10px 10px 0 0;
+  padding: 9px 14px;
+  font-weight: 750;
+  color: var(--muted);
+  font-size: 13.5px;
+}
+.tab.on {
+  background: #fff;
+  color: var(--teal);
+  border-color: #b9dfe7;
+}
+.hidden {
+  display: none;
+}
+@media (max-width: 900px) {
+  .ex-layout {
+    grid-template-columns: 1fr;
+  }
+  .ex-nav {
+    position: static;
+    min-height: 0;
+    max-height: none;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+}
+@media print {
+  .ex-nav {
+    display: none;
+  }
+  .ex-layout {
+    display: block;
+  }
+}
+#reactSol .eq,
+#pane-gra .eq {
+  white-space: normal;
+}
+
+.answers1{display:flex;flex-direction:column;gap:10px}
+.answers1 .field{max-width:260px}
+.vans .vlab{font-size:13.5px;font-weight:700;margin-bottom:4px}
+.vrow{display:flex;gap:8px;flex-wrap:wrap}
+.vrow label{display:flex;align-items:center;gap:4px;font-size:13px;color:var(--muted)}
+.vrow input{width:86px;padding:6px 7px;border:1px solid #cfdbe5;border-radius:8px;font:inherit;text-align:right}
+.sol{font-size:14px;line-height:1.65;overflow-x:auto}
+.sol .det{margin:4px 0}
+.sol > div{margin:3px 0}
+ol.proc{margin:0;padding-left:20px;line-height:1.6;font-size:14.5px}
+ol.proc li{margin:4px 0}
+table.bk{width:100%;margin-top:6px;font-size:13.5px}
+table.vin{margin:4px 0 10px}
+table.ctab th{font-weight:600;text-align:left}
+table.ctab small{color:var(--muted)}
+@media print{.noprint,.ex-nav{display:none}.sol.hidden{display:block}.ex-layout{display:block}}
+
+.fields{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px 12px;margin-bottom:6px}
+.answers1 select{width:100%;padding:7px 8px;border:1px solid var(--line);border-radius:9px;background:#fff}
+.answers1 select.ok{border-color:var(--green);background:#ecf8f4}.answers1 select.bad{border-color:var(--red);background:#fdeeee}
+.figure svg{width:100%;height:auto;display:block}
+svg text.lbl{paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round}
+.footer a{color:var(--teal)}
+@media print{.noprint,.ex-nav{display:none!important}}
+main section label.ctl{text-transform:none;letter-spacing:0;font-size:13px;margin-top:8px}
+
+    </style>
+  </head>
+  <body>
+    <header class="top">
+      <div class="eyebrow">Chapter 8 · Friction · Sections 8.5 &amp; 8.6</div>
+      <h1>Belt and Bearing Friction — Worked Examples</h1>
+      <p>Ten problems: Examples 8.8 and 8.9 and eight extra problems (8–86, 8–87, 8–94, 8–95, 8–103, 8–107, 8–110, 8–114). Find the wrap angle, the tensions, or the friction moment of a bearing, and check each step.</p>
+    </header>
+    <div class="ex-layout">
+      <aside class="ex-nav"><div class="ex-nav-inner" id="nav"></div></aside>
+      <main class="ex-main">
+        <section class="card">
+          <div class="card-head" style="display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap">
+            <div><div class="kicker" id="pKicker"></div><h2 id="pTitle"></h2><p id="pDesc"></p></div>
+            <div class="btnrow noprint" style="align-self: flex-start">
+              <button class="btn" id="btnReset">Book values</button><button class="btn" id="btnRandom">New values</button><button class="btn" id="btnPrint">Print / PDF</button>
+            </div>
+          </div>
+          <div class="card-body grid2">
+            <div><div class="figure"><svg id="fx"></svg></div><div class="caption" id="figCaption"></div></div>
+            <div>
+              <label class="ctl">Problem data</label>
+              <div id="fields"></div>
+              <div class="note" id="dataNote" style="color: var(--red)"></div>
+              <div class="keybox" id="pGoal"></div>
+              <div class="keybox warn" id="pNote"></div>
+              <div class="keybox" id="bookBox"></div>
+            </div>
+          </div>
+        </section>
+        <div id="steps"></div>
+        <section class="card">
+          <div class="card-head"><div class="kicker">Remember</div><h2>Procedure (Sections 8.5–8.6)</h2></div>
+          <div class="card-body"><ol class="proc"><li><b>Belts and ropes</b>: identify the direction of impending (or actual) slip of the belt relative to the surface. T<sub>2</sub> pulls in that direction, T<sub>1</sub> resists it; T<sub>2</sub> = T<sub>1</sub>e<sup>µβ</sup>, T<sub>2</sub> &gt; T<sub>1</sub>.</li>
+<li><b>β in radians</b>: n full turns add 2πn. The radius of the drum does not matter.</li>
+<li><b>Free pulleys</b> (turning on good bearings) do not change the tension; only fixed drums and pegs do.</li>
+<li><b>Bearings with uniform pressure</b>: collar M = (2/3)µP(R<sub>2</sub>³ − R<sub>1</sub>³)/(R<sub>2</sub>² − R<sub>1</sub>²); pivot M = (2/3)µPR. Check whether the figure gives radii or diameters.</li>
+<li><b>Non-uniform pressure</b>: write p (or w) as a function of position, find its peak from ΣF = 0, then integrate dM = r µ dN.</li>
+<li><b>Constant speed</b>: use µ<sub>k</sub>; impending motion: µ<sub>s</sub>.</li></ol></div>
+        </section>
+        <div class="footer">Based on Hibbeler, <i>Engineering Mechanics: Statics</i>, 16th ed., Sections 8.5–8.6. Answers to three significant figures, as in the book. <a href="index.html">All pages</a></div>
+      </main>
+    </div>
+
+    <script>
+/* fd.js — small 2-D SVG drawing helper for the Ch. 8 friction pages.
+   World coordinates (y up) are fitted into the SVG viewBox. Force arrows use pixel lengths. */
+(function () {
+  const NS = "http://www.w3.org/2000/svg";
+  const C = { ink: "#1f3448", muted: "#8a9aab", red: "#d1343a", blue: "#1f6fb2", green: "#0d8a6f", purple: "#7a3db8", orange: "#e0662c", teal: "#147b91", fill: "#eef3f8", wood: "#f3e3c6" };
+  const fmt = (v) => (isFinite(v) ? +v.toFixed(2) : 0);
+  function el(tag, at, parent) {
+    const e = document.createElementNS(NS, tag);
+    for (const k in at) if (at[k] !== undefined && at[k] !== null) e.setAttribute(k, at[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function fig(svg, box, opt = {}) {
+    const W = opt.W || 560, H = opt.H || 380, pad = opt.pad == null ? 46 : opt.pad;
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    svg.setAttribute("role", "img");
+    const bw = box.x1 - box.x0, bh = box.y1 - box.y0;
+    const s = Math.min((W - 2 * pad) / bw, (H - 2 * pad) / bh);
+    const ox = (W - s * bw) / 2 - s * box.x0, oy = (H + s * bh) / 2 + s * box.y0;
+    const P = (p) => [ox + s * p[0], oy - s * p[1]];
+    const defs = el("defs", {}, svg);
+    const marks = {};
+    function mk(color) {
+      if (marks[color]) return marks[color];
+      const id = "ah" + Math.random().toString(36).slice(2, 8);
+      const m = el("marker", { id, viewBox: "0 0 10 10", refX: 9, refY: 5, markerWidth: 7, markerHeight: 7, orient: "auto-start-reverse" }, defs);
+      el("path", { d: "M0,0 L10,5 L0,10 z", fill: color }, m);
+      return (marks[color] = id);
+    }
+    const g = el("g", {}, svg), gl = el("g", {}, svg);
+    const F = {
+      s, P, svg, C,
+      line(a, b, o = {}) { const A = P(a), B = P(b); return el("line", { x1: fmt(A[0]), y1: fmt(A[1]), x2: fmt(B[0]), y2: fmt(B[1]), stroke: o.color || C.ink, "stroke-width": o.w || 1.6, "stroke-dasharray": o.dash }, g); },
+      poly(pts, o = {}) { return el("polygon", { points: pts.map((p) => P(p).map(fmt).join(",")).join(" "), fill: o.fill || "none", stroke: o.color || C.ink, "stroke-width": o.w || 1.6, "fill-opacity": o.op }, g); },
+      path(pts, o = {}) { return el("polyline", { points: pts.map((p) => P(p).map(fmt).join(",")).join(" "), fill: "none", stroke: o.color || C.ink, "stroke-width": o.w || 1.6, "stroke-dasharray": o.dash }, g); },
+      circle(c, r, o = {}) { const A = P(c); return el("circle", { cx: fmt(A[0]), cy: fmt(A[1]), r: fmt(o.px ? r : r * s), fill: o.fill || "none", stroke: o.color || C.ink, "stroke-width": o.w || 1.6, "stroke-dasharray": o.dash }, g); },
+      ellipse(c, rx, ry, o = {}) { const A = P(c); return el("ellipse", { cx: fmt(A[0]), cy: fmt(A[1]), rx: fmt(rx * s), ry: fmt(ry * s), fill: o.fill || "none", stroke: o.color || C.ink, "stroke-width": o.w || 1.6, "stroke-dasharray": o.dash }, g); },
+      dot(c, o = {}) { const A = P(c); return el("circle", { cx: fmt(A[0]), cy: fmt(A[1]), r: o.r || 3.2, fill: o.color || C.ink }, g); },
+      /* text at world point, offset in px */
+      text(c, str, o = {}) {
+        const A = P(c);
+        const t = el("text", { x: fmt(A[0] + (o.dx || 0)), y: fmt(A[1] + (o.dy || 0)), "text-anchor": o.anchor || "middle", "dominant-baseline": "middle", "font-size": o.size || 13, "font-weight": o.bold ? 700 : 500, fill: o.color || C.ink, class: "lbl" }, gl);
+        t.innerHTML = str;
+        return t;
+      },
+      /* arrow between world points */
+      arrow(a, b, o = {}) {
+        const A = P(a), B = P(b), col = o.color || C.red;
+        el("line", { x1: fmt(A[0]), y1: fmt(A[1]), x2: fmt(B[0]), y2: fmt(B[1]), stroke: col, "stroke-width": o.w || 2.4, "marker-end": `url(#${mk(col)})`, "stroke-dasharray": o.dash }, g);
+        if (o.label) { const t = o.at === "tail" ? A : B, d = [B[0] - A[0], B[1] - A[1]], L = Math.hypot(...d) || 1; F.textPx([t[0] + (o.at === "tail" ? -1 : 1) * 14 * d[0] / L + (o.ldx || 0), t[1] + (o.at === "tail" ? -1 : 1) * 14 * d[1] / L + (o.ldy || 0)], o.label, { color: col, bold: true }); }
+      },
+      /* force of pixel length len, direction angle deg (math sense), applied at world point p.
+         mode "tail": arrow starts at p; "head" (default): arrow ends at p (push) */
+      force(p, ang, o = {}) {
+        const A = P(p), len = o.len || 60, r = (ang * Math.PI) / 180, d = [Math.cos(r), -Math.sin(r)], col = o.color || C.red;
+        const off = o.off || 0;
+        let a, b;
+        if (o.mode === "tail") { a = [A[0] + d[0] * off, A[1] + d[1] * off]; b = [a[0] + d[0] * len, a[1] + d[1] * len]; }
+        else { b = [A[0] - d[0] * off, A[1] - d[1] * off]; a = [b[0] - d[0] * len, b[1] - d[1] * len]; }
+        el("line", { x1: fmt(a[0]), y1: fmt(a[1]), x2: fmt(b[0]), y2: fmt(b[1]), stroke: col, "stroke-width": o.w || 2.4, "marker-end": `url(#${mk(col)})` }, g);
+        if (o.label) { const q = o.mode === "tail" ? b : a, k = o.mode === "tail" ? 1 : -1; F.textPx([q[0] + k * d[0] * 16 + (o.ldx || 0), q[1] + k * d[1] * 16 + (o.ldy || 0)], o.label, { color: col, bold: true }); }
+      },
+      textPx(A, str, o = {}) {
+        const t = el("text", { x: fmt(A[0]), y: fmt(A[1]), "text-anchor": o.anchor || "middle", "dominant-baseline": "middle", "font-size": o.size || 13, "font-weight": o.bold ? 700 : 500, fill: o.color || C.ink, class: "lbl" }, gl);
+        t.innerHTML = str;
+        return t;
+      },
+      /* hatched rough surface from a to b; hatch on the right-hand side when walking a->b (use side=-1 to flip) */
+      ground(a, b, o = {}) {
+        F.line(a, b, { w: 2, color: o.color || C.ink });
+        const A = P(a), B = P(b), L = Math.hypot(B[0] - A[0], B[1] - A[1]), u = [(B[0] - A[0]) / L, (B[1] - A[1]) / L], side = o.side || 1;
+        const n = [-u[1] * side, u[0] * side];
+        for (let t = 6; t < L; t += 10) {
+          const x = A[0] + u[0] * t, y = A[1] + u[1] * t;
+          el("line", { x1: fmt(x), y1: fmt(y), x2: fmt(x + 7 * n[0] - 5 * u[0]), y2: fmt(y + 7 * n[1] - 5 * u[1]), stroke: o.color || C.muted, "stroke-width": 1 }, g);
+        }
+        if (o.label) F.textPx([(A[0] + B[0]) / 2 + n[0] * 20 + (o.ldx || 0), (A[1] + B[1]) / 2 + n[1] * 20], o.label, { color: C.teal, size: 12, bold: true });
+      },
+      /* dimension line between a and b, offset in px along the normal */
+      dim(a, b, label, o = {}) {
+        const A = P(a), B = P(b), L = Math.hypot(B[0] - A[0], B[1] - A[1]) || 1, n = [-(B[1] - A[1]) / L, (B[0] - A[0]) / L], k = o.off == null ? 18 : o.off;
+        const a2 = [A[0] + n[0] * k, A[1] + n[1] * k], b2 = [B[0] + n[0] * k, B[1] + n[1] * k], col = C.muted;
+        el("line", { x1: fmt(A[0]), y1: fmt(A[1]), x2: fmt(a2[0]), y2: fmt(a2[1]), stroke: col, "stroke-width": 0.8 }, g);
+        el("line", { x1: fmt(B[0]), y1: fmt(B[1]), x2: fmt(b2[0]), y2: fmt(b2[1]), stroke: col, "stroke-width": 0.8 }, g);
+        el("line", { x1: fmt(a2[0]), y1: fmt(a2[1]), x2: fmt(b2[0]), y2: fmt(b2[1]), stroke: col, "stroke-width": 1, "marker-end": `url(#${mk(col)})`, "marker-start": `url(#${mk(col)})` }, g);
+        F.textPx([(a2[0] + b2[0]) / 2 + n[0] * 11, (a2[1] + b2[1]) / 2 + n[1] * 11], label, { size: 12, color: "#4d6073" });
+      },
+      /* circular arc (world radius) from angle a0 to a1 (deg) */
+      arc(c, r, a0, a1, o = {}) {
+        const n = 48, pts = [];
+        for (let i = 0; i <= n; i++) { const t = ((a0 + ((a1 - a0) * i) / n) * Math.PI) / 180; pts.push([c[0] + r * Math.cos(t), c[1] + r * Math.sin(t)]); }
+        const pl = F.path(pts, o);
+        if (o.arrow) pl.setAttribute("marker-end", `url(#${mk(o.color || C.ink)})`);
+        if (o.label) { const t = (((a0 + a1) / 2) * Math.PI) / 180, rr = r + (o.lr || 0); F.text([c[0] + rr * Math.cos(t), c[1] + rr * Math.sin(t)], o.label, { color: o.color || C.ink, bold: true, dx: o.ldx || 0, dy: o.ldy || 0 }); }
+        return pl;
+      },
+      /* rotated rectangle: corner p0 (bottom-left), width w along angle ang, height h */
+      rect(p0, w, h, ang = 0, o = {}) {
+        const r = (ang * Math.PI) / 180, u = [Math.cos(r), Math.sin(r)], v = [-u[1], u[0]];
+        const pts = [p0, [p0[0] + w * u[0], p0[1] + w * u[1]], [p0[0] + w * u[0] + h * v[0], p0[1] + w * u[1] + h * v[1]], [p0[0] + h * v[0], p0[1] + h * v[1]]];
+        F.poly(pts, { fill: o.fill || C.fill, color: o.color, w: o.w });
+        return pts;
+      },
+      ok() { return !/NaN|Infinity/.test(svg.innerHTML); },
+    };
+    return F;
+  }
+  window.FD = { fig, C };
+})();
+
+    </script>
+    <script>
+/* f56x.js — problems for the Sec. 8.5–8.6 worked-examples page (Hibbeler 16th ed.). */
+(function () {
+  const g = 9.81, R = Math.PI / 180, e = Math.exp;
+  const s3 = (v) => (Math.abs(v) >= 1000 ? Math.round(v).toString() : (+v.toPrecision(3)).toString());
+  const s4 = (v) => (+v.toPrecision(4)).toString();
+  const C = FD.C;
+  const sub = (t) => `<tspan baseline-shift='sub' font-size='10'>${t}</tspan>`;
+  /* rope over a peg: load hanging on the left, pull on the right */
+  function pegDraw(svg, o) {
+    const F = FD.fig(svg, { x0: -2.2, y0: -2.6, x1: 2.2, y1: 1.3 }), r = 0.6;
+    F.line([0, 0], [0, 1.1], { w: 5, color: C.muted });
+    F.circle([0, 0], r, { fill: "#e7edf3", w: 2 });
+    for (let k = 0; k < 3; k++) F.circle([0, 0], r + 0.05 + 0.05 * k, { color: "#b58a4c", w: 1.4 });
+    F.line([-r - 0.05, 0], [-r - 0.05, -1.6], { color: "#b58a4c", w: 2.4 });
+    F.line([r + 0.05, 0], [r + 0.05, -1.4], { color: "#b58a4c", w: 2.4 });
+    F.rect([-r - 0.45, -2.35], 0.8, 0.75, 0, { fill: C.wood }); F.text([-r - 0.05, -1.97], o.left, { bold: true });
+    F.force([r + 0.05, -1.4], -90, { mode: "tail", label: o.right, len: 46 });
+    F.text([0, 0], o.turns, { color: C.purple, bold: true, dy: -60 });
+    F.text([-r - 0.05, -1.0], o.tl || "", { dx: -26, color: C.green, bold: true });
+    F.text([r + 0.05, -0.9], o.tr || "", { dx: 26, color: C.green, bold: true });
+  }
+  const PR = [];
+
+  /* ---------- Ex. 8.8 ---------- */
+  PR.push({
+    id: "ex88", group: "Book examples", nav: "Example 8.8", sub: "Two fixed drums, one free pulley",
+    kicker: "Example 8.8 · Fig. 8–19 · Flat-belt friction", title: "Largest mass that can be lifted",
+    desc: "The cord can carry at most T<sub>max</sub>. It is pulled at D, passes over the fixed drum B, under the free pulley A, over the fixed drum C and holds a cylinder of mass m. Each fixed drum has a contact angle β; µ<sub>s</sub> at the drums.",
+    goal: "<b>Find</b> the largest mass m that can be lifted. Lifting makes the cord slip counterclockwise over each drum, so the largest tension is at D.",
+    caption: "Purple arcs: contact on the fixed drums (β each). The free pulley A does not change the tension.",
+    fields: [
+      { key: "T", label: "T<sub>max</sub> at D", unit: "N", value: 500, min: 100, max: 2000, step: 50 },
+      { key: "mu", label: "µ<sub>s</sub> at the drums", unit: "", value: 0.25, min: 0.05, max: 0.6, step: 0.05 },
+      { key: "b", label: "Contact angle β (each drum)", unit: "°", value: 135, min: 45, max: 270, step: 15 },
+    ],
+    calc(d) {
+      const be = d.b * R, k = e(d.mu * be), T1 = d.T / k, W = T1 / k, m = W / g;
+      return {
+        steps: [
+          { title: "Contact angle and the friction factor", intro: "Eq. 8–6 needs β in radians.",
+            ans: [{ id: "be", label: "β", unit: "rad", val: be }, { id: "k", label: "e<sup>µβ</sup>", unit: "", val: k }],
+            sol: `<div>β = ${d.b}° × π/180 = <b>${s4(be)} rad</b></div><div>e<sup>µβ</sup> = e<sup>${d.mu}(${s4(be)})</sup> = <b>${s4(k)}</b></div>` },
+          { title: "Tensions along the cord", intro: "Drum B: T<sub>2</sub> = T<sub>max</sub> at D. The free pulley keeps the tension. Drum C: T<sub>2</sub> = that tension, T<sub>1</sub> = W.",
+            ans: [{ id: "T1", label: "Tension between B and C", unit: "N", val: T1 }, { id: "W", label: "Weight W", unit: "N", val: W }],
+            sol: `<div>Drum B: ${d.T} = T<sub>1</sub>(${s4(k)}) ⇒ <b>T<sub>1</sub> = ${s4(T1)} N</b> (also on both sides of pulley A)</div><div>Drum C: ${s4(T1)} = W(${s4(k)}) ⇒ <b>W = ${s4(W)} N</b></div>` },
+          { title: "Mass of the cylinder", intro: "m = W/g.",
+            ans: [{ id: "m", label: "m", unit: "kg", val: m }],
+            sol: `<div>m = ${s4(W)}/9.81 = <b>${s4(m)} kg</b>. The book rounds <i>down</i> (15.6 kg) so that T<sub>max</sub> is not exceeded.</div>` },
+        ],
+        book: [["T between drums", "277.4 N", s4(T1) + " N"], ["W", "153.9 N", s4(W) + " N"], ["m", "15.6 kg (rounded down)", s4(m) + " kg"]],
+      };
+    },
+    draw(svg, d) {
+      const r = 0.35, F = FD.fig(svg, { x0: -3, y0: -3.2, x1: 3, y1: 1 });
+      const Bc = [-1.7, 0], Cc = [1.7, 0], Ac = [0, -1.7 + r * Math.SQRT2];
+      const tp = (c, a) => [c[0] + r * Math.cos(a * R), c[1] + r * Math.sin(a * R)];
+      F.line([-2.6, 0.8], [2.6, 0.8], { w: 1, color: C.muted });
+      [Bc, Cc].forEach((c) => { F.line(c, [c[0], 0.8], { w: 4, color: C.muted }); F.circle(c, r, { fill: "#e7edf3", w: 2 }); });
+      F.circle(Ac, r, { fill: "#fff", w: 2 }); F.dot(Ac); F.line(Ac, [Ac[0], -2.9], { w: 3, color: C.muted }); F.ground([-0.5, -2.9], [0.5, -2.9], { side: 1 });
+      const cord = { color: "#b58a4c", w: 2.4 };
+      F.line(tp(Bc, 180), [Bc[0] - r, -1.6], cord); F.force([Bc[0] - r, -1.6], -90, { mode: "tail", label: "T", len: 40 }); F.text([Bc[0] - r, -1.4], "D", { dx: -14, bold: true });
+      F.arc(Bc, r, 180, 45, cord);
+      F.line(tp(Bc, 45), tp(Ac, 225), cord); F.arc(Ac, r, 225, 315, cord); F.line(tp(Ac, 315), tp(Cc, 135), cord);
+      F.arc(Cc, r, 135, 0, cord); F.line(tp(Cc, 0), [Cc[0] + r, -1.5], cord);
+      F.rect([Cc[0] + r - 0.3, -2.2], 0.6, 0.7, 0, { fill: C.wood }); F.text([Cc[0] + r, -1.85], "W", { bold: true });
+      F.arc(Bc, r + 0.12, 45, 180, { color: C.purple, label: "β", lr: 0.25 }); F.arc(Cc, r + 0.12, 0, 135, { color: C.purple, label: "β", lr: 0.25 });
+      F.text(Bc, "B", { bold: true }); F.text(Cc, "C", { bold: true }); F.text(Ac, "A", { dy: 26, bold: true });
+    },
+  });
+
+  /* ---------- 8-86 ---------- */
+  PR.push({
+    id: "p886", group: "Extra problems · belts and ropes", nav: "Problem 8–86", sub: "Hold versus lift",
+    kicker: "Problem 8–86 · book p. 426", title: "Force to begin lifting the cylinder",
+    desc: "A rope passes n turns around a rough fixed peg. A force P<sub>hold</sub> is just enough to keep the cylinder (mass m) from descending.",
+    goal: "<b>Find</b> µ from the holding case, then the force P needed to begin lifting the cylinder.",
+    caption: "When the cylinder tends to descend, the rope tends to slip toward the cylinder: T<sub>2</sub> = W, T<sub>1</sub> = P<sub>hold</sub>. Lifting reverses the roles.",
+    fields: [
+      { key: "m", label: "Mass m", unit: "kg", value: 20, min: 5, max: 100, step: 5 },
+      { key: "Ph", label: "P<sub>hold</sub>", unit: "N", value: 25, min: 5, max: 150, step: 5 },
+      { key: "n", label: "Turns n", unit: "", value: 2.5, min: 0.5, max: 4, step: 0.5 },
+    ],
+    valid: (d) => d.Ph < 0.9 * d.m * g,
+    calc(d) {
+      const W = d.m * g, be = 2 * Math.PI * d.n, mu = Math.log(W / d.Ph) / be, P = W * e(mu * be);
+      return {
+        steps: [
+          { title: "Contact angle and µ", intro: "Holding: the rope is about to slip toward the cylinder, so W is the larger tension.",
+            ans: [{ id: "be", label: "β", unit: "rad", val: be }, { id: "mu", label: "µ", unit: "", val: mu }],
+            sol: `<div>β = 2π(${d.n}) = <b>${s4(be)} rad</b></div><div>W = P<sub>hold</sub>e<sup>µβ</sup>: ${s4(W)} = ${d.Ph}e<sup>µ(${s4(be)})</sup> ⇒ µ = ln(${s4(W / d.Ph)})/${s4(be)} = <b>${s4(mu)}</b></div>` },
+          { title: "Lifting", intro: "Now the rope is about to slip toward P: P is the larger tension.",
+            ans: [{ id: "P", label: "P to lift", unit: "N", val: P }],
+            sol: `<div>P = W e<sup>µβ</sup> = ${s4(W)}(${s4(e(mu * be))}) = <b>${s3(P)} N</b></div><div>Note P = W²/P<sub>hold</sub>: the same rope that needs only ${d.Ph} N to hold needs ${s3(P)} N to lift.</div>` },
+        ],
+        book: [["P", "1.54 kN", s3(P / 1000) + " kN"]],
+      };
+    },
+    draw: (svg, d) => pegDraw(svg, { left: "m", right: "P", turns: d.n + " turns", tl: "W", tr: "" }),
+  });
+
+  /* ---------- 8-87 ---------- */
+  PR.push({
+    id: "p887", group: "Extra problems · belts and ropes", nav: "Problem 8–87", sub: "Two cylinders on a peg",
+    kicker: "Problem 8–87 · book p. 426", title: "Coefficient of friction from impending motion",
+    desc: "Cylinders A (m<sub>A</sub>) and B (m<sub>B</sub>) hang from a rope that passes n turns around a rough peg. They are on the verge of moving.",
+    goal: "<b>Find</b> µ between the rope and the peg.",
+    caption: "The heavier cylinder tends to descend, so its weight is T<sub>2</sub>.",
+    fields: [
+      { key: "mA", label: "Mass m<sub>A</sub>", unit: "kg", value: 20, min: 5, max: 100, step: 5 },
+      { key: "mB", label: "Mass m<sub>B</sub>", unit: "kg", value: 50, min: 5, max: 200, step: 5 },
+      { key: "n", label: "Turns n", unit: "", value: 2.5, min: 0.5, max: 4, step: 0.5 },
+    ],
+    valid: (d) => d.mB > d.mA,
+    validMsg: "Keep B heavier than A.",
+    calc(d) {
+      const be = 2 * Math.PI * d.n, mu = Math.log(d.mB / d.mA) / be;
+      return {
+        steps: [
+          { title: "Apply T<sub>2</sub> = T<sub>1</sub>e<sup>µβ</sup>", intro: "T<sub>2</sub> = W<sub>B</sub>, T<sub>1</sub> = W<sub>A</sub>. g cancels.",
+            ans: [{ id: "be", label: "β", unit: "rad", val: be }, { id: "mu", label: "µ", unit: "", val: mu }],
+            sol: `<div>β = 2π(${d.n}) = <b>${s4(be)} rad</b></div><div>${d.mB}(9.81) = ${d.mA}(9.81)e<sup>µβ</sup> ⇒ µ = ln(${s4(d.mB / d.mA)})/${s4(be)} = <b>${s3(mu)}</b></div>` },
+        ],
+        book: [["µ", "0.0583", s3(mu)]],
+      };
+    },
+    draw: (svg, d) => pegDraw(svg, { left: "B", right: "W<tspan baseline-shift='sub' font-size='10'>A</tspan>", turns: d.n + " turns", tl: "", tr: "" }),
+  });
+
+  /* ---------- 8-94 / 8-95 ---------- */
+  const blockGeo = { w: 0.25, h: 0.4 };
+  function blockPegDraw(svg, d, K) {
+    const corner = [0, blockGeo.h], Cp = [-0.8, blockGeo.h + 0.6], F = FD.fig(svg, { x0: -1.3, y0: -0.8, x1: 0.7, y1: Cp[1] + 0.35 });
+    F.ground([-0.35, 0], [0.7, 0], { side: 1 });
+    F.rect([0, 0], blockGeo.w, blockGeo.h, 0, { fill: C.wood }); F.text([blockGeo.w / 2, blockGeo.h / 2], "A", { bold: true });
+    F.line(Cp, [Cp[0], Cp[1] + 0.3], { w: 4, color: C.muted }); F.circle(Cp, 0.05, { fill: "#e7edf3", w: 2 }); F.text(Cp, "C", { dx: 16, dy: -10, bold: true });
+    F.line(corner, [Cp[0] + 0.03, Cp[1] - 0.04], { color: "#b58a4c", w: 2.2 });
+    F.line([Cp[0] - 0.05, Cp[1]], [Cp[0] - 0.05, -0.35], { color: "#b58a4c", w: 2.2 });
+    F.rect([Cp[0] - 0.15, -0.65], 0.2, 0.3, 0, { fill: "#dfe6ee" }); F.text([Cp[0] - 0.05, -0.5], "D", { bold: true });
+    F.force([blockGeo.w / 2 + 0.03, 0], 0, { mode: "tail", label: "F" + sub("A"), color: C.green, len: 34, ldy: 12 });
+    F.text([blockGeo.w / 2, 0], "µ" + sub("B") + " = " + d.muB, { dy: 30, color: C.teal, size: 12, bold: true });
+    F.text([-0.4, blockGeo.h + 0.3], "slope 3 : 4", { dy: -16, dx: 30, color: C.muted, size: 11 });
+    F.dim([blockGeo.w, 0], [blockGeo.w, blockGeo.h], "0.4 m", { off: 16 });
+  }
+  const phi = Math.atan(3 / 4), bePeg = Math.PI / 2 + phi;
+  PR.push({
+    id: "p894", group: "Extra problems · belts and ropes", nav: "Problem 8–94", sub: "Block, peg and cylinder",
+    kicker: "Problem 8–94 · book p. 428", title: "Greatest mass of the suspended cylinder",
+    desc: "Block A (mass m<sub>A</sub>, 0.25 m wide, 0.4 m tall) rests on surface B (µ<sub>B</sub>). A cord from its top-left corner rises at a 3:4 slope to a fixed peg C (µ<sub>C</sub>), then hangs vertically to cylinder D. <i>Slope read from the book figure.</i>",
+    goal: "<b>Find</b> the greatest mass of D without motion. A can slip or tip; the cord can slip over the peg.",
+    caption: "Block 0.25 m wide, 0.4 m tall. The cord turns through β = 90° + tan⁻¹(3/4) at the peg. If D descends, the cord slips toward D, so T<sub>D</sub> is the larger tension.",
+    fields: [
+      { key: "mA", label: "Mass m<sub>A</sub>", unit: "kg", value: 50, min: 10, max: 100, step: 5 },
+      { key: "muB", label: "µ<sub>B</sub>", unit: "", value: 0.25, min: 0.1, max: 0.6, step: 0.05 },
+      { key: "muC", label: "µ<sub>C</sub> at the peg", unit: "", value: 0.3, min: 0.05, max: 0.6, step: 0.05 },
+    ],
+    calc(d) {
+      const W = d.mA * g, c = Math.cos(phi), s = Math.sin(phi);
+      const Ts = (d.muB * W) / (c + d.muB * s), Tt = (W * blockGeo.w / 2) / (c * blockGeo.h), T = Math.min(Ts, Tt), mD = (T * e(d.muC * bePeg)) / g;
+      const V = ["A slips", "A tips"];
+      return {
+        steps: [
+          { title: "Contact angle at the peg", intro: "The cord arrives vertically and leaves along the 3:4 slope.",
+            ans: [{ id: "be", label: "β", unit: "rad", val: bePeg }],
+            sol: `<div>β = 90° + tan⁻¹(3/4) = 90° + 36.87° = 126.87° = <b>${s4(bePeg)} rad</b></div>` },
+          { title: "Cord tension that moves block A", intro: "Slipping: F = µ<sub>B</sub>N. Tipping about the bottom-left corner (the cord's vertical part passes through it).",
+            ans: [{ id: "Ts", label: "T for slipping", unit: "N", val: Ts }, { id: "Tt", label: "T for tipping", unit: "N", val: Tt }, { id: "v", label: "A first", kind: "pick", opts: V, val: Ts <= Tt ? 0 : 1 }],
+            sol: `<div>Slip: N = W − (3/5)T, (4/5)T = µ<sub>B</sub>N ⇒ T = µ<sub>B</sub>W/(0.8 + 0.6µ<sub>B</sub>) = <b>${s3(Ts)} N</b></div><div>Tip: ↺ about the bottom-left corner: (4/5)T(0.4) = W(0.125) ⇒ <b>T = ${s3(Tt)} N</b></div><div>The smaller one governs: <b>${V[Ts <= Tt ? 0 : 1]}</b> at T = ${s3(T)} N.</div>` },
+          { title: "Mass of D", intro: "T<sub>D</sub> = T e<sup>µ<sub>C</sub>β</sup>.",
+            ans: [{ id: "mD", label: "m<sub>D</sub>", unit: "kg", val: mD }],
+            sol: `<div>T<sub>D</sub> = ${s4(T)} e<sup>${d.muC}(${s4(bePeg)})</sup> = ${s4(T * e(d.muC * bePeg))} N ⇒ m<sub>D</sub> = <b>${s3(mD)} kg</b> (the book rounds down to 25.5 kg)</div>` },
+        ],
+        book: [["m<sub>D</sub>", "25.5 kg", s4(mD) + " kg"]],
+      };
+    },
+    draw: blockPegDraw,
+  });
+  PR.push({
+    id: "p895", group: "Extra problems · belts and ropes", nav: "Problem 8–95", sub: "Same block, D given",
+    kicker: "Problem 8–95 · book p. 428", title: "Friction on A when the cylinder is light",
+    desc: "Same block, cord and peg as Problem 8–94, but the mass of D is given.",
+    goal: "<b>Find</b> the friction force on A and check whether motion occurs. The peg can carry part of D's weight: if D tends to descend, the cord tension at A can be as low as T<sub>D</sub>e<sup>−µ<sub>C</sub>β</sup>.",
+    caption: "Same figure as Problem 8–94.",
+    fields: [
+      { key: "mD", label: "Mass m<sub>D</sub>", unit: "kg", value: 4, min: 1, max: 40, step: 1 },
+      { key: "mA", label: "Mass m<sub>A</sub>", unit: "kg", value: 50, min: 10, max: 100, step: 5 },
+      { key: "muB", label: "µ<sub>B</sub>", unit: "", value: 0.25, min: 0.1, max: 0.6, step: 0.05 },
+      { key: "muC", label: "µ<sub>C</sub> at the peg", unit: "", value: 0.3, min: 0.05, max: 0.6, step: 0.05 },
+    ],
+    calc(d) {
+      const W = d.mA * g, TA = d.mD * g * e(-d.muC * bePeg), FA = TA * Math.cos(phi), Fm = d.muB * (W - TA * Math.sin(phi)), mv = FA > Fm || TA * Math.cos(phi) * blockGeo.h > W * blockGeo.w / 2 ? 1 : 0;
+      const V = ["No motion", "Motion occurs"];
+      return {
+        steps: [
+          { title: "Tension at A", intro: "D tends to descend, so the cord tends to slip toward D: T<sub>D</sub> = T<sub>A</sub>e<sup>µ<sub>C</sub>β</sup>, β = 2.214 rad.",
+            ans: [{ id: "TA", label: "T<sub>A</sub>", unit: "N", val: TA }],
+            sol: `<div>T<sub>A</sub> = ${s4(d.mD * g)}e<sup>−${d.muC}(${s4(bePeg)})</sup> = <b>${s3(TA)} N</b></div>` },
+          { title: "Friction on A", intro: "Equilibrium of A, then compare with µ<sub>B</sub>N.",
+            ans: [{ id: "FA", label: "F<sub>A</sub>", unit: "N", val: FA }, { id: "Fm", label: "µ<sub>B</sub>N", unit: "N", val: Fm }, { id: "v", label: "Result", kind: "pick", opts: V, val: mv }],
+            sol: `<div>→ ΣF<sub>x</sub>: F<sub>A</sub> = (4/5)T<sub>A</sub> = <b>${s3(FA)} N</b></div><div>N = W − (3/5)T<sub>A</sub> = ${s4(W - 0.6 * TA)} N ⇒ µ<sub>B</sub>N = <b>${s3(Fm)} N</b></div><div><b>${V[mv]}</b>.</div>` },
+        ],
+        book: [["F<sub>A</sub>", "16.2 N, no motion", s3(FA) + " N"]],
+      };
+    },
+    draw: blockPegDraw,
+  });
+
+  /* ---------- 8-103 ---------- */
+  PR.push({
+    id: "p8103", group: "Extra problems · belts and ropes", nav: "Problem 8–103", sub: "How many turns?",
+    kicker: "Problem 8–103 · book p. 430", title: "Lowering a crate with a rope over a peg",
+    desc: "A man of mass m<sub>man</sub> lowers a crate of mass m<sub>c</sub> with a rope over a rough peg (µ). Basic wrap 165°. Friction between his shoes and the ground: µ′.",
+    goal: "<b>Find</b> the least number of full turns, in addition to the basic wrap, so that he can lower the crate.",
+    caption: "The largest pull the man can give is µ′(m<sub>man</sub>g) before his shoes slip. The crate's weight is T<sub>2</sub>.",
+    fields: [
+      { key: "mm", label: "Man m<sub>man</sub>", unit: "kg", value: 80, min: 50, max: 120, step: 5 },
+      { key: "mc", label: "Crate m<sub>c</sub>", unit: "kg", value: 150, min: 50, max: 600, step: 10 },
+      { key: "mu", label: "µ (rope–peg)", unit: "", value: 0.1, min: 0.05, max: 0.4, step: 0.05 },
+      { key: "mup", label: "µ′ (shoes)", unit: "", value: 0.4, min: 0.2, max: 0.8, step: 0.05 },
+    ],
+    valid: (d) => d.mc > d.mup * d.mm,
+    calc(d) {
+      const Tm = d.mup * d.mm * g, bn = Math.log((d.mc * g) / Tm) / d.mu, x = (bn / R - 165) / 360, n = Math.max(0, Math.ceil(x - 0.002));
+      return {
+        steps: [
+          { title: "The man's largest pull", intro: "He stays put while the friction at his shoes is not exceeded (horizontal pull assumed).",
+            ans: [{ id: "Tm", label: "T<sub>man</sub>", unit: "N", val: Tm }],
+            sol: `<div>T<sub>man</sub> = µ′(m<sub>man</sub>g) = ${d.mup}(${s4(d.mm * g)}) = <b>${s3(Tm)} N</b></div>` },
+          { title: "Contact angle needed", intro: "T<sub>2</sub> = crate weight, T<sub>1</sub> = T<sub>man</sub>.",
+            ans: [{ id: "bn", label: "β needed", unit: "°", val: bn / R }, { id: "n", label: "Extra full turns", unit: "", val: n, tol: 0 }],
+            sol: `<div>${s4(d.mc * g)} = ${s4(Tm)}e<sup>${d.mu}β</sup> ⇒ β = ${s4(bn)} rad = <b>${s4(bn / R)}°</b></div><div>(β − 165°)/360° = ${s4(x)} ⇒ <b>n = ${n}</b>${Math.abs(x - Math.round(x)) < 0.01 ? " — <i>marginal</i>: the exact value is within 0.01 turn of a whole number, so the book takes n = " + Math.round(x) + "." : ""}</div>` },
+        ],
+        book: [["n", "2", String(n)]],
+      };
+    },
+    draw: (svg, d) => pegDraw(svg, { left: "crate", right: "T" + sub("man"), turns: "165° + n turns", tl: "", tr: "" }),
+  });
+
+  /* ---------- Ex. 8.9 ---------- */
+  PR.push({
+    id: "ex89", group: "Book examples", nav: "Example 8.9", sub: "Bar with linear pressure",
+    kicker: "Example 8.9 · Fig. 8–22 · Non-uniform pressure", title: "Couple moment to rotate the bar",
+    desc: "A uniform bar of weight W and length 2a rests on a surface and turns about the vertical z axis through its centre. The normal pressure varies linearly from w<sub>0</sub> at the centre to zero at the ends. µ<sub>s</sub>.",
+    goal: "<b>Find</b> w<sub>0</sub> and the couple moment M needed to rotate the bar.",
+    caption: "Side view: the triangular normal load (green) under the bar. Each element dx carries dN = w dx and a friction force dF = µ<sub>s</sub>dN perpendicular to the bar, at arm x.",
+    fields: [
+      { key: "W", label: "Weight W", unit: "lb", value: 4, min: 1, max: 20, step: 1 },
+      { key: "a", label: "Half length a", unit: "ft", value: 2, min: 0.5, max: 5, step: 0.5 },
+      { key: "mu", label: "µ<sub>s</sub>", unit: "", value: 0.3, min: 0.1, max: 0.8, step: 0.05 },
+    ],
+    calc(d) {
+      const w0 = d.W / d.a, M = (d.mu * d.W * d.a) / 3;
+      return {
+        steps: [
+          { title: "Peak intensity", intro: "The two triangles together carry W.",
+            ans: [{ id: "w0", label: "w<sub>0</sub>", unit: "lb/ft", val: w0 }],
+            sol: `<div>↑ ΣF<sub>z</sub>: −W + 2·½(a)w<sub>0</sub> = 0 ⇒ <b>w<sub>0</sub> = W/a = ${s3(w0)} lb/ft</b>; w = w<sub>0</sub>(1 − x/a)</div>` },
+          { title: "Friction moment", intro: "dM = x dF = µ<sub>s</sub>x w dx; add both halves.",
+            ans: [{ id: "M", label: "M", unit: "lb·ft", val: M }],
+            sol: `<div>M = 2∫<sub>0</sub><sup>a</sup> µ<sub>s</sub>w<sub>0</sub>(1 − x/a)x dx = 2µ<sub>s</sub>w<sub>0</sub>(a²/2 − a²/3) = µ<sub>s</sub>w<sub>0</sub>a²/3 = µ<sub>s</sub>Wa/3</div><div>M = ${d.mu}(${d.W})(${d.a})/3 = <b>${s3(M)} lb·ft</b></div>` },
+        ],
+        book: [["w<sub>0</sub>", "2 lb/ft", s3(w0) + " lb/ft"], ["M", "0.8 lb·ft", s3(M) + " lb·ft"]],
+      };
+    },
+    draw(svg, d) {
+      const a = d.a, F = FD.fig(svg, { x0: -a - 0.5, y0: -1.4, x1: a + 0.5, y1: 1.4 });
+      F.line([0, -1.3], [0, 1.3], { color: C.muted, dash: "6 3" }); F.text([0, 1.3], "z", { dx: 10, color: C.muted });
+      F.rect([-a, 0], 2 * a, 0.12, 0, { fill: C.wood });
+      F.poly([[-a, 0], [0, -0.9], [a, 0]], { fill: "#d7f0e7", color: C.green, w: 1.2 });
+      for (let i = 1; i < 10; i++) { const x = -a + (2 * a * i) / 10, h = 0.9 * (1 - Math.abs(x) / a); if (h > 0.08) F.arrow([x, -h], [x, 0], { color: C.green, w: 1.4 }); }
+      F.text([0, -0.9], "w" + sub("0"), { dy: 14, color: C.green, bold: true });
+      F.arc([0, 0.6], 0.35, -60, 240, { color: C.purple, arrow: true }); F.text([0.45, 0.85], "M", { color: C.purple, bold: true });
+      F.dim([0, 0.12], [a, 0.12], `a = ${a} ft`, { off: -40 });
+    },
+  });
+
+  /* ---------- 8-107 ---------- */
+  PR.push({
+    id: "p8107", group: "Extra problems · bearings", nav: "Problem 8–107", sub: "Collar bearing",
+    kicker: "Problem 8–107 · book p. 438", title: "Torque to overcome friction in a collar bearing",
+    desc: "The collar bearing carries an axial force P with uniform pressure. The figure gives the <b>diameters</b> of the contact: outer D<sub>2</sub>, inner D<sub>1</sub>. µ<sub>s</sub>.",
+    goal: "<b>Find</b> the torque M. Watch out: Eq. 8–7 uses radii.",
+    caption: "Shaft with collar pressing on the bearing face. Contact ring between D<sub>1</sub> and D<sub>2</sub>.",
+    fields: [
+      { key: "P", label: "Axial force P", unit: "lb", value: 800, min: 100, max: 2000, step: 50 },
+      { key: "mu", label: "µ<sub>s</sub>", unit: "", value: 0.3, min: 0.05, max: 0.6, step: 0.05 },
+      { key: "D2", label: "Outer diameter D<sub>2</sub>", unit: "in.", value: 3, min: 1.5, max: 6, step: 0.5 },
+      { key: "D1", label: "Inner diameter D<sub>1</sub>", unit: "in.", value: 2, min: 0, max: 5, step: 0.5 },
+    ],
+    valid: (d) => d.D1 < d.D2,
+    validMsg: "D<sub>1</sub> must be smaller than D<sub>2</sub>.",
+    calc(d) {
+      const R2 = d.D2 / 2, R1 = d.D1 / 2, re = (2 / 3) * (R2 ** 3 - R1 ** 3) / (R2 ** 2 - R1 ** 2), M = d.mu * d.P * re;
+      return {
+        steps: [
+          { title: "Radii and effective radius", intro: "Convert the diameters; r<sub>eff</sub> = (2/3)(R<sub>2</sub>³ − R<sub>1</sub>³)/(R<sub>2</sub>² − R<sub>1</sub>²).",
+            ans: [{ id: "R2", label: "R<sub>2</sub>", unit: "in.", val: R2 }, { id: "R1", label: "R<sub>1</sub>", unit: "in.", val: R1, tol: 0.005 }, { id: "re", label: "r<sub>eff</sub>", unit: "in.", val: re }],
+            sol: `<div>R<sub>2</sub> = ${R2} in., R<sub>1</sub> = ${R1} in.</div><div>r<sub>eff</sub> = (2/3)(${s4(R2 ** 3)} − ${s4(R1 ** 3)})/(${s4(R2 ** 2)} − ${s4(R1 ** 2)}) = <b>${s4(re)} in.</b> (between R<sub>1</sub> and R<sub>2</sub>)</div>` },
+          { title: "Torque (Eq. 8–7)", intro: "M = µ<sub>s</sub>P r<sub>eff</sub>.",
+            ans: [{ id: "M", label: "M", unit: "lb·in.", val: M }],
+            sol: `<div>M = ${d.mu}(${d.P})(${s4(re)}) = <b>${s3(M)} lb·in.</b></div><div>Using the diameters as radii would give ${s3(2 * M)} lb·in. — twice too large.</div>` },
+        ],
+        book: [["M", "304 lb·in.", s3(M) + " lb·in."]],
+      };
+    },
+    draw(svg, d) {
+      const R1 = d.D1 / 2, R2 = d.D2 / 2, F = FD.fig(svg, { x0: -1.6, y0: -R2 - 0.8, x1: 5.2, y1: R2 + 0.8 });
+      F.ground([0, R2 + 0.6], [0, -R2 - 0.6], { side: -1 });
+      F.rect([0, -R2], 0.4, 2 * R2, 0, { fill: "#cfe0ee" });
+      F.rect([0.4, -Math.max(R1, 0.25)], 4, 2 * Math.max(R1, 0.25), 0, { fill: "#e7edf3" });
+      F.force([4.4, 0], 180, { mode: "tail", off: -60, len: 50, label: "P" });
+      F.arc([3.6, 0], 0.4, 120, 400, { color: C.purple, arrow: true }); F.text([3.6, 0.6], "M", { color: C.purple, bold: true, dy: -6 });
+      F.dim([-0.2, -R2], [-0.2, R2], `D₂ = ${d.D2} in.`, { off: 40 });
+      if (R1 > 0) F.dim([2.6, -R1], [2.6, R1], `D₁ = ${d.D1} in.`, { off: -16 });
+    },
+  });
+
+  /* ---------- 8-110 ---------- */
+  PR.push({
+    id: "p8110", group: "Extra problems · bearings", nav: "Problem 8–110", sub: "Disk clutch",
+    kicker: "Problem 8–110 · book p. 438", title: "Spring force in a disk clutch",
+    desc: "n springs press plates A and B together over a ring of contact with radii R<sub>1</sub> and R<sub>2</sub> (uniform pressure). The clutch must transmit a moment M. µ<sub>s</sub>.",
+    goal: "<b>Find</b> the total clamping force and the force in each spring.",
+    caption: "Face view of the contact ring (R<sub>1</sub> to R<sub>2</sub>) with the springs (dots) and the transmitted moment M.",
+    fields: [
+      { key: "M", label: "Moment M", unit: "lb·ft", value: 600, min: 100, max: 1500, step: 50 },
+      { key: "mu", label: "µ<sub>s</sub>", unit: "", value: 0.3, min: 0.1, max: 0.6, step: 0.05 },
+      { key: "R1", label: "Inner radius R<sub>1</sub>", unit: "in.", value: 2, min: 0.5, max: 5, step: 0.5 },
+      { key: "R2", label: "Outer radius R<sub>2</sub>", unit: "in.", value: 5, min: 2, max: 8, step: 0.5 },
+      { key: "n", label: "Springs n", unit: "", value: 4, min: 2, max: 8, step: 1 },
+    ],
+    valid: (d) => d.R1 < d.R2,
+    calc(d) {
+      const re = (2 / 3) * (d.R2 ** 3 - d.R1 ** 3) / (d.R2 ** 2 - d.R1 ** 2), P = (d.M * 12) / (d.mu * re), Fs = P / d.n;
+      return {
+        steps: [
+          { title: "Total clamping force", intro: "Eq. 8–7 with M in lb·in.: P = M/(µ<sub>s</sub>r<sub>eff</sub>).",
+            ans: [{ id: "re", label: "r<sub>eff</sub>", unit: "in.", val: re }, { id: "P", label: "P", unit: "lb", val: P }],
+            sol: `<div>r<sub>eff</sub> = (2/3)(${d.R2}³ − ${d.R1}³)/(${d.R2}² − ${d.R1}²) = <b>${s4(re)} in.</b></div><div>P = ${d.M}(12)/[${d.mu}(${s4(re)})] = <b>${s3(P)} lb</b></div>` },
+          { title: "Force per spring", intro: "The springs share P equally.",
+            ans: [{ id: "Fs", label: "F<sub>s</sub>", unit: "lb", val: Fs }],
+            sol: `<div>F<sub>s</sub> = ${s4(P)}/${d.n} = <b>${s3(Fs)} lb</b> = ${s3(Fs / 1000)} kip</div>` },
+        ],
+        book: [["F<sub>s</sub>", "1.62 kip", s3(Fs / 1000) + " kip"]],
+      };
+    },
+    draw(svg, d) {
+      const F = FD.fig(svg, { x0: -d.R2 - 1.6, y0: -d.R2 - 1, x1: d.R2 + 1.6, y1: d.R2 + 1 });
+      F.circle([0, 0], d.R2 + 1, { fill: "#eef3f8" }); F.circle([0, 0], d.R2, { fill: "#f3e3c6" }); F.circle([0, 0], d.R1, { fill: "#fff" });
+      for (let k = 0; k < d.n; k++) { const t = (2 * Math.PI * k) / d.n + Math.PI / 4; F.dot([(d.R2 + 0.5) * Math.cos(t), (d.R2 + 0.5) * Math.sin(t)], { r: 5, color: C.blue }); }
+      F.arrow([0, 0], [d.R2 * Math.cos(0.5), d.R2 * Math.sin(0.5)], { color: C.ink, w: 1.2, label: "R₂" });
+      F.arrow([0, 0], [-d.R1 * Math.cos(0.4), -d.R1 * Math.sin(0.4)], { color: C.ink, w: 1.2, label: "R₁" });
+      F.arc([0, 0], d.R2 + 0.5, 100, 170, { color: C.purple, arrow: true, label: "M", lr: 0.6 });
+    },
+  });
+
+  /* ---------- 8-114 ---------- */
+  PR.push({
+    id: "p8114", group: "Extra problems · bearings", nav: "Problem 8–114", sub: "Pipe on sand",
+    kicker: "Problem 8–114 · book p. 439 · Non-uniform pressure", title: "Pushing a pipe over sand",
+    desc: "A pipe of weight W, radius r and length L lies on sand. The sand pressure on the bottom half varies as p = p<sub>0</sub>cos θ (θ from the bottom). µ<sub>s</sub>.",
+    goal: "<b>Find</b> the peak pressure p<sub>0</sub> and the smallest horizontal force needed to push the pipe forward.",
+    caption: "Cross-section: radial pressure p = p<sub>0</sub>cos θ on the lower half. Friction acts along the pipe axis on every element, so it adds up the <i>magnitudes</i> of the pressure.",
+    fields: [
+      { key: "W", label: "Weight W", unit: "lb", value: 1500, min: 200, max: 5000, step: 100 },
+      { key: "r", label: "Radius r", unit: "in.", value: 15, min: 4, max: 30, step: 1 },
+      { key: "L", label: "Length L", unit: "ft", value: 12, min: 4, max: 30, step: 1 },
+      { key: "mu", label: "µ<sub>s</sub>", unit: "", value: 0.3, min: 0.1, max: 0.8, step: 0.05 },
+    ],
+    calc(d) {
+      const Li = d.L * 12, p0 = d.W / (d.r * Li * (Math.PI / 2)), Fm = d.mu * p0 * d.r * Li * 2;
+      return {
+        steps: [
+          { title: "Peak pressure", intro: "Only the vertical components of the pressure balance W: ∫p cos θ r L dθ over −90°…90°.",
+            ans: [{ id: "p0", label: "p<sub>0</sub>", unit: "psi", val: p0 }],
+            sol: `<div>W = p<sub>0</sub>rL∫cos²θ dθ = p<sub>0</sub>rL(π/2) ⇒ p<sub>0</sub> = ${d.W}/[${d.r}(${Li})(π/2)] = <b>${s3(p0)} psi</b></div>` },
+          { title: "Smallest push", intro: "dF = µ<sub>s</sub>p dA along the axis: F = µ<sub>s</sub>p<sub>0</sub>rL∫cos θ dθ.",
+            ans: [{ id: "F", label: "F", unit: "lb", val: Fm }],
+            sol: `<div>F = µ<sub>s</sub>p<sub>0</sub>rL(2) = ${d.mu}(${s3(p0)})(${d.r})(${Li})(2) = <b>${s3(Fm)} lb</b></div><div>F/W = 4µ<sub>s</sub>/π = ${s3((4 * d.mu) / Math.PI)} — more than µ<sub>s</sub>, because the pressure is not vertical everywhere.</div>` },
+        ],
+        book: [["p<sub>0</sub>", "0.442 psi", s3(p0) + " psi"], ["F", "573 lb", s3(Fm) + " lb"]],
+      };
+    },
+    draw(svg, d) {
+      const F = FD.fig(svg, { x0: -2.2, y0: -2.1, x1: 2.2, y1: 1.6 });
+      F.poly([[-2.1, -1.0], [2.1, -1.0], [2.1, -2], [-2.1, -2]], { fill: "#f1e6cf", color: "#d9c39a" });
+      F.circle([0, 0], 1, { fill: "#e7edf3", w: 2 }); F.circle([0, 0], 0.88, { fill: "#fff" });
+      for (let t = -80; t <= 80; t += 16) { const a = (t - 90) * R, len = 0.55 * Math.cos(t * R); F.arrow([(1 + len) * Math.cos(a), (1 + len) * Math.sin(a)], [Math.cos(a), Math.sin(a)], { color: C.green, w: 1.4 }); }
+      F.text([0, -1.6], "p = p" + sub("0") + " cos θ", { color: C.green, bold: true, dy: 8 });
+      F.line([0, 0], [0, -1], { color: C.muted, dash: "3 3" }); F.line([0, 0], [Math.cos(-60 * R), Math.sin(-60 * R)], { color: C.muted, dash: "3 3" });
+      F.arc([0, 0], 0.4, -90, -60, { color: C.purple, label: "θ", lr: 0.2 });
+      F.text([0, 1.3], "push F along the pipe axis (out of the page)", { color: C.red, size: 12 });
+    },
+  });
+
+  const ord = ["ex88", "ex89", "p886", "p887", "p894", "p895", "p8103", "p8107", "p8110", "p8114"];
+  PR.sort((a, b) => ord.indexOf(a.id) - ord.indexOf(b.id));
+  window.FX_PROBLEMS = PR;
+})();
+
+    </script>
+    <script>
+/* fx.js — worked-examples engine for the Ch. 8 pages (schema after m3x.js, 2-D figures via fd.js).
+   Problem: {id, group, nav, sub, kicker, title, desc, goal, fields:[{key,label,unit,value,min,max,step}],
+             valid?(d), calc(d) -> {steps:[{title,intro,ans:[{id,label,unit,val,kind?:'num'|'pick',opts?,tol?}],sol}], book:[[q,book,page]], note?},
+             draw(F, d, C) where F = FD.fig(...) is created by draw(svg) inside the problem}. */
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const PR = window.FX_PROBLEMS;
+  const S = { i: 0, d: {}, C: null };
+  const cur = () => PR[S.i];
+  const defaults = (p) => Object.fromEntries(p.fields.map((f) => [f.key, f.value]));
+  const isBook = () => cur().fields.every((f) => S.d[f.key] === f.value);
+
+  function buildNav() {
+    let g = "", h = "";
+    PR.forEach((p, i) => {
+      if (p.group !== g) { g = p.group; h += `<div class="nav-group">${g}</div>`; }
+      h += `<button class="nav-item" data-i="${i}"><span class="nav-no">${i + 1}</span><span><b>${p.nav}</b><small>${p.sub}</small></span></button>`;
+    });
+    $("nav").innerHTML = h;
+    $("nav").addEventListener("click", (e) => { const b = e.target.closest("[data-i]"); if (b) sel(+b.dataset.i); });
+  }
+  function buildFields() {
+    const p = cur();
+    $("fields").innerHTML = `<div class="fields">${p.fields.map((f) => `<label class="field"><span>${f.label}</span><span class="inwrap"><input type="number" data-f="${f.key}" step="${f.step}" min="${f.min}" max="${f.max}"><em>${f.unit || "&nbsp;"}</em></span></label>`).join("")}</div>`;
+    refreshFields();
+  }
+  function refreshFields() { $("fields").querySelectorAll("input").forEach((inp) => (inp.value = S.d[inp.dataset.f])); }
+  function onField(e) {
+    const inp = e.target, f = cur().fields.find((q) => q.key === inp.dataset.f);
+    if (!f) return;
+    const x = parseFloat(inp.value);
+    if (!isFinite(x) || x < f.min || x > f.max) { inp.classList.add("bad"); return; }
+    const d2 = { ...S.d, [f.key]: x };
+    if (cur().valid && !cur().valid(d2)) { inp.classList.add("bad"); $("dataNote").textContent = cur().validMsg || "These values do not give a valid problem."; return; }
+    inp.classList.remove("bad"); $("dataNote").textContent = "";
+    S.d = d2;
+    update(true);
+  }
+  function randomize() {
+    const p = cur();
+    const rnd = (f) => { const n = Math.round((f.max - f.min) / f.step); return +(f.min + f.step * Math.floor(Math.random() * (n + 1))).toFixed(6); };
+    for (let k = 0; k < 200; k++) {
+      const d = {};
+      p.fields.forEach((f) => (d[f.key] = f.fixed ? f.value : rnd(f)));
+      if (!p.valid || p.valid(d)) { S.d = d; break; }
+    }
+    refreshFields();
+    $("dataNote").textContent = "";
+    update(true);
+  }
+
+  function ansHTML(a, si) {
+    const id = `a${si}_${a.id}`;
+    if (a.kind === "pick") return `<label class="field"><span>${a.label}</span><select id="${id}"><option value="">— choose —</option>${a.opts.map((o, k) => `<option value="${k}">${o}</option>`).join("")}</select></label>`;
+    return `<label class="field"><span>${a.label}</span><span class="inwrap"><input type="number" step="any" id="${id}"><em>${a.unit || "&nbsp;"}</em></span></label>`;
+  }
+  function buildSteps() {
+    $("steps").innerHTML = S.C.steps.map((s, si) => `<section class="card" data-step="${si}">
+        <div class="card-head"><div class="kicker">Step ${si + 1}</div><h2>${s.title}</h2><p>${s.intro}</p></div>
+        <div class="card-body grid2">
+          <div><div class="answers1">${s.ans.map((a) => ansHTML(a, si)).join("")}</div>
+            <div class="btnrow noprint" style="margin-top:10px"><button class="btn primary" data-act="check">Check</button><button class="btn" data-act="reveal">Show solution</button></div>
+            <div class="feedback" id="fb${si}"></div></div>
+          <div class="sol hidden" id="sol${si}"></div>
+        </div></section>`).join("");
+    S.C.steps.forEach((s, si) => ($("sol" + si).innerHTML = s.sol));
+  }
+  const tolOf = (a) => (a.tol != null ? a.tol : Math.max(0.006 * Math.abs(a.val), 1e-6));
+  function check(si) {
+    const s = S.C.steps[si];
+    let good = 0, tot = 0, empty = 0;
+    for (const a of s.ans) {
+      const inp = $(`a${si}_${a.id}`);
+      tot++;
+      if (inp.value.trim() === "") { empty++; inp.classList.remove("ok", "bad"); continue; }
+      const x = parseFloat(inp.value);
+      const ok = a.kind === "pick" ? x === a.val : isFinite(x) && Math.abs(x - a.val) <= tolOf(a);
+      inp.classList.toggle("ok", ok); inp.classList.toggle("bad", !ok);
+      if (ok) good++;
+    }
+    const fb = $("fb" + si);
+    if (empty === tot) { fb.className = "feedback bad"; fb.textContent = "Enter your answers first (three significant figures are enough)."; }
+    else if (good === tot) { fb.className = "feedback good"; fb.textContent = "All correct."; }
+    else { fb.className = "feedback bad"; fb.textContent = `${good} of ${tot} correct${empty ? `, ${empty} empty` : ""}. Check the free-body diagram: the sense of each friction force and which contacts slip.`; }
+    return { good, tot };
+  }
+  function fill(si) { S.C.steps[si].ans.forEach((a) => ($(`a${si}_${a.id}`).value = a.kind === "pick" ? String(a.val) : +a.val.toPrecision(4))); }
+  function onSteps(e) {
+    const b = e.target.closest("[data-act]");
+    if (!b) return;
+    const si = +b.closest("[data-step]").dataset.step;
+    if (b.dataset.act === "check") check(si);
+    else { const el = $("sol" + si); el.classList.toggle("hidden"); b.textContent = el.classList.contains("hidden") ? "Show solution" : "Hide solution"; }
+  }
+
+  function draw() { cur().draw($("fx"), S.d, S.C); }
+  function update(rebuild) {
+    S.C = cur().calc(S.d);
+    const book = isBook();
+    $("bookBox").innerHTML = book
+      ? `<b>Book answers</b> — check them in the last step:<table class="nice bk"><tr><th></th><th>Book</th><th>This page</th></tr>${S.C.book.map((b) => `<tr><td>${b[0]}</td><td>${b[1]}</td><td>${b[2]}</td></tr>`).join("")}</table>`
+      : `<b>Your own values.</b> The book answers no longer apply; the checks and solutions below use your data. <i>Book values</i> restores the original problem.`;
+    $("bookBox").classList.toggle("warn", !book);
+    $("pNote").innerHTML = S.C.note || "";
+    $("pNote").style.display = S.C.note ? "" : "none";
+    $("figCaption").innerHTML = cur().caption || "";
+    if (rebuild) buildSteps();
+    draw();
+  }
+  function sel(i) {
+    S.i = i;
+    const p = cur();
+    S.d = defaults(p);
+    $("nav").querySelectorAll(".nav-item").forEach((b) => b.classList.toggle("active", +b.dataset.i === i));
+    $("pKicker").innerHTML = p.kicker; $("pTitle").innerHTML = p.title; $("pDesc").innerHTML = p.desc; $("pGoal").innerHTML = p.goal;
+    $("dataNote").textContent = "";
+    buildFields();
+    update(true);
+    if (history.replaceState) history.replaceState(null, "", "#" + p.id);
+  }
+  buildNav();
+  $("fields").addEventListener("change", onField);
+  $("steps").addEventListener("click", onSteps);
+  $("btnReset").onclick = () => { S.d = defaults(cur()); refreshFields(); $("dataNote").textContent = ""; update(true); };
+  $("btnRandom").onclick = randomize;
+  $("btnPrint").onclick = () => window.print();
+  const h = location.hash.slice(1), hi = PR.findIndex((p) => p.id === h);
+  sel(hi >= 0 ? hi : 0);
+  window.FX = { PR, S, sel, check, fill, update, isBook, randomize, draw };
+})();
+
+    </script>
+  </body>
+</html>

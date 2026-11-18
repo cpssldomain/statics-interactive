@@ -1,0 +1,1262 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dry Friction — Worked Examples (Sections 8.1–8.2)</title>
+    <style>
+:root {
+  --navy: #15273c;
+  --ink: #1f3448;
+  --muted: #617487;
+  --line: #dce5ed;
+  --bg: #f3f6f9;
+  --white: #fff;
+  --teal: #147b91;
+  --blue: #1f6fb2;
+  --purple: #7a3db8;
+  --red: #d1343a;
+  --green: #0d8a6f;
+  --orange: #e0662c;
+  --soft: #f8fafc;
+  --shadow: 0 8px 28px rgba(16, 37, 59, 0.06);
+}
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  font: 15px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+}
+button,
+input,
+select {
+  font: inherit;
+}
+button {
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+:focus-visible {
+  outline: 3px solid #78afde;
+  outline-offset: 2px;
+}
+header.top {
+  background: var(--navy);
+  color: #fff;
+  padding: 22px clamp(18px, 4vw, 56px) 20px;
+}
+header.top .eyebrow {
+  font-size: 11.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8fd3e2;
+  font-weight: 800;
+}
+header.top h1 {
+  margin: 4px 0 6px;
+  font-size: clamp(24px, 3vw, 34px);
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+header.top p {
+  margin: 0;
+  color: #c6d3df;
+  max-width: 920px;
+}
+nav.toc {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  padding: 8px clamp(12px, 3vw, 48px);
+}
+nav.toc a {
+  white-space: nowrap;
+  text-decoration: none;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 7px 11px;
+  border-radius: 8px;
+}
+nav.toc a:hover,
+nav.toc a.on {
+  background: #e8f3f6;
+  color: var(--teal);
+}
+main {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 22px clamp(12px, 3vw, 40px) 60px;
+}
+section.card {
+  background: #fff;
+  border: 1px solid #e2e9f0;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  margin: 0 0 22px;
+  overflow: hidden;
+}
+.card-head {
+  padding: 18px 22px 12px;
+  border-bottom: 1px solid #edf2f6;
+}
+.card-head .kicker {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--teal);
+  text-transform: uppercase;
+}
+.card-head h2 {
+  margin: 3px 0 4px;
+  font-size: 21px;
+  letter-spacing: -0.02em;
+}
+.card-head p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+.card-body {
+  padding: 18px 22px 22px;
+}
+.grid2 {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: 22px;
+}
+.grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+@media (max-width: 900px) {
+  .grid2,
+  .grid3 {
+    grid-template-columns: 1fr;
+  }
+}
+.figure {
+  background: #fcfdfe;
+  border: 1px solid #e6ecf2;
+  border-radius: 12px;
+  padding: 6px;
+}
+.figure svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.caption {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin: 6px 4px 0;
+}
+.btn {
+  border: 1px solid #cfdbe5;
+  background: #fff;
+  color: var(--ink);
+  border-radius: 9px;
+  padding: 8px 13px;
+  font-weight: 700;
+  font-size: 13.5px;
+}
+.btn:hover {
+  background: #f2f7fa;
+}
+.btn.primary {
+  background: var(--navy);
+  color: #fff;
+  border-color: var(--navy);
+}
+.btn.primary:hover {
+  background: #22405f;
+}
+.btn.on {
+  background: #e3f3f6;
+  border-color: #8ccbd8;
+  color: #0e6577;
+}
+.btnrow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+label.ctl {
+  display: block;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+}
+select,
+input[type="number"] {
+  border: 1px solid #cfdbe5;
+  border-radius: 9px;
+  padding: 7px 9px;
+  background: #fff;
+  color: var(--ink);
+  min-width: 0;
+}
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--teal);
+}
+.note {
+  font-size: 13.5px;
+  color: var(--muted);
+}
+.eq {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 13.5px;
+  background: #f6f9fb;
+  border: 1px solid #e5ecf2;
+  border-radius: 9px;
+  padding: 9px 11px;
+  margin: 6px 0;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.eq b {
+  color: var(--navy);
+}
+.keybox {
+  border-left: 4px solid var(--teal);
+  background: #f2fafb;
+  border-radius: 0 10px 10px 0;
+  padding: 10px 14px;
+  margin: 10px 0;
+  font-size: 14px;
+}
+.keybox.warn {
+  border-color: #d69a2d;
+  background: #fff9ec;
+}
+.readout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  font-size: 13.5px;
+  background: #fff7f1;
+  border: 1px solid #f6d7c4;
+  border-radius: 10px;
+  padding: 8px 12px;
+  margin-top: 8px;
+}
+.readout i {
+  color: #9a7a66;
+  font-style: normal;
+  font-size: 12px;
+}
+.pill {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: #eef3f7;
+  color: var(--muted);
+}
+table.nice {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 14px;
+}
+table.nice th,
+table.nice td {
+  border-bottom: 1px solid #e8eef3;
+  padding: 7px 8px;
+  text-align: left;
+  vertical-align: middle;
+}
+table.nice th {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+.feedback {
+  margin-top: 8px;
+  font-weight: 700;
+  font-size: 14px;
+}
+.feedback.good {
+  color: #0d7a52;
+}
+.feedback.bad {
+  color: #b5372c;
+}
+input.ok {
+  border-color: #3fb27f;
+  background: #effbf5;
+}
+input.bad {
+  border-color: #e0775f;
+  background: #fff3f0;
+}
+.footer {
+  color: var(--muted);
+  font-size: 12.5px;
+  text-align: center;
+  margin-top: 26px;
+}
+@media print {
+  nav.toc,
+  .noprint {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+  }
+  section.card {
+    box-shadow: none;
+    break-inside: avoid;
+  }
+}
+
+.ex-layout {
+  display: grid;
+  grid-template-columns: 270px minmax(0, 1fr);
+  gap: 0;
+  align-items: start;
+}
+.ex-nav {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  max-height: 100vh;
+  overflow-y: auto;
+  background: #fff;
+  border-right: 1px solid var(--line);
+  min-height: 100vh;
+}
+.ex-nav-inner {
+  padding: 16px 12px 30px;
+}
+.nav-group {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin: 14px 8px 6px;
+}
+.nav-item {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  border: 1px solid transparent;
+  background: none;
+  border-radius: 10px;
+  padding: 8px 9px;
+  color: var(--ink);
+}
+.nav-item:hover {
+  background: #f3f8fa;
+}
+.nav-item.active {
+  background: #e8f4f7;
+  border-color: #b9dfe7;
+}
+.nav-item .nav-no {
+  font-weight: 800;
+  color: #9aa8b6;
+  font-size: 12px;
+  padding-top: 2px;
+}
+.nav-item b {
+  display: block;
+  font-size: 13.5px;
+  line-height: 1.3;
+}
+.nav-item small {
+  color: var(--muted);
+  font-size: 12px;
+}
+.ex-main {
+  max-width: 1120px;
+  padding: 22px clamp(12px, 2.5vw, 34px) 60px;
+  margin: 0;
+}
+.fields,
+.answers {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+}
+.inwrap {
+  display: flex;
+  align-items: center;
+  border: 1px solid #cfdbe5;
+  border-radius: 9px;
+  background: #fff;
+  overflow: hidden;
+}
+.inwrap input {
+  border: 0;
+  flex: 1;
+  min-width: 0;
+  padding: 8px 9px;
+  border-radius: 0;
+}
+.inwrap em {
+  font-style: normal;
+  font-size: 12px;
+  color: var(--muted);
+  padding: 0 9px;
+  background: #f4f7fa;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+}
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-top: 12px;
+}
+.tab {
+  border: 1px solid #dbe4ec;
+  border-bottom: 0;
+  background: #f5f8fb;
+  border-radius: 10px 10px 0 0;
+  padding: 9px 14px;
+  font-weight: 750;
+  color: var(--muted);
+  font-size: 13.5px;
+}
+.tab.on {
+  background: #fff;
+  color: var(--teal);
+  border-color: #b9dfe7;
+}
+.hidden {
+  display: none;
+}
+@media (max-width: 900px) {
+  .ex-layout {
+    grid-template-columns: 1fr;
+  }
+  .ex-nav {
+    position: static;
+    min-height: 0;
+    max-height: none;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+}
+@media print {
+  .ex-nav {
+    display: none;
+  }
+  .ex-layout {
+    display: block;
+  }
+}
+#reactSol .eq,
+#pane-gra .eq {
+  white-space: normal;
+}
+
+.answers1{display:flex;flex-direction:column;gap:10px}
+.answers1 .field{max-width:260px}
+.vans .vlab{font-size:13.5px;font-weight:700;margin-bottom:4px}
+.vrow{display:flex;gap:8px;flex-wrap:wrap}
+.vrow label{display:flex;align-items:center;gap:4px;font-size:13px;color:var(--muted)}
+.vrow input{width:86px;padding:6px 7px;border:1px solid #cfdbe5;border-radius:8px;font:inherit;text-align:right}
+.sol{font-size:14px;line-height:1.65;overflow-x:auto}
+.sol .det{margin:4px 0}
+.sol > div{margin:3px 0}
+ol.proc{margin:0;padding-left:20px;line-height:1.6;font-size:14.5px}
+ol.proc li{margin:4px 0}
+table.bk{width:100%;margin-top:6px;font-size:13.5px}
+table.vin{margin:4px 0 10px}
+table.ctab th{font-weight:600;text-align:left}
+table.ctab small{color:var(--muted)}
+@media print{.noprint,.ex-nav{display:none}.sol.hidden{display:block}.ex-layout{display:block}}
+
+.fields{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px 12px;margin-bottom:6px}
+.answers1 select{width:100%;padding:7px 8px;border:1px solid var(--line);border-radius:9px;background:#fff}
+.answers1 select.ok{border-color:var(--green);background:#ecf8f4}.answers1 select.bad{border-color:var(--red);background:#fdeeee}
+.figure svg{width:100%;height:auto;display:block}
+svg text.lbl{paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round}
+.footer a{color:var(--teal)}
+@media print{.noprint,.ex-nav{display:none!important}}
+main section label.ctl{text-transform:none;letter-spacing:0;font-size:13px;margin-top:8px}
+
+    </style>
+  </head>
+  <body>
+    <header class="top">
+      <div class="eyebrow">Chapter 8 · Friction · Sections 8.1 &amp; 8.2</div>
+      <h1>Dry Friction — Worked Examples</h1>
+      <p>Nine problems: the book's Examples 8.1–8.5 and four extra problems (8–5, 8–6, F8–6, 8–31). Draw the free-body diagram, decide which contacts slip (or whether the body tips), and check each step. Change the data or press <i>New values</i> for a fresh version of the same problem.</p>
+    </header>
+    <div class="ex-layout">
+      <aside class="ex-nav"><div class="ex-nav-inner" id="nav"></div></aside>
+      <main class="ex-main">
+        <section class="card">
+          <div class="card-head" style="display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap">
+            <div><div class="kicker" id="pKicker"></div><h2 id="pTitle"></h2><p id="pDesc"></p></div>
+            <div class="btnrow noprint" style="align-self: flex-start">
+              <button class="btn" id="btnReset">Book values</button><button class="btn" id="btnRandom">New values</button><button class="btn" id="btnPrint">Print / PDF</button>
+            </div>
+          </div>
+          <div class="card-body grid2">
+            <div><div class="figure"><svg id="fx"></svg></div><div class="caption" id="figCaption"></div></div>
+            <div>
+              <label class="ctl">Problem data</label>
+              <div id="fields"></div>
+              <div class="note" id="dataNote" style="color: var(--red)"></div>
+              <div class="keybox" id="pGoal"></div>
+              <div class="keybox warn" id="pNote"></div>
+              <div class="keybox" id="bookBox"></div>
+            </div>
+          </div>
+        </section>
+        <div id="steps"></div>
+        <section class="card">
+          <div class="card-head"><div class="kicker">Remember</div><h2>Procedure (Section 8.2)</h2></div>
+          <div class="card-body"><ol class="proc"><li><b>Free-body diagram</b>: unless the problem says motion impends or slipping occurs, show every friction force as an unknown (do not assume F = µN).</li>
+<li><b>Count</b> unknowns and equilibrium equations. More unknowns → apply F = µN at some or all contacts (or a tipping condition).</li>
+<li><b>Sense of F</b>: an unknown equilibrium friction force may be drawn either way (a negative answer reverses it). When you use F = µN, draw F opposing the impending relative motion.</li>
+<li><b>Type 1</b> (no apparent impending motion): solve equilibrium, then check F ≤ µ<sub>s</sub>N at every contact (and that N lies under the body).</li>
+<li><b>Type 2</b> (impending at all contacts): use F = µ<sub>s</sub>N everywhere.</li>
+<li><b>Type 3</b> (impending at some contacts): assume each possible slip or tip, solve, check the other contacts, and keep the case that needs the smallest load.</li>
+<li><b>Sliding</b>: F = µ<sub>k</sub>N (kinetic), acting opposite to the motion.</li></ol></div>
+        </section>
+        <div class="footer">Based on Hibbeler, <i>Engineering Mechanics: Statics</i>, 16th ed., Sections 8.1–8.2. Answers to three significant figures, as in the book. <a href="index.html">All pages</a></div>
+      </main>
+    </div>
+
+    <script>
+/* fd.js — small 2-D SVG drawing helper for the Ch. 8 friction pages.
+   World coordinates (y up) are fitted into the SVG viewBox. Force arrows use pixel lengths. */
+(function () {
+  const NS = "http://www.w3.org/2000/svg";
+  const C = { ink: "#1f3448", muted: "#8a9aab", red: "#d1343a", blue: "#1f6fb2", green: "#0d8a6f", purple: "#7a3db8", orange: "#e0662c", teal: "#147b91", fill: "#eef3f8", wood: "#f3e3c6" };
+  const fmt = (v) => (isFinite(v) ? +v.toFixed(2) : 0);
+  function el(tag, at, parent) {
+    const e = document.createElementNS(NS, tag);
+    for (const k in at) if (at[k] !== undefined && at[k] !== null) e.setAttribute(k, at[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function fig(svg, box, opt = {}) {
+    const W = opt.W || 560, H = opt.H || 380, pad = opt.pad == null ? 46 : opt.pad;
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    svg.setAttribute("role", "img");
+    const bw = box.x1 - box.x0, bh = box.y1 - box.y0;
+    const s = Math.min((W - 2 * pad) / bw, (H - 2 * pad) / bh);
+    const ox = (W - s * bw) / 2 - s * box.x0, oy = (H + s * bh) / 2 + s * box.y0;
+    const P = (p) => [ox + s * p[0], oy - s * p[1]];
+    const defs = el("defs", {}, svg);
+    const marks = {};
+    function mk(color) {
+      if (marks[color]) return marks[color];
+      const id = "ah" + Math.random().toString(36).slice(2, 8);
+      const m = el("marker", { id, viewBox: "0 0 10 10", refX: 9, refY: 5, markerWidth: 7, markerHeight: 7, orient: "auto-start-reverse" }, defs);
+      el("path", { d: "M0,0 L10,5 L0,10 z", fill: color }, m);
+      return (marks[color] = id);
+    }
+    const g = el("g", {}, svg), gl = el("g", {}, svg);
+    const F = {
+      s, P, svg, C,
+      line(a, b, o = {}) { const A = P(a), B = P(b); return el("line", { x1: fmt(A[0]), y1: fmt(A[1]), x2: fmt(B[0]), y2: fmt(B[1]), stroke: o.color || C.ink, "stroke-width": o.w || 1.6, "stroke-dasharray": o.dash }, g); },
+      poly(pts, o = {}) { return el("polygon", { points: pts.map((p) => P(p).map(fmt).join(",")).join(" "), fill: o.fill || "none", stroke: o.color || C.ink, "stroke-width": o.w || 1.6, "fill-opacity": o.op }, g); },
+      path(pts, o = {}) { return el("polyline", { points: pts.map((p) => P(p).map(fmt).join(",")).join(" "), fill: "none", stroke: o.color || C.ink, "stroke-width": o.w || 1.6, "stroke-dasharray": o.dash }, g); },
+      circle(c, r, o = {}) { const A = P(c); return el("circle", { cx: fmt(A[0]), cy: fmt(A[1]), r: fmt(o.px ? r : r * s), fill: o.fill || "none", stroke: o.color || C.ink, "stroke-width": o.w || 1.6, "stroke-dasharray": o.dash }, g); },
+      ellipse(c, rx, ry, o = {}) { const A = P(c); return el("ellipse", { cx: fmt(A[0]), cy: fmt(A[1]), rx: fmt(rx * s), ry: fmt(ry * s), fill: o.fill || "none", stroke: o.color || C.ink, "stroke-width": o.w || 1.6, "stroke-dasharray": o.dash }, g); },
+      dot(c, o = {}) { const A = P(c); return el("circle", { cx: fmt(A[0]), cy: fmt(A[1]), r: o.r || 3.2, fill: o.color || C.ink }, g); },
+      /* text at world point, offset in px */
+      text(c, str, o = {}) {
+        const A = P(c);
+        const t = el("text", { x: fmt(A[0] + (o.dx || 0)), y: fmt(A[1] + (o.dy || 0)), "text-anchor": o.anchor || "middle", "dominant-baseline": "middle", "font-size": o.size || 13, "font-weight": o.bold ? 700 : 500, fill: o.color || C.ink, class: "lbl" }, gl);
+        t.innerHTML = str;
+        return t;
+      },
+      /* arrow between world points */
+      arrow(a, b, o = {}) {
+        const A = P(a), B = P(b), col = o.color || C.red;
+        el("line", { x1: fmt(A[0]), y1: fmt(A[1]), x2: fmt(B[0]), y2: fmt(B[1]), stroke: col, "stroke-width": o.w || 2.4, "marker-end": `url(#${mk(col)})`, "stroke-dasharray": o.dash }, g);
+        if (o.label) { const t = o.at === "tail" ? A : B, d = [B[0] - A[0], B[1] - A[1]], L = Math.hypot(...d) || 1; F.textPx([t[0] + (o.at === "tail" ? -1 : 1) * 14 * d[0] / L + (o.ldx || 0), t[1] + (o.at === "tail" ? -1 : 1) * 14 * d[1] / L + (o.ldy || 0)], o.label, { color: col, bold: true }); }
+      },
+      /* force of pixel length len, direction angle deg (math sense), applied at world point p.
+         mode "tail": arrow starts at p; "head" (default): arrow ends at p (push) */
+      force(p, ang, o = {}) {
+        const A = P(p), len = o.len || 60, r = (ang * Math.PI) / 180, d = [Math.cos(r), -Math.sin(r)], col = o.color || C.red;
+        const off = o.off || 0;
+        let a, b;
+        if (o.mode === "tail") { a = [A[0] + d[0] * off, A[1] + d[1] * off]; b = [a[0] + d[0] * len, a[1] + d[1] * len]; }
+        else { b = [A[0] - d[0] * off, A[1] - d[1] * off]; a = [b[0] - d[0] * len, b[1] - d[1] * len]; }
+        el("line", { x1: fmt(a[0]), y1: fmt(a[1]), x2: fmt(b[0]), y2: fmt(b[1]), stroke: col, "stroke-width": o.w || 2.4, "marker-end": `url(#${mk(col)})` }, g);
+        if (o.label) { const q = o.mode === "tail" ? b : a, k = o.mode === "tail" ? 1 : -1; F.textPx([q[0] + k * d[0] * 16 + (o.ldx || 0), q[1] + k * d[1] * 16 + (o.ldy || 0)], o.label, { color: col, bold: true }); }
+      },
+      textPx(A, str, o = {}) {
+        const t = el("text", { x: fmt(A[0]), y: fmt(A[1]), "text-anchor": o.anchor || "middle", "dominant-baseline": "middle", "font-size": o.size || 13, "font-weight": o.bold ? 700 : 500, fill: o.color || C.ink, class: "lbl" }, gl);
+        t.innerHTML = str;
+        return t;
+      },
+      /* hatched rough surface from a to b; hatch on the right-hand side when walking a->b (use side=-1 to flip) */
+      ground(a, b, o = {}) {
+        F.line(a, b, { w: 2, color: o.color || C.ink });
+        const A = P(a), B = P(b), L = Math.hypot(B[0] - A[0], B[1] - A[1]), u = [(B[0] - A[0]) / L, (B[1] - A[1]) / L], side = o.side || 1;
+        const n = [-u[1] * side, u[0] * side];
+        for (let t = 6; t < L; t += 10) {
+          const x = A[0] + u[0] * t, y = A[1] + u[1] * t;
+          el("line", { x1: fmt(x), y1: fmt(y), x2: fmt(x + 7 * n[0] - 5 * u[0]), y2: fmt(y + 7 * n[1] - 5 * u[1]), stroke: o.color || C.muted, "stroke-width": 1 }, g);
+        }
+        if (o.label) F.textPx([(A[0] + B[0]) / 2 + n[0] * 20 + (o.ldx || 0), (A[1] + B[1]) / 2 + n[1] * 20], o.label, { color: C.teal, size: 12, bold: true });
+      },
+      /* dimension line between a and b, offset in px along the normal */
+      dim(a, b, label, o = {}) {
+        const A = P(a), B = P(b), L = Math.hypot(B[0] - A[0], B[1] - A[1]) || 1, n = [-(B[1] - A[1]) / L, (B[0] - A[0]) / L], k = o.off == null ? 18 : o.off;
+        const a2 = [A[0] + n[0] * k, A[1] + n[1] * k], b2 = [B[0] + n[0] * k, B[1] + n[1] * k], col = C.muted;
+        el("line", { x1: fmt(A[0]), y1: fmt(A[1]), x2: fmt(a2[0]), y2: fmt(a2[1]), stroke: col, "stroke-width": 0.8 }, g);
+        el("line", { x1: fmt(B[0]), y1: fmt(B[1]), x2: fmt(b2[0]), y2: fmt(b2[1]), stroke: col, "stroke-width": 0.8 }, g);
+        el("line", { x1: fmt(a2[0]), y1: fmt(a2[1]), x2: fmt(b2[0]), y2: fmt(b2[1]), stroke: col, "stroke-width": 1, "marker-end": `url(#${mk(col)})`, "marker-start": `url(#${mk(col)})` }, g);
+        F.textPx([(a2[0] + b2[0]) / 2 + n[0] * 11, (a2[1] + b2[1]) / 2 + n[1] * 11], label, { size: 12, color: "#4d6073" });
+      },
+      /* circular arc (world radius) from angle a0 to a1 (deg) */
+      arc(c, r, a0, a1, o = {}) {
+        const n = 48, pts = [];
+        for (let i = 0; i <= n; i++) { const t = ((a0 + ((a1 - a0) * i) / n) * Math.PI) / 180; pts.push([c[0] + r * Math.cos(t), c[1] + r * Math.sin(t)]); }
+        const pl = F.path(pts, o);
+        if (o.arrow) pl.setAttribute("marker-end", `url(#${mk(o.color || C.ink)})`);
+        if (o.label) { const t = (((a0 + a1) / 2) * Math.PI) / 180, rr = r + (o.lr || 0); F.text([c[0] + rr * Math.cos(t), c[1] + rr * Math.sin(t)], o.label, { color: o.color || C.ink, bold: true, dx: o.ldx || 0, dy: o.ldy || 0 }); }
+        return pl;
+      },
+      /* rotated rectangle: corner p0 (bottom-left), width w along angle ang, height h */
+      rect(p0, w, h, ang = 0, o = {}) {
+        const r = (ang * Math.PI) / 180, u = [Math.cos(r), Math.sin(r)], v = [-u[1], u[0]];
+        const pts = [p0, [p0[0] + w * u[0], p0[1] + w * u[1]], [p0[0] + w * u[0] + h * v[0], p0[1] + w * u[1] + h * v[1]], [p0[0] + h * v[0], p0[1] + h * v[1]]];
+        F.poly(pts, { fill: o.fill || C.fill, color: o.color, w: o.w });
+        return pts;
+      },
+      ok() { return !/NaN|Infinity/.test(svg.innerHTML); },
+    };
+    return F;
+  }
+  window.FD = { fig, C };
+})();
+
+    </script>
+    <script>
+/* f12x.js — problems for the Sec. 8.1–8.2 worked-examples page (Hibbeler 16th ed.). */
+(function () {
+  const g = 9.81, R = Math.PI / 180;
+  const s3 = (v) => (Math.abs(v) >= 1000 ? Math.round(v).toString() : (+v.toPrecision(3)).toString());
+  const s4 = (v) => (+v.toPrecision(4)).toString();
+  const C = FD.C;
+  function solve(A, b) {
+    const n = b.length, M = A.map((r, i) => [...r, b[i]]);
+    for (let c = 0; c < n; c++) {
+      let p = c; for (let r = c + 1; r < n; r++) if (Math.abs(M[r][c]) > Math.abs(M[p][c])) p = r;
+      [M[c], M[p]] = [M[p], M[c]];
+      for (let r = 0; r < n; r++) if (r !== c) { const k = M[r][c] / M[c][c]; for (let j = c; j <= n; j++) M[r][j] -= k * M[c][j]; }
+    }
+    return M.map((r, i) => r[n] / r[i]);
+  }
+  const VER3 = ["Stays in equilibrium (no slip, no tip)", "Slips", "Tips"];
+
+  const PR = [];
+  /* ---------- Ex. 8.1 ---------- */
+  PR.push({
+    id: "ex81", group: "Book examples", nav: "Example 8.1", sub: "Crate: does it slip?",
+    kicker: "Example 8.1 · Fig. 8–7 · Type 1: no apparent impending motion", title: "Does the crate stay in equilibrium?",
+    desc: "The uniform crate has mass m. A force P is applied to its left face at height h, pointing down and to the right at θ below the horizontal. Coefficient of static friction µ<sub>s</sub>.",
+    goal: "<b>Find</b> the friction force F, the normal force N<sub>C</sub> and its position x from the centreline; then decide whether the crate slips (F &gt; µ<sub>s</sub>N<sub>C</sub>) or tips (|x| &gt; b/2).",
+    caption: "Free-body diagram on the crate. Red: applied force. Teal: W. Green: floor reactions F and N<sub>C</sub> (N<sub>C</sub> drawn at its computed position x).",
+    fields: [
+      { key: "m", label: "Mass m", unit: "kg", value: 20, min: 5, max: 60, step: 1 },
+      { key: "P", label: "Force P", unit: "N", value: 80, min: 10, max: 200, step: 5 },
+      { key: "th", label: "Angle θ", unit: "°", value: 30, min: 0, max: 60, step: 5 },
+      { key: "h", label: "Height of P, h", unit: "m", value: 0.2, min: 0.05, max: 0.7, step: 0.05 },
+      { key: "b", label: "Width b", unit: "m", value: 0.8, min: 0.4, max: 1.2, step: 0.1 },
+      { key: "mu", label: "µ<sub>s</sub>", unit: "", value: 0.3, min: 0.1, max: 0.8, step: 0.05 },
+    ],
+    valid: (d) => d.h < 0.8, validMsg: "Keep h below the crate height (0.8 m).",
+    calc(d) {
+      const W = d.m * g, c = Math.cos(d.th * R), s = Math.sin(d.th * R);
+      const F = d.P * c, N = W + d.P * s, x = (d.P * c * d.h - d.P * s * d.b / 2) / N, Fm = d.mu * N;
+      const v = Math.abs(x) > d.b / 2 ? 2 : F > Fm ? 1 : 0;
+      return {
+        W, F, N, x, Fm, v,
+        steps: [
+          { title: "Equations of equilibrium", intro: "Three unknowns (F, N<sub>C</sub>, x) and three equations. Take moments about O, the bottom centre of the crate.",
+            ans: [{ id: "F", label: "F", unit: "N", val: F }, { id: "N", label: "N<sub>C</sub>", unit: "N", val: N }, { id: "x", label: "x (+ right of centre)", unit: "mm", val: x * 1000, tol: Math.max(0.006 * Math.abs(x * 1000), 0.05) }],
+            sol: `<div>W = ${s4(d.m)}(9.81) = ${s4(W)} N</div><div>→ ΣF<sub>x</sub> = 0: ${d.P} cos ${d.th}° − F = 0 ⇒ <b>F = ${s3(F)} N</b></div><div>↑ ΣF<sub>y</sub> = 0: −${d.P} sin ${d.th}° + N<sub>C</sub> − ${s4(W)} = 0 ⇒ <b>N<sub>C</sub> = ${s4(N)} N</b></div><div>↺ ΣM<sub>O</sub> = 0: ${d.P} sin ${d.th}°(${d.b / 2}) − ${d.P} cos ${d.th}°(${d.h}) + N<sub>C</sub> x = 0 ⇒ <b>x = ${s3(x * 1000)} mm</b></div><div>${x < 0 ? "x &lt; 0: N<sub>C</sub> acts to the left of the centreline." : "x &gt; 0: N<sub>C</sub> acts to the right of the centreline."}</div>` },
+          { title: "Check slipping and tipping", intro: "The equilibrium answer is valid only if F ≤ µ<sub>s</sub>N<sub>C</sub> and N<sub>C</sub> lies under the crate.",
+            ans: [{ id: "Fm", label: "F<sub>max</sub> = µ<sub>s</sub>N<sub>C</sub>", unit: "N", val: Fm }, { id: "v", label: "Result", kind: "pick", opts: VER3, val: v }],
+            sol: `<div>F<sub>max</sub> = ${d.mu}(${s4(N)}) = <b>${s3(Fm)} N</b></div><div>F = ${s3(F)} N ${F > Fm ? "&gt;" : "≤"} ${s3(Fm)} N; |x| = ${s3(Math.abs(x) * 1000)} mm ${Math.abs(x) > d.b / 2 ? "&gt;" : "≤"} b/2 = ${d.b * 500} mm.</div><div><b>${VER3[v]}.</b>${v === 0 && F > 0.95 * Fm ? " It is very close to slipping." : ""}</div>` },
+        ],
+        book: [["F", "69.3 N", s3(F) + " N"], ["N<sub>C</sub>", "236.2 N", s4(N) + " N"], ["x", "−9.08 mm", s3(x * 1000) + " mm"], ["F<sub>max</sub>", "70.9 N → no slip", s3(Fm) + " N"]],
+      };
+    },
+    draw(svg, d, K) {
+      const b = d.b, H = 0.8, F = FD.fig(svg, { x0: -b / 2 - 0.55, y0: -0.15, x1: b / 2 + 0.45, y1: H + 0.15 });
+      F.ground([-b / 2 - 0.5, 0], [b / 2 + 0.4, 0], { side: 1 });
+      F.rect([-b / 2, 0], b, H, 0);
+      F.line([0, 0], [0, H], { color: C.muted, dash: "4 4" });
+      F.force([-b / 2, d.h], -d.th, { label: "P", len: 70 });
+      F.dot([0, H / 2], { color: C.teal }); F.force([0, H / 2], -90, { mode: "tail", label: "W", color: C.teal, len: 48 });
+      F.force([K.x, 0], 90, { label: "N<tspan baseline-shift='sub' font-size='10'>C</tspan>", color: C.green, len: 52, ldx: 14 });
+      F.force([0.15 * b, 0], 180, { mode: "tail", label: "F", color: C.green, len: 46, ldy: 10 });
+      F.dim([-b / 2, 0], [-b / 2, d.h], `${d.h} m`, { off: 26 });
+      F.dim([-b / 2, H], [b / 2, H], `b = ${b} m`, { off: -16 });
+      F.text([0, 0], "O", { dy: -10, dx: -10, color: C.muted });
+    },
+  });
+
+  /* ---------- Ex. 8.2 ---------- */
+  PR.push({
+    id: "ex82", group: "Book examples", nav: "Example 8.2", sub: "Angle of repose",
+    kicker: "Example 8.2 · Fig. 8–8 · Impending motion", title: "Vending machine on a tilting truck bed",
+    desc: "The truck bed is raised to the angle θ at which the vending machines begin to slide. Model: base 2a, centre of gravity G at height h<sub>G</sub> above the bed.",
+    goal: "<b>Find</b> µ<sub>s</sub> from the angle at which slipping impends, and the position x of the normal force, to confirm that the machine slips rather than tips.",
+    caption: "Machine on the bed (FBD). Teal: weight W. Green: N (at distance x from the centre line, downhill) and F (up the slope). Purple arc: θ.",
+    fields: [
+      { key: "th", label: "Angle θ", unit: "°", value: 25, min: 5, max: 45, step: 1 },
+      { key: "a", label: "Half base a", unit: "ft", value: 1.5, min: 0.5, max: 3, step: 0.25 },
+      { key: "hG", label: "Height of G, h<sub>G</sub>", unit: "ft", value: 2.5, min: 1, max: 5, step: 0.25 },
+    ],
+    calc(d) {
+      const t = Math.tan(d.th * R), x = d.hG * t, v = x < d.a ? 0 : 1;
+      const V = ["Slips before it tips (x &lt; a)", "Tips before it slips (x &gt; a)"];
+      return {
+        mu: t, x, v,
+        steps: [
+          { title: "Friction at impending slip", intro: "x is along the bed, y normal to it. With slipping impending, F = µ<sub>s</sub>N.",
+            ans: [{ id: "mu", label: "µ<sub>s</sub>", unit: "", val: t }],
+            sol: `<div>ΣF<sub>x</sub> = 0: W sin θ − F = 0;  ΣF<sub>y</sub> = 0: N − W cos θ = 0</div><div>F<sub>s</sub> = µ<sub>s</sub>N ⇒ W sin θ = µ<sub>s</sub> W cos θ ⇒ <b>µ<sub>s</sub> = tan ${d.th}° = ${s3(t)}</b></div><div>θ is the <i>angle of repose</i>; it equals the angle of static friction φ<sub>s</sub> and does not depend on W.</div>` },
+          { title: "Slip or tip?", intro: "Moments about O, the point on the bed below G, locate N.",
+            ans: [{ id: "x", label: "x", unit: "ft", val: x }, { id: "v", label: "Result", kind: "pick", opts: V, val: v }],
+            sol: `<div>ΣM<sub>O</sub> = 0: −W sin θ (h<sub>G</sub>) + W cos θ (x) = 0 ⇒ <b>x = h<sub>G</sub> tan θ = ${s3(x)} ft</b></div><div>${x < d.a ? `${s3(x)} ft &lt; a = ${d.a} ft: N stays under the base, so the machine <b>slips</b>.` : `${s3(x)} ft &gt; a = ${d.a} ft: N would fall outside the base, so the machine <b>tips</b> first and µ<sub>s</sub> cannot be found this way.`}</div>` },
+        ],
+        book: [["µ<sub>s</sub>", "0.466", s3(t)], ["x", "1.17 ft (slips)", s3(x) + " ft"]],
+      };
+    },
+    draw(svg, d, K) {
+      const th = d.th, c = Math.cos(th * R), s = Math.sin(th * R), L = 2 * d.a + 4, s0 = 2;
+      const F = FD.fig(svg, { x0: -0.5, y0: -0.6, x1: L * c + 0.5, y1: L * s + 2 * d.hG * c + 0.6 });
+      F.ground([0, 0], [L * c, L * s], { side: 1 });
+      F.line([0, 0], [L * c, 0], { color: C.muted, dash: "4 4" });
+      F.arc([0, 0], 1.3, 0, th, { color: C.purple, label: "θ", lr: 0.45 });
+      const p0 = [s0 * c, s0 * s], u = [c, s], v = [-s, c];
+      F.rect(p0, 2 * d.a, 2 * d.hG, th);
+      const at = (t, n) => [p0[0] + t * u[0] + n * v[0], p0[1] + t * u[1] + n * v[1]];
+      const Gp = at(d.a, d.hG);
+      F.dot(Gp, { color: C.teal }); F.text(Gp, "G", { dx: 12, dy: -8, color: C.teal });
+      F.force(Gp, -90, { mode: "tail", label: "W", color: C.teal, len: 50 });
+      F.force(at(d.a - Math.min(K.x, d.a), 0), 90 + th, { label: "N", color: C.green, len: 50, ldx: -10 });
+      F.force(at(d.a + 0.3, 0), th, { mode: "tail", label: "F", color: C.green, len: 46, ldy: 12 });
+      F.text(at(d.a, 0), "O", { dy: 14, dx: 8, color: C.muted });
+    },
+  });
+
+  /* ---------- Ex. 8.3 ---------- */
+  PR.push({
+    id: "ex83", group: "Book examples", nav: "Example 8.3", sub: "Ladder on the verge of slipping",
+    kicker: "Example 8.3 · Fig. 8–9 · Type 2: impending motion at the rough contact", title: "Ladder against a smooth wall",
+    desc: "A uniform ladder of mass m and length L rests against a smooth wall at B. The floor at A is rough (µ<sub>s</sub>). The ladder is on the verge of slipping.",
+    goal: "<b>Find</b> the normal reaction at B and the angle θ between the ladder and the floor.",
+    caption: "FBD of the ladder. Impending motion of A is away from the wall, so F<sub>A</sub> acts toward the wall (F = µN fixes its sense — draw it correctly).",
+    fields: [
+      { key: "m", label: "Mass m", unit: "kg", value: 10, min: 2, max: 40, step: 1 },
+      { key: "L", label: "Length L", unit: "m", value: 4, min: 2, max: 8, step: 0.5 },
+      { key: "mu", label: "µ<sub>s</sub> at A", unit: "", value: 0.3, min: 0.1, max: 0.9, step: 0.05 },
+    ],
+    calc(d) {
+      const W = d.m * g, NA = W, FA = d.mu * NA, NB = FA, t = Math.atan(W / (2 * FA)) / R;
+      return {
+        t,
+        steps: [
+          { title: "Forces at A and B", intro: "Slipping impends at A, so F<sub>A</sub> = µ<sub>s</sub>N<sub>A</sub>. The wall is smooth: only N<sub>B</sub>.",
+            ans: [{ id: "NA", label: "N<sub>A</sub>", unit: "N", val: NA }, { id: "FA", label: "F<sub>A</sub>", unit: "N", val: FA }, { id: "NB", label: "N<sub>B</sub>", unit: "N", val: NB }],
+            sol: `<div>↑ ΣF<sub>y</sub> = 0: N<sub>A</sub> − ${s4(W)} = 0 ⇒ <b>N<sub>A</sub> = ${s4(NA)} N</b></div><div>F<sub>A</sub> = µ<sub>s</sub>N<sub>A</sub> = ${d.mu}(${s4(NA)}) = <b>${s4(FA)} N</b></div><div>→ ΣF<sub>x</sub> = 0: F<sub>A</sub> − N<sub>B</sub> = 0 ⇒ <b>N<sub>B</sub> = ${s3(NB)} N</b></div>` },
+          { title: "Angle of the ladder", intro: "Sum moments about A.",
+            ans: [{ id: "t", label: "θ", unit: "°", val: t }],
+            sol: `<div>↺ ΣM<sub>A</sub> = 0: N<sub>B</sub>(L sin θ) − W(L/2)cos θ = 0</div><div>tan θ = W/(2N<sub>B</sub>) = 1/(2µ<sub>s</sub>) = ${s4(1 / (2 * d.mu))} ⇒ <b>θ = ${s3(t)}°</b></div><div>L cancels: the angle depends only on µ<sub>s</sub>.</div>` },
+        ],
+        book: [["N<sub>B</sub>", "29.4 N", s3(NB) + " N"], ["θ", "59.0°", s3(t) + "°"]],
+      };
+    },
+    draw(svg, d, K) {
+      const L = d.L, c = Math.cos(K.t * R), s = Math.sin(K.t * R), A = [-L * c, 0], B = [0, L * s];
+      const F = FD.fig(svg, { x0: -L * c - 0.8, y0: -0.6, x1: 0.8, y1: L * s + 0.5 });
+      F.ground([-L * c - 0.7, 0], [0, 0], { side: 1 }); F.text([-L * c - 0.4, 0], "µ<tspan baseline-shift='sub' font-size='10'>s</tspan> = " + d.mu, { dy: 26, color: C.teal, size: 12, bold: true });
+      F.ground([0, L * s + 0.4], [0, 0], { side: 1 });
+      F.line(A, B, { w: 6, color: "#b58a4c" });
+      F.arc(A, 0.6, 0, K.t, { color: C.purple, label: "θ", lr: 0.3 });
+      F.text(A, "A", { dx: -12, dy: 12, bold: true }); F.text(B, "B", { dx: 14, dy: -10, bold: true });
+      const G = [-L * c / 2, L * s / 2];
+      F.force(G, -90, { mode: "tail", label: "W", color: C.teal, len: 46 });
+      F.force(A, 90, { label: "N<tspan baseline-shift='sub' font-size='10'>A</tspan>", color: C.green, len: 46, ldx: -14 });
+      F.force(A, 0, { mode: "tail", label: "F<tspan baseline-shift='sub' font-size='10'>A</tspan>", color: C.green, len: 40, off: 4, ldy: 12 });
+      F.force(B, 180, { mode: "tail", label: "N<tspan baseline-shift='sub' font-size='10'>B</tspan>", color: C.green, len: 46, ldy: -12 });
+    },
+  });
+
+  /* ---------- Ex. 8.4 ---------- */
+  PR.push({
+    id: "ex84", group: "Book examples", nav: "Example 8.4", sub: "Which contact slips first?",
+    kicker: "Example 8.4 · Fig. 8–10 · Type 3: impending motion at some contacts", title: "Pulling the post out from under the beam",
+    desc: "Beam AB (pinned at A, length L<sub>b</sub>) carries a uniform load w and rests on post BC. P is applied to the post at height h<sub>P</sub> above C; the post height is L<sub>p</sub>. µ<sub>B</sub> at the top of the post, µ<sub>C</sub> at the floor. Weights neglected.",
+    goal: "<b>Find</b> the force P needed to pull the post out. Four unknowns on the post (F<sub>B</sub>, P, F<sub>C</sub>, N<sub>C</sub>) but only three equations: try slip at B, then slip at C, and keep the case whose inequality holds.",
+    caption: "Beam with the uniform load, and the post. Red: P, applied h<sub>P</sub> above C. Green: friction on the post at B and C (both oppose P).",
+    fields: [
+      { key: "w", label: "Load w", unit: "N/m", value: 200, min: 50, max: 500, step: 10 },
+      { key: "Lb", label: "Beam length L<sub>b</sub>", unit: "m", value: 4, min: 2, max: 6, step: 0.5 },
+      { key: "Lp", label: "Post height L<sub>p</sub>", unit: "m", value: 1, min: 0.5, max: 2, step: 0.1 },
+      { key: "hP", label: "Height of P, h<sub>P</sub>", unit: "m", value: 0.25, min: 0.05, max: 1.5, step: 0.05 },
+      { key: "muB", label: "µ<sub>B</sub>", unit: "", value: 0.2, min: 0.1, max: 0.8, step: 0.05 },
+      { key: "muC", label: "µ<sub>C</sub>", unit: "", value: 0.5, min: 0.1, max: 0.8, step: 0.05 },
+    ],
+    valid: (d) => d.hP < 0.9 * d.Lp, validMsg: "Keep h<sub>P</sub> below the top of the post.",
+    calc(d) {
+      const NB = (d.w * d.Lb) / 2, k = d.hP / d.Lp;
+      const FB1 = d.muB * NB, P1 = FB1 / k, FC1 = P1 - FB1, ok1 = FC1 <= d.muC * NB + 1e-9;
+      const FC2 = d.muC * NB, P2 = FC2 / (1 - k), FB2 = P2 * k, ok2 = FB2 <= d.muB * NB + 1e-9;
+      const v = ok2 && (!ok1 || P2 <= P1) ? 1 : 0, P = v ? P2 : P1;
+      const V = ["Slips at B (rotates about C)", "Slips at C (rotates about B)"];
+      return {
+        steps: [
+          { title: "Normal force from the beam", intro: "Free-body diagram of beam AB: ΣM<sub>A</sub> = 0.",
+            ans: [{ id: "NB", label: "N<sub>B</sub>", unit: "N", val: NB }],
+            sol: `<div>Resultant of the load: ${d.w}(${d.Lb}) = ${s4(d.w * d.Lb)} N at ${d.Lb / 2} m from A.</div><div>↺ ΣM<sub>A</sub> = 0: N<sub>B</sub>(${d.Lb}) − ${s4(d.w * d.Lb)}(${d.Lb / 2}) = 0 ⇒ <b>N<sub>B</sub> = ${s4(NB)} N</b></div><div>On the post: N<sub>C</sub> = N<sub>B</sub> (ΣF<sub>y</sub> = 0). Post equations: P − F<sub>B</sub> − F<sub>C</sub> = 0 and ΣM<sub>C</sub>: −P(h<sub>P</sub>) + F<sub>B</sub>(L<sub>p</sub>) = 0.</div>` },
+          { title: "Case 1: post slips at B and rotates about C", intro: "Set F<sub>B</sub> = µ<sub>B</sub>N<sub>B</sub>; then check F<sub>C</sub> ≤ µ<sub>C</sub>N<sub>C</sub>.",
+            ans: [{ id: "P1", label: "P (case 1)", unit: "N", val: P1 }, { id: "FC1", label: "F<sub>C</sub> (case 1)", unit: "N", val: FC1 }],
+            sol: `<div>F<sub>B</sub> = ${d.muB}(${s4(NB)}) = ${s4(FB1)} N</div><div>P = F<sub>B</sub>L<sub>p</sub>/h<sub>P</sub> = <b>${s3(P1)} N</b>;  F<sub>C</sub> = P − F<sub>B</sub> = <b>${s3(FC1)} N</b></div><div>µ<sub>C</sub>N<sub>C</sub> = ${s3(d.muC * NB)} N ⇒ ${ok1 ? "F<sub>C</sub> ≤ µ<sub>C</sub>N<sub>C</sub>: case 1 is possible." : "F<sub>C</sub> &gt; µ<sub>C</sub>N<sub>C</sub>: C would slip first, so case 1 is <b>not</b> what happens."}</div>` },
+          { title: "Case 2: post slips at C and rotates about B", intro: "Set F<sub>C</sub> = µ<sub>C</sub>N<sub>C</sub>; then check F<sub>B</sub> ≤ µ<sub>B</sub>N<sub>B</sub>.",
+            ans: [{ id: "P2", label: "P (case 2)", unit: "N", val: P2 }, { id: "FB2", label: "F<sub>B</sub> (case 2)", unit: "N", val: FB2 }],
+            sol: `<div>F<sub>C</sub> = ${d.muC}(${s4(NB)}) = ${s4(FC2)} N; F<sub>B</sub> = P h<sub>P</sub>/L<sub>p</sub></div><div>P − P(${s3(k)}) − ${s4(FC2)} = 0 ⇒ <b>P = ${s3(P2)} N</b>;  <b>F<sub>B</sub> = ${s3(FB2)} N</b></div><div>µ<sub>B</sub>N<sub>B</sub> = ${s3(d.muB * NB)} N ⇒ ${ok2 ? "F<sub>B</sub> ≤ µ<sub>B</sub>N<sub>B</sub>: case 2 is possible." : "F<sub>B</sub> &gt; µ<sub>B</sub>N<sub>B</sub>: case 2 is not possible."}</div>` },
+          { title: "Answer", intro: "The motion that needs the smaller P (and satisfies its inequality) happens first.",
+            ans: [{ id: "P", label: "P", unit: "N", val: P }, { id: "v", label: "Mode", kind: "pick", opts: V, val: v }],
+            sol: `<div><b>P = ${s3(P)} N</b>: the post ${V[v].toLowerCase()}.</div>` },
+        ],
+        book: [["N<sub>B</sub>", "400 N", s3(NB) + " N"], ["Case 1", "P 320 N, F<sub>C</sub> 240 N &gt; 200 N", `${s3(P1)} N, ${s3(FC1)} N`], ["Case 2", "P 267 N, F<sub>B</sub> 66.7 N ≤ 80 N", `${s3(P2)} N, ${s3(FB2)} N`], ["Answer", "P = 267 N", s3(P) + " N"]],
+      };
+    },
+    draw(svg, d) {
+      const F = FD.fig(svg, { x0: -0.6, y0: -0.4, x1: d.Lb + 1.2, y1: d.Lp + 1.1 });
+      F.ground([-0.5, 0], [d.Lb + 1.1, 0], { side: 1 });
+      F.rect([0, d.Lp], d.Lb, 0.12, 0, { fill: C.wood });
+      F.line([0, d.Lp], [0, 0], { color: C.muted, dash: "3 3" });
+      F.circle([0, d.Lp], 5, { px: true, fill: "#fff" }); F.text([0, d.Lp], "A", { dx: -14, dy: 0, bold: true });
+      for (let i = 0; i <= 8; i++) F.force([(d.Lb * i) / 8, d.Lp + 0.12], -90, { len: 26, color: C.orange, w: 1.6 });
+      F.line([0, d.Lp + 0.12 + 26 / F.s], [d.Lb, d.Lp + 0.12 + 26 / F.s], { color: C.orange });
+      F.text([d.Lb / 2, d.Lp + 0.12 + 26 / F.s], `w = ${d.w} N/m`, { dy: -12, color: C.orange, bold: true });
+      F.rect([d.Lb - 0.06, 0], 0.12, d.Lp, 0, { fill: C.wood });
+      F.text([d.Lb, d.Lp], "B", { dx: 18, dy: 10, bold: true }); F.text([d.Lb, 0], "C", { dx: 16, dy: 12, bold: true });
+      F.force([d.Lb + 0.06, d.hP], 0, { mode: "tail", label: "P", len: 60 });
+      F.force([d.Lb - 0.06, d.Lp - 0.02], 180, { mode: "tail", len: 34, color: C.green, label: "F<tspan baseline-shift='sub' font-size='10'>B</tspan>", ldy: 12 });
+      F.force([d.Lb - 0.06, 0.02], 180, { mode: "tail", len: 34, color: C.green, label: "F<tspan baseline-shift='sub' font-size='10'>C</tspan>", ldy: -12 });
+      F.dim([0, -0.02], [d.Lb, -0.02], `${d.Lb} m`, { off: -18 });
+    },
+  });
+
+  /* ---------- Ex. 8.5 ---------- */
+  PR.push({
+    id: "ex85", group: "Book examples", nav: "Example 8.5", sub: "Two blocks and links",
+    kicker: "Example 8.5 · Fig. 8–11 · Type 3", title: "Largest P before either block moves",
+    desc: "Blocks A (mass m<sub>A</sub>) and B (m<sub>B</sub>) are connected to weightless links AC and BC, pinned at C. Link AC makes the angle θ with the vertical; BC is horizontal. A vertical force P acts down on pin C. µ<sub>s</sub> at both blocks.",
+    goal: "<b>Find</b> the largest P without movement. Seven unknowns, six force equations: one friction equation — assume A slips, check B (or the reverse).",
+    caption: "Links AC and BC are two-force members. Red: P on pin C. Green: friction on the blocks (each opposes the push of its link).",
+    fields: [
+      { key: "mA", label: "Mass m<sub>A</sub>", unit: "kg", value: 3, min: 1, max: 20, step: 1 },
+      { key: "mB", label: "Mass m<sub>B</sub>", unit: "kg", value: 9, min: 1, max: 30, step: 1 },
+      { key: "th", label: "Angle θ", unit: "°", value: 30, min: 20, max: 50, step: 1 },
+      { key: "mu", label: "µ<sub>s</sub>", unit: "", value: 0.3, min: 0.1, max: 0.4, step: 0.05 },
+    ],
+    valid: (d) => Math.tan(d.th * R) > d.mu + 0.02,
+    calc(d) {
+      const t = Math.tan(d.th * R), kAC = 1 / Math.cos(d.th * R), kBC = t, WA = d.mA * g, WB = d.mB * g;
+      const PA = (d.mu * WA) / (t - d.mu), PB = (d.mu * WB) / t, v = PA <= PB ? 0 : 1, P = Math.min(PA, PB);
+      const V = ["Block A slips first", "Block B slips first"];
+      return {
+        steps: [
+          { title: "Pin C", intro: "Express the link forces as multiples of P.",
+            ans: [{ id: "kAC", label: "F<sub>AC</sub> / P", unit: "", val: kAC }, { id: "kBC", label: "F<sub>BC</sub> / P", unit: "", val: kBC }],
+            sol: `<div>↑ ΣF<sub>y</sub>: F<sub>AC</sub> cos ${d.th}° − P = 0 ⇒ <b>F<sub>AC</sub> = ${s4(kAC)}P</b></div><div>→ ΣF<sub>x</sub>: F<sub>AC</sub> sin ${d.th}° − F<sub>BC</sub> = 0 ⇒ <b>F<sub>BC</sub> = ${s4(kBC)}P</b></div>` },
+          { title: "Each block on the verge of slipping", intro: `Block A: F<sub>A</sub> = ${s4(kBC)}P, N<sub>A</sub> = P + W<sub>A</sub>. Block B: F<sub>B</sub> = ${s4(kBC)}P, N<sub>B</sub> = W<sub>B</sub>. Find P for each slip.`,
+            ans: [{ id: "PA", label: "P if A slips", unit: "N", val: PA }, { id: "PB", label: "P if B slips", unit: "N", val: PB }],
+            sol: `<div>A: ${s4(t)}P = ${d.mu}(P + ${s4(WA)}) ⇒ <b>P = ${s3(PA)} N</b></div><div>B: ${s4(t)}P = ${d.mu}(${s4(WB)}) ⇒ <b>P = ${s3(PB)} N</b></div><div>(The book assumes A slips, finds F<sub>B</sub> = ${s3(t * PA)} N &lt; µ<sub>s</sub>N<sub>B</sub> = ${s3(d.mu * WB)} N, and so confirms the assumption — the same as comparing these two values.)</div>` },
+          { title: "Answer", intro: "The smaller P governs.",
+            ans: [{ id: "P", label: "P<sub>max</sub>", unit: "N", val: P }, { id: "v", label: "Which block", kind: "pick", opts: V, val: v }],
+            sol: `<div><b>P = ${s3(P)} N</b> — ${V[v].toLowerCase()}.</div><div>Note: N<sub>A</sub> grows with P, so A slips only when tan θ &gt; µ<sub>s</sub>.</div>` },
+        ],
+        book: [["F<sub>AC</sub>, F<sub>BC</sub>", "1.155P, 0.5774P", `${s4(kAC)}P, ${s4(kBC)}P`], ["P", "31.8 N (A slips)", s3(P) + " N"], ["F<sub>B</sub>, (F<sub>B</sub>)<sub>max</sub>", "18.4 N, 26.5 N", `${s3(t * P)} N, ${s3(d.mu * WB)} N`]],
+      };
+    },
+    draw(svg, d) {
+      const Lk = 2, s = Math.sin(d.th * R), c = Math.cos(d.th * R), A = [0, 0.3], Cp = [Lk * s, 0.3 + Lk * c], B = [Cp[0] + 1.6, Cp[1]];
+      const F = FD.fig(svg, { x0: -0.8, y0: -0.5, x1: B[0] + 0.8, y1: Cp[1] + 1 });
+      F.ground([-0.8, 0], [Cp[0] + 0.6, 0], { side: 1 });
+      F.ground([Cp[0] + 0.9, Cp[1] - 0.3], [B[0] + 0.8, Cp[1] - 0.3], { side: 1 });
+      F.rect([-0.3, 0], 0.6, 0.6, 0); F.text([0, 0.3], "A", { bold: true });
+      F.rect([B[0] - 0.3, Cp[1] - 0.3], 0.6, 0.6, 0); F.text(B, "B", { bold: true });
+      F.line(A, Cp, { w: 3 }); F.line(Cp, [B[0] - 0.3, B[1]], { w: 3 });
+      F.circle(Cp, 4, { px: true, fill: "#fff" }); F.text(Cp, "C", { dx: -14, dy: -10, bold: true });
+      F.line(Cp, [Cp[0], Cp[1] - 0.9], { color: C.muted, dash: "3 3" });
+      F.arc(Cp, 0.6, -90 - d.th, -90, { color: C.purple, label: d.th + "°", lr: 0.35 });
+      F.force(Cp, -90, { label: "P", len: 50 });
+      F.force([0.3, 0.02], 0, { mode: "tail", color: C.green, len: 34, label: "F<tspan baseline-shift='sub' font-size='10'>A</tspan>", ldy: -12 });
+      F.force([B[0] - 0.3, Cp[1] - 0.28], 180, { mode: "tail", color: C.green, len: 34, label: "F<tspan baseline-shift='sub' font-size='10'>B</tspan>", ldy: 12 });
+    },
+  });
+
+  /* ---------- 8-5 ---------- */
+  const crateFields = (extra) => [
+    { key: "m", label: "Mass m", unit: "kg", value: 40, min: 10, max: 80, step: 5 },
+    ...extra,
+    { key: "b", label: "Width b", unit: "m", value: 0.8, min: 0.4, max: 1.2, step: 0.1 },
+    { key: "hP", label: "Height of P", unit: "m", value: 0.2, min: 0.05, max: 0.35, step: 0.05 },
+  ];
+  function crateDraw(svg, d, K) {
+    const b = d.b, H = 0.4, F = FD.fig(svg, { x0: -0.25, y0: -0.2, x1: b + 0.55, y1: H + 0.45 });
+    F.ground([-0.2, 0], [b + 0.5, 0], { side: 1 });
+    F.rect([0, 0], b, H, 0, { fill: C.wood });
+    F.force([b, d.hP], (Math.atan2(4, 3) / R), { mode: "tail", label: "P", len: 70 });
+    F.text([b + 0.2, d.hP + 0.03], "3-4-5", { dx: 30, color: C.muted, size: 11 });
+    F.dot([b / 2, H / 2], { color: C.teal }); F.force([b / 2, H / 2], -90, { mode: "tail", label: "W", color: C.teal, len: 40 });
+    if (K && isFinite(K.x) && K.x > 0 && K.x < b) F.force([b - K.x, 0], 90, { label: "N", color: C.green, len: 44, ldx: -12 });
+    F.force([b * 0.35, 0], 180, { mode: "tail", label: "F", color: C.green, len: 40, ldy: 12 });
+    F.text([b, 0], "A", { dx: 10, dy: 14, bold: true });
+    F.dim([b, 0], [b, d.hP], `${d.hP} m`, { off: -30 });
+    F.dim([0, H], [b, H], `${b} m`, { off: -14 });
+  }
+  PR.push({
+    id: "p85", group: "Extra problems", nav: "Problem 8–5", sub: "Start towing the crate",
+    kicker: "Problem 8–5 · book p. 404", title: "Force needed to start towing the crate",
+    desc: "P pulls on the right face of the crate at height h<sub>P</sub>, along a 3-4-5 direction (up and to the right). A is the bottom right corner. µ<sub>s</sub> at the floor.",
+    goal: "<b>Find</b> P to start the crate moving and the location x of the resultant normal force, measured from A.",
+    caption: "Crate FBD. Red: P along 3-4-5 (horizontal 3/5, vertical 4/5). Green: N at x from A and F opposing motion.",
+    fields: crateFields([{ key: "mu", label: "µ<sub>s</sub>", unit: "", value: 0.3, min: 0.1, max: 0.8, step: 0.05 }]),
+    valid(d) { const W = d.m * g, P = (d.mu * W) / (0.6 + 0.8 * d.mu), N = W - 0.8 * P, x = (W * d.b / 2 - 0.6 * P * d.hP) / N; return N > 0 && x > 0 && x < d.b; },
+    calc(d) {
+      const W = d.m * g, P = (d.mu * W) / (0.6 + 0.8 * d.mu), N = W - 0.8 * P, x = (W * d.b / 2 - 0.6 * P * d.hP) / N;
+      return {
+        x,
+        steps: [
+          { title: "Impending slip", intro: "Motion impends, so F = µ<sub>s</sub>N with F acting to the left.",
+            ans: [{ id: "P", label: "P", unit: "N", val: P }, { id: "N", label: "N", unit: "N", val: N }],
+            sol: `<div>→ ΣF<sub>x</sub>: (3/5)P − µ<sub>s</sub>N = 0;  ↑ ΣF<sub>y</sub>: N + (4/5)P − ${s4(W)} = 0</div><div>(3/5)P = ${d.mu}(${s4(W)} − 0.8P) ⇒ <b>P = ${s3(P)} N</b>, <b>N = ${s3(N)} N</b></div>` },
+          { title: "Location of N", intro: "Sum moments about A.",
+            ans: [{ id: "x", label: "x from A", unit: "mm", val: x * 1000 }],
+            sol: `<div>↺ ΣM<sub>A</sub> = 0: W(b/2) − (3/5)P(h<sub>P</sub>) − N x = 0 (the vertical part of P and F pass through A)</div><div>x = [${s4(W)}(${d.b / 2}) − ${s4(0.6 * P)}(${d.hP})]/${s4(N)} ⇒ <b>x = ${s3(x * 1000)} mm</b></div>` },
+        ],
+        book: [["P", "140 N", s3(P) + " N"], ["x", "500 mm", s3(x * 1000) + " mm"]],
+      };
+    },
+    draw: crateDraw,
+  });
+
+  /* ---------- 8-6 ---------- */
+  PR.push({
+    id: "p86", group: "Extra problems", nav: "Problem 8–6", sub: "Same crate, P given",
+    kicker: "Problem 8–6 · book p. 404 · Type 1 that turns kinetic", title: "Friction on the crate when P is given",
+    desc: "Same crate and P direction as Problem 8–5, but now P is given. µ<sub>s</sub> and µ<sub>k</sub> at the floor.",
+    goal: "<b>Find</b> the friction force, the resultant normal force and its position x from A. First assume equilibrium and check F ≤ µ<sub>s</sub>N; if it fails, the crate slides and F = µ<sub>k</sub>N.",
+    caption: "Crate FBD (same figure as Problem 8–5).",
+    fields: crateFields([{ key: "P", label: "Force P", unit: "N", value: 300, min: 50, max: 450, step: 10 }, { key: "mus", label: "µ<sub>s</sub>", unit: "", value: 0.5, min: 0.1, max: 0.9, step: 0.05 }, { key: "muk", label: "µ<sub>k</sub>", unit: "", value: 0.2, min: 0.05, max: 0.6, step: 0.05 }]),
+    valid(d) { const W = d.m * g, N = W - 0.8 * d.P, x = (W * d.b / 2 - 0.6 * d.P * d.hP) / N; return d.muk < d.mus && N > 0 && x > 0 && x < d.b; },
+    validMsg: "Need µ<sub>k</sub> &lt; µ<sub>s</sub>, the crate must stay on the floor (N &gt; 0) and N must lie under the crate.",
+    calc(d) {
+      const W = d.m * g, Fq = 0.6 * d.P, N = W - 0.8 * d.P, Fm = d.mus * N, sl = Fq > Fm, F = sl ? d.muk * N : Fq, x = (W * d.b / 2 - 0.6 * d.P * d.hP) / N;
+      const V = ["No slip: F = (3/5)P", "Slips: F = µ<sub>k</sub>N"];
+      return {
+        x,
+        steps: [
+          { title: "Assume equilibrium", intro: "Treat F as an unknown equilibrium force.",
+            ans: [{ id: "N", label: "N", unit: "N", val: N }, { id: "Fq", label: "F needed", unit: "N", val: Fq }, { id: "Fm", label: "µ<sub>s</sub>N", unit: "N", val: Fm }],
+            sol: `<div>↑ ΣF<sub>y</sub>: N + (4/5)(${d.P}) − ${s4(W)} = 0 ⇒ <b>N = ${s3(N)} N</b></div><div>→ ΣF<sub>x</sub>: (3/5)(${d.P}) − F = 0 ⇒ <b>F = ${s3(Fq)} N</b></div><div>F<sub>max</sub> = ${d.mus}(${s4(N)}) = <b>${s3(Fm)} N</b></div>` },
+          { title: "Friction force and position of N", intro: "Decide whether the crate slips, then take moments about A for x.",
+            ans: [{ id: "v", label: "Result", kind: "pick", opts: V.map((s) => s.replace(/<[^>]+>/g, "")), val: sl ? 1 : 0 }, { id: "F", label: "Friction force F", unit: "N", val: F }, { id: "x", label: "x from A", unit: "m", val: x }],
+            sol: `<div>${sl ? `${s3(Fq)} N &gt; ${s3(Fm)} N: the crate <b>slips</b>, so F = µ<sub>k</sub>N = ${d.muk}(${s4(N)}) = <b>${s3(F)} N</b>.` : `${s3(Fq)} N ≤ ${s3(Fm)} N: <b>no slip</b>, F = <b>${s3(F)} N</b>.`}</div><div>↺ ΣM<sub>A</sub> = 0: W(b/2) − (3/5)P h<sub>P</sub> − N x = 0 ⇒ <b>x = ${s3(x)} m</b></div>` },
+        ],
+        book: [["F", "30.5 N", s3(F) + " N"], ["N", "152 N", s3(N) + " N"], ["x", "0.794 m", s3(x) + " m"]],
+      };
+    },
+    draw: crateDraw,
+  });
+
+  /* ---------- F8-6 ---------- */
+  PR.push({
+    id: "f86", group: "Extra problems", nav: "Problem F8–6", sub: "Slip or tip?",
+    kicker: "Fundamental Problem F8–6 · book p. 402 · Type 3: slip versus tip", title: "Maximum push on the crate",
+    desc: "A crate of weight W has its centre of gravity G a horizontal distance a from the front bottom corner A. A horizontal force P pushes on it at height h above the floor. µ<sub>s</sub> at the floor.",
+    goal: "<b>Find</b> the largest P without movement: compute P for slipping and P for tipping about A, and keep the smaller.",
+    caption: "Red: P. Teal: W at G. Green: floor reaction; when tipping impends, N and F act at the corner A.",
+    fields: [
+      { key: "W", label: "Weight W", unit: "lb", value: 250, min: 50, max: 500, step: 10 },
+      { key: "mu", label: "µ<sub>s</sub>", unit: "", value: 0.4, min: 0.1, max: 0.9, step: 0.05 },
+      { key: "h", label: "Height of P, h", unit: "ft", value: 4.5, min: 1, max: 6.5, step: 0.5 },
+      { key: "a", label: "Distance a (G to A)", unit: "ft", value: 1.5, min: 0.5, max: 3, step: 0.25 },
+    ],
+    calc(d) {
+      const Ps = d.mu * d.W, Pt = (d.W * d.a) / d.h, v = Pt < Ps ? 1 : 0, P = Math.min(Ps, Pt);
+      const V = ["Slips first", "Tips first"];
+      return {
+        v,
+        steps: [
+          { title: "Two possible motions", intro: "Slipping: F = µ<sub>s</sub>N with N anywhere under the crate. Tipping: N and F at the corner A.",
+            ans: [{ id: "Ps", label: "P to slip", unit: "lb", val: Ps }, { id: "Pt", label: "P to tip", unit: "lb", val: Pt }],
+            sol: `<div>Slip: N = W = ${d.W} lb; P − µ<sub>s</sub>N = 0 ⇒ <b>P = ${s3(Ps)} lb</b></div><div>Tip: ↺ ΣM<sub>A</sub> = 0: −P(${d.h}) + ${d.W}(${d.a}) = 0 ⇒ <b>P = ${s3(Pt)} lb</b></div>` },
+          { title: "Answer", intro: "The smaller value governs.",
+            ans: [{ id: "P", label: "P<sub>max</sub>", unit: "lb", val: P }, { id: "v", label: "Mode", kind: "pick", opts: V, val: v }],
+            sol: `<div><b>P<sub>max</sub> = ${s3(P)} lb</b> — the crate ${V[v].toLowerCase()}.</div><div>Lowering the push point (smaller h) makes tipping harder.</div>` },
+        ],
+        book: [["Slip", "100 lb", s3(Ps) + " lb"], ["Tip", "83.3 lb", s3(Pt) + " lb"], ["P<sub>max</sub>", "83.3 lb (tips)", s3(P) + " lb"]],
+      };
+    },
+    draw(svg, d, K) {
+      const w = 2 * d.a, H = 7, F = FD.fig(svg, { x0: -2, y0: -0.8, x1: w + 1.5, y1: H + 0.6 });
+      F.ground([-1.8, 0], [w + 1.4, 0], { side: 1 });
+      F.rect([0, 0], w, H, 0, { fill: C.wood });
+      F.dot([d.a, 3.5], { color: C.teal }); F.text([d.a, 3.5], "G", { dx: 12, dy: -8, color: C.teal });
+      F.force([d.a, 3.5], -90, { mode: "tail", label: "W", color: C.teal, len: 46 });
+      F.force([0, d.h], 0, { label: "P", len: 60 });
+      const xn = K.v ? w : d.a + 0.3;
+      F.force([xn, 0], 90, { label: "N", color: C.green, len: 44, ldx: 12 });
+      F.force([xn, 0], 180, { mode: "tail", label: "F", color: C.green, len: 36, off: 2, ldy: 12 });
+      F.text([w, 0], "A", { dx: 12, dy: 14, bold: true });
+      F.dim([0, 0], [0, d.h], `${d.h} ft`, { off: -16 });
+      F.dim([d.a, 3.5], [w, 3.5], `${d.a} ft`, { off: 14 });
+    },
+  });
+
+  /* ---------- 8-31 ---------- */
+  PR.push({
+    id: "p831", group: "Extra problems", nav: "Problem 8–31", sub: "Spool against a curb",
+    kicker: "Problem 8–31 (and 8–30) · book p. 408 · Type 3 with two modes", title: "Smallest P for impending motion of the spool",
+    desc: "A spool of mass m (outer radius R, hub radius r) rests on the floor at A and touches the top corner B of a curb of height h<sub>c</sub>. A horizontal force P acts at the top of the hub, toward the curb. µ<sub>A</sub> at the floor, µ<sub>B</sub> at the curb. <i>Geometry read from the book figure.</i>",
+    goal: "<b>Find</b> the smallest P. Two modes: the spool <b>rolls over the curb</b> (lifts off A, no slip at B) or <b>spins in place</b> (slips at A and B). A mode is possible only if its friction is available.",
+    caption: "Spool, floor contact A and curb corner B. Green: N<sub>B</sub> through the centre O and F<sub>B</sub> tangent; N<sub>A</sub>, F<sub>A</sub> at the floor.",
+    fields: [
+      { key: "m", label: "Mass m", unit: "kg", value: 150, min: 50, max: 300, step: 10 },
+      { key: "R", label: "Outer radius R", unit: "m", value: 0.4, min: 0.2, max: 0.6, step: 0.05 },
+      { key: "r", label: "Hub radius r", unit: "m", value: 0.2, min: 0.05, max: 0.35, step: 0.05 },
+      { key: "hc", label: "Curb height h<sub>c</sub>", unit: "m", value: 0.15, min: 0.05, max: 0.3, step: 0.01 },
+      { key: "muA", label: "µ<sub>A</sub>", unit: "", value: 0.4, min: 0.1, max: 0.8, step: 0.05 },
+      { key: "muB", label: "µ<sub>B</sub>", unit: "", value: 0.2, min: 0.1, max: 0.8, step: 0.05 },
+    ],
+    valid(d) { if (!(d.r < d.R && d.hc < 0.9 * d.R)) return false; const K = spool(d); return isFinite(K.P) && K.P > 0; },
+    validMsg: "Need r &lt; R and h<sub>c</sub> &lt; 0.9R.",
+    calc(d) {
+      const K = spool(d), V = ["Rolls over the curb (no slip at B)", "Spins in place (slips at A and B)"];
+      return {
+        K,
+        steps: [
+          { title: "Geometry of the contact at B", intro: "B lies on the rim at height h<sub>c</sub>. N<sub>B</sub> points from B toward the centre O.",
+            ans: [{ id: "xb", label: "Horizontal distance O→B", unit: "mm", val: K.xb * 1000 }, { id: "phi", label: "Angle of N<sub>B</sub> above horizontal", unit: "°", val: K.phi }],
+            sol: `<div>x<sub>B</sub> = √(R² − (R − h<sub>c</sub>)²) = √(${d.R}² − ${s3(d.R - d.hc)}²) = <b>${s3(K.xb * 1000)} mm</b></div><div>φ = tan⁻¹[(R − h<sub>c</sub>)/x<sub>B</sub>] = <b>${s3(K.phi)}°</b></div>` },
+          { title: "Mode 1: roll over the curb", intro: "N<sub>A</sub> = 0 and the spool pivots about B: take moments about B. Then find the friction ratio F<sub>B</sub>/N<sub>B</sub> this needs.",
+            ans: [{ id: "Pr", label: "P (roll)", unit: "N", val: K.Pr }, { id: "rat", label: "F<sub>B</sub>/N<sub>B</sub> needed", unit: "", val: K.rat }],
+            sol: `<div>↺ ΣM<sub>B</sub> = 0: P(R + r − h<sub>c</sub>) − W x<sub>B</sub> = 0 ⇒ P = ${s4(K.W)}(${s3(K.xb)})/${s3(d.R + d.r - d.hc)} = <b>${s3(K.Pr)} N</b></div><div>Resolve P and W along N<sub>B</sub> and the tangent at B: N<sub>B</sub> = ${s3(K.NBr)} N, F<sub>B</sub> = ${s3(K.FBr)} N ⇒ <b>F<sub>B</sub>/N<sub>B</sub> = ${s3(K.rat)}</b> ${K.rollOK ? "≤" : "&gt;"} µ<sub>B</sub> = ${d.muB}: ${K.rollOK ? "rolling is possible." : "B would slip, so the spool cannot roll over."}</div>` },
+          { title: "Mode 2: spin in place", intro: "Slip at both contacts: F<sub>A</sub> = µ<sub>A</sub>N<sub>A</sub> (to the right at A) and F<sub>B</sub> = µ<sub>B</sub>N<sub>B</sub> (up the tangent at B). Five unknowns, three equilibrium + two friction equations.",
+            ans: [{ id: "Ps", label: "P (spin)", unit: "N", val: K.Ps }],
+            sol: `<div>Solving ΣF<sub>x</sub> = 0, ΣF<sub>y</sub> = 0, ΣM<sub>O</sub> = 0 with the two friction equations:</div><div>N<sub>A</sub> = ${s3(K.s[0])} N, F<sub>A</sub> = ${s3(K.s[1])} N, N<sub>B</sub> = ${s3(K.s[2])} N, F<sub>B</sub> = ${s3(K.s[3])} N, <b>P = ${s3(K.Ps)} N</b>${K.spinOK ? "" : " — but N<sub>A</sub> &lt; 0, so this mode is impossible."}</div>` },
+          { title: "Answer", intro: "Among the possible modes, the smaller P happens first.",
+            ans: [{ id: "P", label: "P", unit: "N", val: K.P }, { id: "v", label: "Mode", kind: "pick", opts: V, val: K.v }],
+            sol: `<div><b>P = ${s3(K.P)} N</b>: the spool ${V[K.v].toLowerCase()}.</div>` },
+        ],
+        book: [["P (8–31: µ<sub>A</sub> 0.4, µ<sub>B</sub> 0.2)", "845 N", s3(K.P) + " N"]],
+        note: "Problem 8–30 uses µ<sub>A</sub> = 0.3, µ<sub>B</sub> = 0.4: this page gives 1.02 kN (rolls over the curb); the book lists 1.03 kN — 0.9 % apart, from the curb geometry read off the figure.",
+      };
+    },
+    draw(svg, d, Kc) {
+      const K = Kc.K, O = [0, d.R], F = FD.fig(svg, { x0: -d.R - 0.25, y0: -0.12, x1: d.R + 0.45, y1: 2 * d.R + 0.12 });
+      F.ground([-d.R - 0.2, 0], [d.R + 0.4, 0], { side: 1 });
+      F.poly([[K.xb, 0], [K.xb, d.hc], [d.R + 0.4, d.hc], [d.R + 0.4, 0]], { fill: "#dfe6ee" });
+      F.circle(O, d.R, { fill: C.wood }); F.circle(O, d.r, { fill: "#f8efe0" }); F.dot(O); F.text(O, "O", { dx: -12, dy: 10 });
+      F.force([0, d.R + d.r], 0, { mode: "tail", label: "P", len: 60 });
+      F.force(O, -90, { mode: "tail", label: "W", color: C.teal, len: 40, off: 6, ldx: -16, ldy: -4 });
+      F.text([0, 0], "A", { dx: -12, dy: 12, bold: true }); F.text([K.xb, d.hc], "B", { dx: 12, dy: -6, bold: true });
+      const B = [K.xb, d.hc], n = K.nB;
+      F.force(B, Math.atan2(n[1], n[0]) / R, { mode: "tail", label: "N<tspan baseline-shift='sub' font-size='10'>B</tspan>", color: C.green, len: 46 });
+      F.force(B, Math.atan2(-n[0], n[1]) / R, { mode: "tail", label: "F<tspan baseline-shift='sub' font-size='10'>B</tspan>", color: C.green, len: 34 });
+      if (K.v === 1) { F.force([0, 0], 90, { label: "N<tspan baseline-shift='sub' font-size='10'>A</tspan>", color: C.green, len: 40, ldx: -16 }); F.force([0, 0], 0, { mode: "tail", label: "F<tspan baseline-shift='sub' font-size='10'>A</tspan>", color: C.green, len: 34, ldy: 12 }); }
+      F.dim([d.R + 0.4, 0], [d.R + 0.4, d.hc], `${d.hc} m`, { off: -14 });
+    },
+  });
+  function spool(d) {
+    const W = d.m * g, O = [0, d.R], xb = Math.sqrt(d.R * d.R - (d.R - d.hc) ** 2), B = [xb, d.hc];
+    const nB = [(O[0] - B[0]) / d.R, (O[1] - B[1]) / d.R], tB = [nB[1], -nB[0]];
+    const mo = (p, f) => (p[0] - O[0]) * f[1] - (p[1] - O[1]) * f[0], pP = [0, d.R + d.r];
+    const Pr = (W * xb) / (d.R + d.r - d.hc);
+    const [NBr, FBr] = solve([[nB[0], tB[0]], [nB[1], tB[1]]], [-Pr, W]), rat = Math.abs(FBr / NBr), rollOK = NBr > 0 && rat <= d.muB + 1e-9;
+    const cols = [[[0, 0], [0, 1]], [[0, 0], [1, 0]], [B, nB], [B, tB], [pP, [1, 0]]];
+    const A = [cols.map((c) => c[1][0]), cols.map((c) => c[1][1]), cols.map((c) => mo(c[0], c[1])), [-d.muA, 1, 0, 0, 0], [0, 0, -d.muB, 1, 0]];
+    const s = solve(A, [0, W, 0, 0, 0]), Ps = s[4], spinOK = s[0] >= 0 && s[2] >= 0 && Ps > 0;
+    let P = Infinity, v = 0;
+    if (rollOK) { P = Pr; v = 0; }
+    if (spinOK && Ps < P) { P = Ps; v = 1; }
+    return { W, xb, nB, phi: Math.atan2(nB[1], -nB[0]) / R, Pr, NBr, FBr, rat, rollOK, s, Ps, spinOK, P, v };
+  }
+
+  window.FX_PROBLEMS = PR;
+})();
+
+    </script>
+    <script>
+/* fx.js — worked-examples engine for the Ch. 8 pages (schema after m3x.js, 2-D figures via fd.js).
+   Problem: {id, group, nav, sub, kicker, title, desc, goal, fields:[{key,label,unit,value,min,max,step}],
+             valid?(d), calc(d) -> {steps:[{title,intro,ans:[{id,label,unit,val,kind?:'num'|'pick',opts?,tol?}],sol}], book:[[q,book,page]], note?},
+             draw(F, d, C) where F = FD.fig(...) is created by draw(svg) inside the problem}. */
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const PR = window.FX_PROBLEMS;
+  const S = { i: 0, d: {}, C: null };
+  const cur = () => PR[S.i];
+  const defaults = (p) => Object.fromEntries(p.fields.map((f) => [f.key, f.value]));
+  const isBook = () => cur().fields.every((f) => S.d[f.key] === f.value);
+
+  function buildNav() {
+    let g = "", h = "";
+    PR.forEach((p, i) => {
+      if (p.group !== g) { g = p.group; h += `<div class="nav-group">${g}</div>`; }
+      h += `<button class="nav-item" data-i="${i}"><span class="nav-no">${i + 1}</span><span><b>${p.nav}</b><small>${p.sub}</small></span></button>`;
+    });
+    $("nav").innerHTML = h;
+    $("nav").addEventListener("click", (e) => { const b = e.target.closest("[data-i]"); if (b) sel(+b.dataset.i); });
+  }
+  function buildFields() {
+    const p = cur();
+    $("fields").innerHTML = `<div class="fields">${p.fields.map((f) => `<label class="field"><span>${f.label}</span><span class="inwrap"><input type="number" data-f="${f.key}" step="${f.step}" min="${f.min}" max="${f.max}"><em>${f.unit || "&nbsp;"}</em></span></label>`).join("")}</div>`;
+    refreshFields();
+  }
+  function refreshFields() { $("fields").querySelectorAll("input").forEach((inp) => (inp.value = S.d[inp.dataset.f])); }
+  function onField(e) {
+    const inp = e.target, f = cur().fields.find((q) => q.key === inp.dataset.f);
+    if (!f) return;
+    const x = parseFloat(inp.value);
+    if (!isFinite(x) || x < f.min || x > f.max) { inp.classList.add("bad"); return; }
+    const d2 = { ...S.d, [f.key]: x };
+    if (cur().valid && !cur().valid(d2)) { inp.classList.add("bad"); $("dataNote").textContent = cur().validMsg || "These values do not give a valid problem."; return; }
+    inp.classList.remove("bad"); $("dataNote").textContent = "";
+    S.d = d2;
+    update(true);
+  }
+  function randomize() {
+    const p = cur();
+    const rnd = (f) => { const n = Math.round((f.max - f.min) / f.step); return +(f.min + f.step * Math.floor(Math.random() * (n + 1))).toFixed(6); };
+    for (let k = 0; k < 200; k++) {
+      const d = {};
+      p.fields.forEach((f) => (d[f.key] = f.fixed ? f.value : rnd(f)));
+      if (!p.valid || p.valid(d)) { S.d = d; break; }
+    }
+    refreshFields();
+    $("dataNote").textContent = "";
+    update(true);
+  }
+
+  function ansHTML(a, si) {
+    const id = `a${si}_${a.id}`;
+    if (a.kind === "pick") return `<label class="field"><span>${a.label}</span><select id="${id}"><option value="">— choose —</option>${a.opts.map((o, k) => `<option value="${k}">${o}</option>`).join("")}</select></label>`;
+    return `<label class="field"><span>${a.label}</span><span class="inwrap"><input type="number" step="any" id="${id}"><em>${a.unit || "&nbsp;"}</em></span></label>`;
+  }
+  function buildSteps() {
+    $("steps").innerHTML = S.C.steps.map((s, si) => `<section class="card" data-step="${si}">
+        <div class="card-head"><div class="kicker">Step ${si + 1}</div><h2>${s.title}</h2><p>${s.intro}</p></div>
+        <div class="card-body grid2">
+          <div><div class="answers1">${s.ans.map((a) => ansHTML(a, si)).join("")}</div>
+            <div class="btnrow noprint" style="margin-top:10px"><button class="btn primary" data-act="check">Check</button><button class="btn" data-act="reveal">Show solution</button></div>
+            <div class="feedback" id="fb${si}"></div></div>
+          <div class="sol hidden" id="sol${si}"></div>
+        </div></section>`).join("");
+    S.C.steps.forEach((s, si) => ($("sol" + si).innerHTML = s.sol));
+  }
+  const tolOf = (a) => (a.tol != null ? a.tol : Math.max(0.006 * Math.abs(a.val), 1e-6));
+  function check(si) {
+    const s = S.C.steps[si];
+    let good = 0, tot = 0, empty = 0;
+    for (const a of s.ans) {
+      const inp = $(`a${si}_${a.id}`);
+      tot++;
+      if (inp.value.trim() === "") { empty++; inp.classList.remove("ok", "bad"); continue; }
+      const x = parseFloat(inp.value);
+      const ok = a.kind === "pick" ? x === a.val : isFinite(x) && Math.abs(x - a.val) <= tolOf(a);
+      inp.classList.toggle("ok", ok); inp.classList.toggle("bad", !ok);
+      if (ok) good++;
+    }
+    const fb = $("fb" + si);
+    if (empty === tot) { fb.className = "feedback bad"; fb.textContent = "Enter your answers first (three significant figures are enough)."; }
+    else if (good === tot) { fb.className = "feedback good"; fb.textContent = "All correct."; }
+    else { fb.className = "feedback bad"; fb.textContent = `${good} of ${tot} correct${empty ? `, ${empty} empty` : ""}. Check the free-body diagram: the sense of each friction force and which contacts slip.`; }
+    return { good, tot };
+  }
+  function fill(si) { S.C.steps[si].ans.forEach((a) => ($(`a${si}_${a.id}`).value = a.kind === "pick" ? String(a.val) : +a.val.toPrecision(4))); }
+  function onSteps(e) {
+    const b = e.target.closest("[data-act]");
+    if (!b) return;
+    const si = +b.closest("[data-step]").dataset.step;
+    if (b.dataset.act === "check") check(si);
+    else { const el = $("sol" + si); el.classList.toggle("hidden"); b.textContent = el.classList.contains("hidden") ? "Show solution" : "Hide solution"; }
+  }
+
+  function draw() { cur().draw($("fx"), S.d, S.C); }
+  function update(rebuild) {
+    S.C = cur().calc(S.d);
+    const book = isBook();
+    $("bookBox").innerHTML = book
+      ? `<b>Book answers</b> — check them in the last step:<table class="nice bk"><tr><th></th><th>Book</th><th>This page</th></tr>${S.C.book.map((b) => `<tr><td>${b[0]}</td><td>${b[1]}</td><td>${b[2]}</td></tr>`).join("")}</table>`
+      : `<b>Your own values.</b> The book answers no longer apply; the checks and solutions below use your data. <i>Book values</i> restores the original problem.`;
+    $("bookBox").classList.toggle("warn", !book);
+    $("pNote").innerHTML = S.C.note || "";
+    $("pNote").style.display = S.C.note ? "" : "none";
+    $("figCaption").innerHTML = cur().caption || "";
+    if (rebuild) buildSteps();
+    draw();
+  }
+  function sel(i) {
+    S.i = i;
+    const p = cur();
+    S.d = defaults(p);
+    $("nav").querySelectorAll(".nav-item").forEach((b) => b.classList.toggle("active", +b.dataset.i === i));
+    $("pKicker").innerHTML = p.kicker; $("pTitle").innerHTML = p.title; $("pDesc").innerHTML = p.desc; $("pGoal").innerHTML = p.goal;
+    $("dataNote").textContent = "";
+    buildFields();
+    update(true);
+    if (history.replaceState) history.replaceState(null, "", "#" + p.id);
+  }
+  buildNav();
+  $("fields").addEventListener("change", onField);
+  $("steps").addEventListener("click", onSteps);
+  $("btnReset").onclick = () => { S.d = defaults(cur()); refreshFields(); $("dataNote").textContent = ""; update(true); };
+  $("btnRandom").onclick = randomize;
+  $("btnPrint").onclick = () => window.print();
+  const h = location.hash.slice(1), hi = PR.findIndex((p) => p.id === h);
+  sel(hi >= 0 ? hi : 0);
+  window.FX = { PR, S, sel, check, fill, update, isBook, randomize, draw };
+})();
+
+    </script>
+  </body>
+</html>

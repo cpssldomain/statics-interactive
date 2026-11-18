@@ -1,0 +1,940 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dry Friction — Concepts (Sections 8.1–8.2)</title>
+    <style>
+:root {
+  --navy: #15273c;
+  --ink: #1f3448;
+  --muted: #617487;
+  --line: #dce5ed;
+  --bg: #f3f6f9;
+  --white: #fff;
+  --teal: #147b91;
+  --blue: #1f6fb2;
+  --purple: #7a3db8;
+  --red: #d1343a;
+  --green: #0d8a6f;
+  --orange: #e0662c;
+  --soft: #f8fafc;
+  --shadow: 0 8px 28px rgba(16, 37, 59, 0.06);
+}
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  font: 15px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+}
+button,
+input,
+select {
+  font: inherit;
+}
+button {
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+:focus-visible {
+  outline: 3px solid #78afde;
+  outline-offset: 2px;
+}
+header.top {
+  background: var(--navy);
+  color: #fff;
+  padding: 22px clamp(18px, 4vw, 56px) 20px;
+}
+header.top .eyebrow {
+  font-size: 11.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8fd3e2;
+  font-weight: 800;
+}
+header.top h1 {
+  margin: 4px 0 6px;
+  font-size: clamp(24px, 3vw, 34px);
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+header.top p {
+  margin: 0;
+  color: #c6d3df;
+  max-width: 920px;
+}
+nav.toc {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  padding: 8px clamp(12px, 3vw, 48px);
+}
+nav.toc a {
+  white-space: nowrap;
+  text-decoration: none;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 7px 11px;
+  border-radius: 8px;
+}
+nav.toc a:hover,
+nav.toc a.on {
+  background: #e8f3f6;
+  color: var(--teal);
+}
+main {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 22px clamp(12px, 3vw, 40px) 60px;
+}
+section.card {
+  background: #fff;
+  border: 1px solid #e2e9f0;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  margin: 0 0 22px;
+  overflow: hidden;
+}
+.card-head {
+  padding: 18px 22px 12px;
+  border-bottom: 1px solid #edf2f6;
+}
+.card-head .kicker {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--teal);
+  text-transform: uppercase;
+}
+.card-head h2 {
+  margin: 3px 0 4px;
+  font-size: 21px;
+  letter-spacing: -0.02em;
+}
+.card-head p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+.card-body {
+  padding: 18px 22px 22px;
+}
+.grid2 {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: 22px;
+}
+.grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+@media (max-width: 900px) {
+  .grid2,
+  .grid3 {
+    grid-template-columns: 1fr;
+  }
+}
+.figure {
+  background: #fcfdfe;
+  border: 1px solid #e6ecf2;
+  border-radius: 12px;
+  padding: 6px;
+}
+.figure svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.caption {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin: 6px 4px 0;
+}
+.btn {
+  border: 1px solid #cfdbe5;
+  background: #fff;
+  color: var(--ink);
+  border-radius: 9px;
+  padding: 8px 13px;
+  font-weight: 700;
+  font-size: 13.5px;
+}
+.btn:hover {
+  background: #f2f7fa;
+}
+.btn.primary {
+  background: var(--navy);
+  color: #fff;
+  border-color: var(--navy);
+}
+.btn.primary:hover {
+  background: #22405f;
+}
+.btn.on {
+  background: #e3f3f6;
+  border-color: #8ccbd8;
+  color: #0e6577;
+}
+.btnrow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+label.ctl {
+  display: block;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+}
+select,
+input[type="number"] {
+  border: 1px solid #cfdbe5;
+  border-radius: 9px;
+  padding: 7px 9px;
+  background: #fff;
+  color: var(--ink);
+  min-width: 0;
+}
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--teal);
+}
+.note {
+  font-size: 13.5px;
+  color: var(--muted);
+}
+.eq {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 13.5px;
+  background: #f6f9fb;
+  border: 1px solid #e5ecf2;
+  border-radius: 9px;
+  padding: 9px 11px;
+  margin: 6px 0;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.eq b {
+  color: var(--navy);
+}
+.keybox {
+  border-left: 4px solid var(--teal);
+  background: #f2fafb;
+  border-radius: 0 10px 10px 0;
+  padding: 10px 14px;
+  margin: 10px 0;
+  font-size: 14px;
+}
+.keybox.warn {
+  border-color: #d69a2d;
+  background: #fff9ec;
+}
+.readout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  font-size: 13.5px;
+  background: #fff7f1;
+  border: 1px solid #f6d7c4;
+  border-radius: 10px;
+  padding: 8px 12px;
+  margin-top: 8px;
+}
+.readout i {
+  color: #9a7a66;
+  font-style: normal;
+  font-size: 12px;
+}
+.pill {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: #eef3f7;
+  color: var(--muted);
+}
+table.nice {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 14px;
+}
+table.nice th,
+table.nice td {
+  border-bottom: 1px solid #e8eef3;
+  padding: 7px 8px;
+  text-align: left;
+  vertical-align: middle;
+}
+table.nice th {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+.feedback {
+  margin-top: 8px;
+  font-weight: 700;
+  font-size: 14px;
+}
+.feedback.good {
+  color: #0d7a52;
+}
+.feedback.bad {
+  color: #b5372c;
+}
+input.ok {
+  border-color: #3fb27f;
+  background: #effbf5;
+}
+input.bad {
+  border-color: #e0775f;
+  background: #fff3f0;
+}
+.footer {
+  color: var(--muted);
+  font-size: 12.5px;
+  text-align: center;
+  margin-top: 26px;
+}
+@media print {
+  nav.toc,
+  .noprint {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+  }
+  section.card {
+    box-shadow: none;
+    break-inside: avoid;
+  }
+}
+
+.ex-layout {
+  display: grid;
+  grid-template-columns: 270px minmax(0, 1fr);
+  gap: 0;
+  align-items: start;
+}
+.ex-nav {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  max-height: 100vh;
+  overflow-y: auto;
+  background: #fff;
+  border-right: 1px solid var(--line);
+  min-height: 100vh;
+}
+.ex-nav-inner {
+  padding: 16px 12px 30px;
+}
+.nav-group {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin: 14px 8px 6px;
+}
+.nav-item {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  border: 1px solid transparent;
+  background: none;
+  border-radius: 10px;
+  padding: 8px 9px;
+  color: var(--ink);
+}
+.nav-item:hover {
+  background: #f3f8fa;
+}
+.nav-item.active {
+  background: #e8f4f7;
+  border-color: #b9dfe7;
+}
+.nav-item .nav-no {
+  font-weight: 800;
+  color: #9aa8b6;
+  font-size: 12px;
+  padding-top: 2px;
+}
+.nav-item b {
+  display: block;
+  font-size: 13.5px;
+  line-height: 1.3;
+}
+.nav-item small {
+  color: var(--muted);
+  font-size: 12px;
+}
+.ex-main {
+  max-width: 1120px;
+  padding: 22px clamp(12px, 2.5vw, 34px) 60px;
+  margin: 0;
+}
+.fields,
+.answers {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+}
+.inwrap {
+  display: flex;
+  align-items: center;
+  border: 1px solid #cfdbe5;
+  border-radius: 9px;
+  background: #fff;
+  overflow: hidden;
+}
+.inwrap input {
+  border: 0;
+  flex: 1;
+  min-width: 0;
+  padding: 8px 9px;
+  border-radius: 0;
+}
+.inwrap em {
+  font-style: normal;
+  font-size: 12px;
+  color: var(--muted);
+  padding: 0 9px;
+  background: #f4f7fa;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+}
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-top: 12px;
+}
+.tab {
+  border: 1px solid #dbe4ec;
+  border-bottom: 0;
+  background: #f5f8fb;
+  border-radius: 10px 10px 0 0;
+  padding: 9px 14px;
+  font-weight: 750;
+  color: var(--muted);
+  font-size: 13.5px;
+}
+.tab.on {
+  background: #fff;
+  color: var(--teal);
+  border-color: #b9dfe7;
+}
+.hidden {
+  display: none;
+}
+@media (max-width: 900px) {
+  .ex-layout {
+    grid-template-columns: 1fr;
+  }
+  .ex-nav {
+    position: static;
+    min-height: 0;
+    max-height: none;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+}
+@media print {
+  .ex-nav {
+    display: none;
+  }
+  .ex-layout {
+    display: block;
+  }
+}
+#reactSol .eq,
+#pane-gra .eq {
+  white-space: normal;
+}
+
+.answers1{display:flex;flex-direction:column;gap:10px}
+.answers1 .field{max-width:260px}
+.vans .vlab{font-size:13.5px;font-weight:700;margin-bottom:4px}
+.vrow{display:flex;gap:8px;flex-wrap:wrap}
+.vrow label{display:flex;align-items:center;gap:4px;font-size:13px;color:var(--muted)}
+.vrow input{width:86px;padding:6px 7px;border:1px solid #cfdbe5;border-radius:8px;font:inherit;text-align:right}
+.sol{font-size:14px;line-height:1.65;overflow-x:auto}
+.sol .det{margin:4px 0}
+.sol > div{margin:3px 0}
+ol.proc{margin:0;padding-left:20px;line-height:1.6;font-size:14.5px}
+ol.proc li{margin:4px 0}
+table.bk{width:100%;margin-top:6px;font-size:13.5px}
+table.vin{margin:4px 0 10px}
+table.ctab th{font-weight:600;text-align:left}
+table.ctab small{color:var(--muted)}
+@media print{.noprint,.ex-nav{display:none}.sol.hidden{display:block}.ex-layout{display:block}}
+
+.fields{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px 12px;margin-bottom:6px}
+.answers1 select{width:100%;padding:7px 8px;border:1px solid var(--line);border-radius:9px;background:#fff}
+.answers1 select.ok{border-color:var(--green);background:#ecf8f4}.answers1 select.bad{border-color:var(--red);background:#fdeeee}
+.figure svg{width:100%;height:auto;display:block}
+svg text.lbl{paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round}
+.footer a{color:var(--teal)}
+@media print{.noprint,.ex-nav{display:none!important}}
+main section label.ctl{text-transform:none;letter-spacing:0;font-size:13px;margin-top:8px}
+
+    </style>
+  </head>
+  <body>
+    <header class="top">
+      <div class="eyebrow">Chapter 8 · Friction · Sections 8.1 &amp; 8.2</div>
+      <h1>Dry Friction — Concepts</h1>
+      <p>
+        Friction is a tangential force that resists sliding. It grows with the push until it reaches F<sub>s</sub> = µ<sub>s</sub>N,
+        then drops to F<sub>k</sub> = µ<sub>k</sub>N once sliding starts. Move the sliders to see when a body holds, slips or tips,
+        and how to tell which kind of friction problem you have.
+      </p>
+    </header>
+    <nav class="toc" id="toc">
+      <a href="#s1">1 · Static, limiting, kinetic</a><a href="#s2">2 · Angle of friction</a><a href="#s3">3 · Three types of problem</a
+      ><a href="#s4">4 · Which contact slips first?</a><a href="#s5">5 · Sense of the friction force</a><a href="#s6">6 · Concept check</a><a href="#s7">7 · Procedure</a>
+    </nav>
+    <main>
+      <section class="card" id="s1">
+        <div class="card-head">
+          <div class="kicker">1 · Section 8.1 · Figs. 8–1 to 8–3 · Eqs. 8–1, 8–2</div>
+          <h2>Pull a block: static friction, impending motion, sliding — or tipping</h2>
+          <p>A block of weight W is pulled by a horizontal force P at height h. While it holds, F = P and the normal force N shifts a distance x = Ph/W to balance the tipping effect of P. Friction can grow only up to F<sub>s</sub> = µ<sub>s</sub>N; after that the block slides and F = µ<sub>k</sub>N. If N reaches the corner first (x = b/2), the block tips instead.</p>
+        </div>
+        <div class="card-body grid2">
+          <div>
+            <div class="figure"><svg id="f1"></svg></div>
+            <div class="caption">Free-body diagram. Red: P. Teal: W. Green: N (at x from the centre line) and F.</div>
+            <div class="figure" style="margin-top: 10px"><svg id="f1g"></svg></div>
+            <div class="caption">Fig. 8–3: friction F versus P. The dot is the current state.</div>
+          </div>
+          <div>
+            <label class="ctl">Weight W = <span id="v1W"></span> N</label><input type="range" id="i1W" min="50" max="500" step="10" value="200" />
+            <label class="ctl">Pull P = <span id="v1P"></span> N</label><input type="range" id="i1P" min="0" max="300" step="1" value="40" />
+            <label class="ctl">Height of P, h = <span id="v1h"></span> m</label><input type="range" id="i1h" min="0.05" max="1" step="0.05" value="0.3" />
+            <label class="ctl">Width b = <span id="v1b"></span> m</label><input type="range" id="i1b" min="0.2" max="1.2" step="0.05" value="0.8" />
+            <label class="ctl">µ<sub>s</sub> = <span id="v1s"></span></label><input type="range" id="i1s" min="0.1" max="0.9" step="0.05" value="0.4" />
+            <label class="ctl">µ<sub>k</sub> = <span id="v1k"></span> (about 25 % below µ<sub>s</sub> in Table 8–1)</label><input type="range" id="i1k" min="0.05" max="0.8" step="0.05" value="0.3" />
+            <div class="btnrow" style="margin-top: 8px"><button class="btn" id="b1slip">Set P just above F<sub>s</sub></button><button class="btn" id="b1tip">Raise P high (h = 1 m)</button></div>
+            <div class="readout" id="r1"></div>
+            <div class="keybox" id="k1"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" id="s2">
+        <div class="card-head">
+          <div class="kicker">2 · Section 8.1 · Angle of static friction · Example 8.2</div>
+          <h2>The angle of friction and the angle of repose</h2>
+          <p>The resultant R of N and F makes the angle φ with the normal. At impending slip φ = φ<sub>s</sub> = tan⁻¹µ<sub>s</sub>. A block on an incline of angle θ is held while θ &lt; φ<sub>s</sub>; at θ = φ<sub>s</sub> (the angle of repose) it is about to slide — whatever its weight. A tall block may tip first: G above the downhill corner when tan θ = b/H.</p>
+        </div>
+        <div class="card-body grid2">
+          <div><div class="figure"><svg id="f2"></svg></div><div class="caption">Purple: the angle φ between R and the normal; dashed: the limit φ<sub>s</sub>. The vertical through G (teal dashed) must stay inside the base, or the block tips.</div></div>
+          <div>
+            <label class="ctl">Incline θ = <span id="v2t"></span>°</label><input type="range" id="i2t" min="0" max="60" step="0.5" value="20" />
+            <label class="ctl">µ<sub>s</sub> = <span id="v2s"></span></label><input type="range" id="i2s" min="0.1" max="1" step="0.001" value="0.466" />
+            <label class="ctl">Block width b = <span id="v2b"></span> (height H = 1)</label><input type="range" id="i2b" min="0.2" max="1.5" step="0.05" value="0.6" />
+            <div class="btnrow" style="margin-top: 8px"><button class="btn" id="b2ex">Example 8.2 (µ<sub>s</sub> = tan 25°)</button><button class="btn" id="b2rep">Tilt to the angle of repose</button></div>
+            <div class="readout" id="r2"></div>
+            <div class="keybox" id="k2"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" id="s3">
+        <div class="card-head">
+          <div class="kicker">3 · Section 8.2 · Figs. 8–4 to 8–6</div>
+          <h2>Three types of static friction problem</h2>
+          <p>Draw the free-body diagrams, count the unknowns, and compare with the equilibrium equations. Pick the type for each case, then reveal the count.</p>
+        </div>
+        <div class="card-body"><div class="grid3" id="types"></div></div>
+      </section>
+
+      <section class="card" id="s4">
+        <div class="card-head">
+          <div class="kicker">4 · Section 8.2 · Example 8.4</div>
+          <h2>Impending motion at some contacts: which one slips first?</h2>
+          <p>The post under the beam has four unknowns (F<sub>B</sub>, P, F<sub>C</sub>, N<sub>C</sub>) and three equations. Either it slips at B and rotates about C, or slips at C and rotates about B. Compute P for both and check the other contact; the smaller valid P happens.</p>
+        </div>
+        <div class="card-body grid2">
+          <div><div class="figure"><svg id="f4"></svg></div><div class="caption">Bars: P needed for each case (green = possible, red = the other contact would slip first). N<sub>B</sub> = N<sub>C</sub> = 400 N as in Example 8.4.</div></div>
+          <div>
+            <label class="ctl">µ<sub>B</sub> (top of post) = <span id="v4B"></span></label><input type="range" id="i4B" min="0.05" max="0.9" step="0.05" value="0.2" />
+            <label class="ctl">µ<sub>C</sub> (floor) = <span id="v4C"></span></label><input type="range" id="i4C" min="0.05" max="0.9" step="0.05" value="0.5" />
+            <label class="ctl">h<sub>P</sub>/L<sub>p</sub> (where P acts) = <span id="v4k"></span></label><input type="range" id="i4k" min="0.05" max="0.9" step="0.05" value="0.25" />
+            <div class="readout" id="r4"></div>
+            <div class="keybox" id="k4"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" id="s5">
+        <div class="card-head">
+          <div class="kicker">5 · Section 8.2 · Equilibrium versus friction equations</div>
+          <h2>May I assume the sense of F?</h2>
+          <p>Example 8.1 (crate, P = 80 N at 30°). When F is an unknown <i>equilibrium</i> force, draw it either way: a negative answer just means it acts the other way. But when you write F = µN, only magnitudes appear — so F must be drawn opposing the impending motion.</p>
+        </div>
+        <div class="card-body grid2">
+          <div><div class="figure"><svg id="f5"></svg></div><div class="caption">The green arrow is the sense you <i>assumed</i> for F on the free-body diagram.</div></div>
+          <div>
+            <div class="btnrow"><button class="btn on" id="b5L">Assume F acts to the left</button><button class="btn" id="b5R">Assume F acts to the right</button></div>
+            <div class="readout" id="r5"></div>
+            <div class="keybox" id="k5"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" id="s6">
+        <div class="card-head"><div class="kicker">6 · Check yourself</div><h2>Concept check</h2><p>Pick an answer; you get feedback at once.</p></div>
+        <div class="card-body" id="quiz"></div>
+      </section>
+
+      <section class="card" id="s7">
+        <div class="card-head"><div class="kicker">7 · Section 8.2</div><h2>Procedure for analysis</h2></div>
+        <div class="card-body">
+          <ol class="proc">
+            <li><b>Free-body diagrams.</b> Unless the problem says motion impends or slipping occurs, show friction forces as unknowns (do not assume F = µN).</li>
+            <li><b>Count</b> the unknowns and compare with the equilibrium equations. If there are more unknowns, apply F = µN at some or all contacts (or a tipping condition).</li>
+            <li><b>Sense.</b> If you use F = µN, draw F with its correct sense (opposing the impending relative motion).</li>
+            <li><b>Solve</b> the equilibrium and friction equations; for 3-D systems use Cartesian vectors.</li>
+            <li><b>Check</b>: every F ≤ µ<sub>s</sub>N where slipping was not assumed, and N inside the contact area (no tipping). If a check fails, try the other case.</li>
+          </ol>
+          <div class="note">Book note: the third "Important Point" on p. 394 prints F<sub>s</sub> = µ<sub>s</sub>N for the sliding case; for sliding it should read F<sub>k</sub> = µ<sub>k</sub>N (Eq. 8–2).</div>
+        </div>
+      </section>
+      <div class="footer">Based on Hibbeler, <i>Engineering Mechanics: Statics</i>, 16th ed., Sections 8.1–8.2. <a href="Friction_Examples_8.1-8.2.html">Worked examples</a> · <a href="index.html">All pages</a></div>
+    </main>
+
+    <script>
+/* fd.js — small 2-D SVG drawing helper for the Ch. 8 friction pages.
+   World coordinates (y up) are fitted into the SVG viewBox. Force arrows use pixel lengths. */
+(function () {
+  const NS = "http://www.w3.org/2000/svg";
+  const C = { ink: "#1f3448", muted: "#8a9aab", red: "#d1343a", blue: "#1f6fb2", green: "#0d8a6f", purple: "#7a3db8", orange: "#e0662c", teal: "#147b91", fill: "#eef3f8", wood: "#f3e3c6" };
+  const fmt = (v) => (isFinite(v) ? +v.toFixed(2) : 0);
+  function el(tag, at, parent) {
+    const e = document.createElementNS(NS, tag);
+    for (const k in at) if (at[k] !== undefined && at[k] !== null) e.setAttribute(k, at[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function fig(svg, box, opt = {}) {
+    const W = opt.W || 560, H = opt.H || 380, pad = opt.pad == null ? 46 : opt.pad;
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    svg.setAttribute("role", "img");
+    const bw = box.x1 - box.x0, bh = box.y1 - box.y0;
+    const s = Math.min((W - 2 * pad) / bw, (H - 2 * pad) / bh);
+    const ox = (W - s * bw) / 2 - s * box.x0, oy = (H + s * bh) / 2 + s * box.y0;
+    const P = (p) => [ox + s * p[0], oy - s * p[1]];
+    const defs = el("defs", {}, svg);
+    const marks = {};
+    function mk(color) {
+      if (marks[color]) return marks[color];
+      const id = "ah" + Math.random().toString(36).slice(2, 8);
+      const m = el("marker", { id, viewBox: "0 0 10 10", refX: 9, refY: 5, markerWidth: 7, markerHeight: 7, orient: "auto-start-reverse" }, defs);
+      el("path", { d: "M0,0 L10,5 L0,10 z", fill: color }, m);
+      return (marks[color] = id);
+    }
+    const g = el("g", {}, svg), gl = el("g", {}, svg);
+    const F = {
+      s, P, svg, C,
+      line(a, b, o = {}) { const A = P(a), B = P(b); return el("line", { x1: fmt(A[0]), y1: fmt(A[1]), x2: fmt(B[0]), y2: fmt(B[1]), stroke: o.color || C.ink, "stroke-width": o.w || 1.6, "stroke-dasharray": o.dash }, g); },
+      poly(pts, o = {}) { return el("polygon", { points: pts.map((p) => P(p).map(fmt).join(",")).join(" "), fill: o.fill || "none", stroke: o.color || C.ink, "stroke-width": o.w || 1.6, "fill-opacity": o.op }, g); },
+      path(pts, o = {}) { return el("polyline", { points: pts.map((p) => P(p).map(fmt).join(",")).join(" "), fill: "none", stroke: o.color || C.ink, "stroke-width": o.w || 1.6, "stroke-dasharray": o.dash }, g); },
+      circle(c, r, o = {}) { const A = P(c); return el("circle", { cx: fmt(A[0]), cy: fmt(A[1]), r: fmt(o.px ? r : r * s), fill: o.fill || "none", stroke: o.color || C.ink, "stroke-width": o.w || 1.6, "stroke-dasharray": o.dash }, g); },
+      ellipse(c, rx, ry, o = {}) { const A = P(c); return el("ellipse", { cx: fmt(A[0]), cy: fmt(A[1]), rx: fmt(rx * s), ry: fmt(ry * s), fill: o.fill || "none", stroke: o.color || C.ink, "stroke-width": o.w || 1.6, "stroke-dasharray": o.dash }, g); },
+      dot(c, o = {}) { const A = P(c); return el("circle", { cx: fmt(A[0]), cy: fmt(A[1]), r: o.r || 3.2, fill: o.color || C.ink }, g); },
+      /* text at world point, offset in px */
+      text(c, str, o = {}) {
+        const A = P(c);
+        const t = el("text", { x: fmt(A[0] + (o.dx || 0)), y: fmt(A[1] + (o.dy || 0)), "text-anchor": o.anchor || "middle", "dominant-baseline": "middle", "font-size": o.size || 13, "font-weight": o.bold ? 700 : 500, fill: o.color || C.ink, class: "lbl" }, gl);
+        t.innerHTML = str;
+        return t;
+      },
+      /* arrow between world points */
+      arrow(a, b, o = {}) {
+        const A = P(a), B = P(b), col = o.color || C.red;
+        el("line", { x1: fmt(A[0]), y1: fmt(A[1]), x2: fmt(B[0]), y2: fmt(B[1]), stroke: col, "stroke-width": o.w || 2.4, "marker-end": `url(#${mk(col)})`, "stroke-dasharray": o.dash }, g);
+        if (o.label) { const t = o.at === "tail" ? A : B, d = [B[0] - A[0], B[1] - A[1]], L = Math.hypot(...d) || 1; F.textPx([t[0] + (o.at === "tail" ? -1 : 1) * 14 * d[0] / L + (o.ldx || 0), t[1] + (o.at === "tail" ? -1 : 1) * 14 * d[1] / L + (o.ldy || 0)], o.label, { color: col, bold: true }); }
+      },
+      /* force of pixel length len, direction angle deg (math sense), applied at world point p.
+         mode "tail": arrow starts at p; "head" (default): arrow ends at p (push) */
+      force(p, ang, o = {}) {
+        const A = P(p), len = o.len || 60, r = (ang * Math.PI) / 180, d = [Math.cos(r), -Math.sin(r)], col = o.color || C.red;
+        const off = o.off || 0;
+        let a, b;
+        if (o.mode === "tail") { a = [A[0] + d[0] * off, A[1] + d[1] * off]; b = [a[0] + d[0] * len, a[1] + d[1] * len]; }
+        else { b = [A[0] - d[0] * off, A[1] - d[1] * off]; a = [b[0] - d[0] * len, b[1] - d[1] * len]; }
+        el("line", { x1: fmt(a[0]), y1: fmt(a[1]), x2: fmt(b[0]), y2: fmt(b[1]), stroke: col, "stroke-width": o.w || 2.4, "marker-end": `url(#${mk(col)})` }, g);
+        if (o.label) { const q = o.mode === "tail" ? b : a, k = o.mode === "tail" ? 1 : -1; F.textPx([q[0] + k * d[0] * 16 + (o.ldx || 0), q[1] + k * d[1] * 16 + (o.ldy || 0)], o.label, { color: col, bold: true }); }
+      },
+      textPx(A, str, o = {}) {
+        const t = el("text", { x: fmt(A[0]), y: fmt(A[1]), "text-anchor": o.anchor || "middle", "dominant-baseline": "middle", "font-size": o.size || 13, "font-weight": o.bold ? 700 : 500, fill: o.color || C.ink, class: "lbl" }, gl);
+        t.innerHTML = str;
+        return t;
+      },
+      /* hatched rough surface from a to b; hatch on the right-hand side when walking a->b (use side=-1 to flip) */
+      ground(a, b, o = {}) {
+        F.line(a, b, { w: 2, color: o.color || C.ink });
+        const A = P(a), B = P(b), L = Math.hypot(B[0] - A[0], B[1] - A[1]), u = [(B[0] - A[0]) / L, (B[1] - A[1]) / L], side = o.side || 1;
+        const n = [-u[1] * side, u[0] * side];
+        for (let t = 6; t < L; t += 10) {
+          const x = A[0] + u[0] * t, y = A[1] + u[1] * t;
+          el("line", { x1: fmt(x), y1: fmt(y), x2: fmt(x + 7 * n[0] - 5 * u[0]), y2: fmt(y + 7 * n[1] - 5 * u[1]), stroke: o.color || C.muted, "stroke-width": 1 }, g);
+        }
+        if (o.label) F.textPx([(A[0] + B[0]) / 2 + n[0] * 20 + (o.ldx || 0), (A[1] + B[1]) / 2 + n[1] * 20], o.label, { color: C.teal, size: 12, bold: true });
+      },
+      /* dimension line between a and b, offset in px along the normal */
+      dim(a, b, label, o = {}) {
+        const A = P(a), B = P(b), L = Math.hypot(B[0] - A[0], B[1] - A[1]) || 1, n = [-(B[1] - A[1]) / L, (B[0] - A[0]) / L], k = o.off == null ? 18 : o.off;
+        const a2 = [A[0] + n[0] * k, A[1] + n[1] * k], b2 = [B[0] + n[0] * k, B[1] + n[1] * k], col = C.muted;
+        el("line", { x1: fmt(A[0]), y1: fmt(A[1]), x2: fmt(a2[0]), y2: fmt(a2[1]), stroke: col, "stroke-width": 0.8 }, g);
+        el("line", { x1: fmt(B[0]), y1: fmt(B[1]), x2: fmt(b2[0]), y2: fmt(b2[1]), stroke: col, "stroke-width": 0.8 }, g);
+        el("line", { x1: fmt(a2[0]), y1: fmt(a2[1]), x2: fmt(b2[0]), y2: fmt(b2[1]), stroke: col, "stroke-width": 1, "marker-end": `url(#${mk(col)})`, "marker-start": `url(#${mk(col)})` }, g);
+        F.textPx([(a2[0] + b2[0]) / 2 + n[0] * 11, (a2[1] + b2[1]) / 2 + n[1] * 11], label, { size: 12, color: "#4d6073" });
+      },
+      /* circular arc (world radius) from angle a0 to a1 (deg) */
+      arc(c, r, a0, a1, o = {}) {
+        const n = 48, pts = [];
+        for (let i = 0; i <= n; i++) { const t = ((a0 + ((a1 - a0) * i) / n) * Math.PI) / 180; pts.push([c[0] + r * Math.cos(t), c[1] + r * Math.sin(t)]); }
+        const pl = F.path(pts, o);
+        if (o.arrow) pl.setAttribute("marker-end", `url(#${mk(o.color || C.ink)})`);
+        if (o.label) { const t = (((a0 + a1) / 2) * Math.PI) / 180, rr = r + (o.lr || 0); F.text([c[0] + rr * Math.cos(t), c[1] + rr * Math.sin(t)], o.label, { color: o.color || C.ink, bold: true, dx: o.ldx || 0, dy: o.ldy || 0 }); }
+        return pl;
+      },
+      /* rotated rectangle: corner p0 (bottom-left), width w along angle ang, height h */
+      rect(p0, w, h, ang = 0, o = {}) {
+        const r = (ang * Math.PI) / 180, u = [Math.cos(r), Math.sin(r)], v = [-u[1], u[0]];
+        const pts = [p0, [p0[0] + w * u[0], p0[1] + w * u[1]], [p0[0] + w * u[0] + h * v[0], p0[1] + w * u[1] + h * v[1]], [p0[0] + h * v[0], p0[1] + h * v[1]]];
+        F.poly(pts, { fill: o.fill || C.fill, color: o.color, w: o.w });
+        return pts;
+      },
+      ok() { return !/NaN|Infinity/.test(svg.innerHTML); },
+    };
+    return F;
+  }
+  window.FD = { fig, C };
+})();
+
+    </script>
+    <script>
+/* f12c.js — Sec. 8.1–8.2 concept page. */
+(function () {
+  const $ = (id) => document.getElementById(id), C = FD.C, R = Math.PI / 180;
+  const s3 = (v) => (Math.abs(v) >= 1000 ? Math.round(v).toString() : (+v.toPrecision(3)).toString());
+  const sub = (t) => `<tspan baseline-shift='sub' font-size='10'>${t}</tspan>`;
+  const num = (id) => parseFloat($(id).value);
+  const OUT = {};
+  const ro = (items) => items.map(([l, v]) => `<span><i>${l}</i> <b>${v}</b></span>`).join("");
+
+  /* ---------- 1. block lab ---------- */
+  function s1() {
+    const W = num("i1W"), h = num("i1h"), b = num("i1b"), ms = num("i1s");
+    let mk = num("i1k");
+    if (mk > ms) { mk = ms; $("i1k").value = mk; }
+    $("i1P").max = Math.round(1.5 * Math.max(ms * W, 1));
+    const P = Math.min(num("i1P"), +$("i1P").max);
+    ["W", "P", "h", "b", "s", "k"].forEach((k) => ($("v1" + k).textContent = { W, P, h, b, s: ms, k: mk }[k]));
+    const Fs = ms * W, Ptip = (W * b) / 2 / h, Fk = mk * W;
+    let state, F, x;
+    if (P <= Math.min(Fs, Ptip) + 1e-9) { F = P; x = (P * h) / W; state = Math.abs(P - Fs) < 1e-6 ? "impending" : Math.abs(P - Ptip) < 1e-6 ? "tipimp" : "static"; }
+    else if (Fs < Ptip) { F = Fk; x = (P * h) / W; state = "sliding"; if (x > b / 2) { x = b / 2; state = "slidetip"; } }
+    else { F = P; x = b / 2; state = "tips"; }
+    OUT.s1 = { P, F, x, Fs, Fk, Ptip, state };
+    const msg = {
+      static: `<b>Static friction.</b> F = P = ${s3(F)} N &lt; F<sub>s</sub> = ${s3(Fs)} N. No motion; F is found from equilibrium only.`,
+      impending: `<b>Impending motion.</b> F has reached its limit F<sub>s</sub> = µ<sub>s</sub>N = ${s3(Fs)} N (Eq. 8–1). Any larger P moves the block.`,
+      tipimp: `<b>Tipping impends.</b> N has reached the corner (x = b/2).`,
+      sliding: `<b>Sliding.</b> P &gt; F<sub>s</sub>, so the block moves and friction drops to F<sub>k</sub> = µ<sub>k</sub>N = ${s3(Fk)} N (Eq. 8–2). The block is no longer in equilibrium.`,
+      slidetip: `<b>Sliding and tipping.</b> The block slides (F<sub>k</sub> = ${s3(Fk)} N) and P is so large that it also tips.`,
+      tips: `<b>Tips before it slips.</b> N reached the corner at P = ${s3(Ptip)} N, below F<sub>s</sub> = ${s3(Fs)} N. Lower h or widen the block to make it slip instead.`,
+    }[state];
+    $("r1").innerHTML = ro([["N", s3(W) + " N"], ["F", s3(F) + " N"], ["x", s3(x) + " m"], ["F<sub>s</sub> = µ<sub>s</sub>N", s3(Fs) + " N"], ["P to tip", s3(Ptip) + " N"], ["φ", s3(Math.atan(F / W) / R) + "°"]]);
+    $("k1").innerHTML = msg;
+    $("k1").classList.toggle("warn", state !== "static");
+    // figure
+    const H = 1, F1 = FD.fig($("f1"), { x0: -b / 2 - 0.9, y0: -0.45, x1: b / 2 + 0.9, y1: H + 0.25 }, { H: 300 });
+    F1.ground([-b / 2 - 0.8, 0], [b / 2 + 0.8, 0], { side: 1 });
+    const tilt = state === "tips" || state === "slidetip" ? -6 : 0;
+    F1.rect([-b / 2, 0], b, H, 0, { fill: C.wood });
+    F1.line([0, 0], [0, H], { color: C.muted, dash: "4 4" });
+    F1.dot([0, H * 0.7], { color: C.teal }); F1.force([0, H * 0.7], -90, { mode: "tail", label: "W", color: C.teal, len: 34, ldx: -14 });
+    if (P > 0) F1.force([b / 2, h], 0, { mode: "tail", label: "P", len: 24 + 50 * P / Math.max(+$("i1P").max, 1) });
+    F1.force([x, 0], 90, { label: "N", color: C.green, len: 46, ldx: 14 });
+    if (F > 0) F1.force([x, 0], 180, { mode: "tail", label: "F", color: C.green, len: 18 + 50 * F / Math.max(+$("i1P").max, 1), off: 2, ldy: 12 });
+    F1.dim([-b / 2, 0], [-b / 2, h], `h`, { off: 20 });
+    if (Math.abs(x) > 0.01) F1.dim([0, 0], [x, 0], "x", { off: -26 });
+    if (state === "sliding" || state === "slidetip") F1.text([0, H], "→ sliding", { dy: -14, color: C.red, bold: true });
+    if (state === "tips" || state === "slidetip") F1.text([b / 2, 0], "tips about this corner", { dy: 30, color: C.red, bold: true });
+    void tilt;
+    // graph
+    const Pm = +$("i1P").max, G = FD.fig($("f1g"), { x0: 0, y0: 0, x1: Pm, y1: Math.max(Fs, Pm * 0.7) * 1.15 }, { H: 230, pad: 40 });
+    G.arrow([0, 0], [Pm, 0], { color: C.ink, w: 1.2, label: "P" }); G.arrow([0, 0], [0, Math.max(Fs, Pm * 0.7) * 1.12], { color: C.ink, w: 1.2, label: "F" });
+    const Pl = Math.min(Fs, Ptip);
+    G.path([[0, 0], [Pl, Pl]], { color: C.green, w: 2.4 });
+    if (Fs < Ptip) { G.line([Fs, Fs], [Fs, Fk], { color: C.muted, dash: "3 3" }); G.path([[Fs, Fk], [Pm, Fk]], { color: C.orange, w: 2.4 }); G.text([Fs, Fs], "F" + sub("s"), { dy: -12, color: C.green, bold: true }); G.text([Pm, Fk], "F" + sub("k"), { dx: -14, dy: -12, color: C.orange, bold: true }); G.text([Pl / 2, Pl / 2], "F = P", { dx: -22, dy: -8, color: C.green, size: 12 }); }
+    else { G.line([Ptip, 0], [Ptip, Ptip], { color: C.red, dash: "3 3" }); G.text([Ptip, Ptip], "tips", { dy: -12, color: C.red, bold: true }); }
+    G.dot([P, F], { r: 6, color: C.red });
+  }
+  ["i1W", "i1P", "i1h", "i1b", "i1s", "i1k"].forEach((id) => $(id).addEventListener("input", s1));
+  $("b1slip").onclick = () => { $("i1h").value = 0.2; $("i1P").value = Math.ceil(num("i1s") * num("i1W")) + 1; s1(); };
+  $("b1tip").onclick = () => { $("i1h").value = 1; $("i1P").value = Math.ceil(Math.min(num("i1s") * num("i1W"), (num("i1W") * num("i1b")) / 2)) + 1; s1(); };
+
+  /* ---------- 2. incline ---------- */
+  function s2() {
+    const t = num("i2t"), ms = num("i2s"), b = num("i2b"), H = 1, ps = Math.atan(ms) / R, tt = Math.atan(b / H) / R;
+    $("v2t").textContent = t; $("v2s").textContent = ms; $("v2b").textContent = b;
+    const phi = Math.min(t, ps);
+    let st = t < Math.min(ps, tt) - 1e-6 ? "holds" : tt < ps ? "tips" : Math.abs(t - ps) < 0.26 ? "impending" : "slides";
+    if (st === "tips" && t < tt - 1e-6) st = "holds";
+    OUT.s2 = { ps, tt, st };
+    $("r2").innerHTML = ro([["φ<sub>s</sub> = tan⁻¹µ<sub>s</sub>", s3(ps) + "°"], ["tipping angle tan⁻¹(b/H)", s3(tt) + "°"], ["F/N needed = tan θ", s3(Math.tan(t * R))]]);
+    $("k2").innerHTML = { holds: `<b>Holds.</b> θ = ${t}° is below φ<sub>s</sub> = ${s3(ps)}° and the block is wide enough not to tip. R leans uphill from the normal by φ = θ.`, impending: `<b>Angle of repose.</b> θ ≈ φ<sub>s</sub>: slipping impends, µ<sub>s</sub> = tan θ (Example 8.2).`, slides: `<b>Slides.</b> θ &gt; φ<sub>s</sub>: friction cannot balance the weight component along the slope.`, tips: `<b>Tips before it slides.</b> The vertical through G passes outside the downhill corner at θ = ${s3(tt)}° &lt; φ<sub>s</sub>.` }[st];
+    $("k2").classList.toggle("warn", st !== "holds");
+    const c = Math.cos(t * R), s = Math.sin(t * R), L = 4, F = FD.fig($("f2"), { x0: -0.3, y0: -0.3, x1: L * Math.cos(t * R) + 0.6, y1: Math.max(L * s, 0) + 1.9 }, { H: 330 });
+    F.ground([0, 0], [L * c, L * s], { side: 1 }); F.line([0, 0], [L * c, 0], { color: C.muted, dash: "4 4" });
+    if (t > 2) F.arc([0, 0], 0.9, 0, t, { color: C.purple, label: "θ", lr: 0.3 });
+    const u = [c, s], v = [-s, c], p0 = [1.6 * c, 1.6 * s];
+    F.rect(p0, b, H, t, { fill: C.wood });
+    const at = (a, n) => [p0[0] + a * u[0] + n * v[0], p0[1] + a * u[1] + n * v[1]];
+    const G = at(b / 2, H / 2);
+    F.dot(G, { color: C.teal }); F.line(G, [G[0], 0], { color: C.teal, dash: "3 4", w: 1 });
+    const O = at(b / 2, 0), nAng = 90 + t;
+    F.line(O, [O[0] + 1.3 * Math.cos(nAng * R), O[1] + 1.3 * Math.sin(nAng * R)], { color: C.muted, dash: "4 3", w: 1 });
+    const rAng = nAng - phi;
+    F.arrow([O[0] - 1.25 * Math.cos(rAng * R), O[1] - 1.25 * Math.sin(rAng * R)], O, { color: C.purple, label: "R", at: "tail" });
+    const lim = nAng - ps;
+    F.line(O, [O[0] + 1.3 * Math.cos(lim * R), O[1] + 1.3 * Math.sin(lim * R)], { color: C.purple, dash: "2 4", w: 1 });
+    F.text(O, "φ = " + s3(phi) + "°", { dx: 46, dy: 18, color: C.purple, size: 12, bold: true });
+  }
+  ["i2t", "i2s", "i2b"].forEach((id) => $(id).addEventListener("input", s2));
+  $("b2ex").onclick = () => { $("i2s").value = Math.tan(25 * R).toFixed(3); $("i2t").value = 20; $("i2b").value = 1.2; s2(); };
+  $("b2rep").onclick = () => { $("i2t").value = (Math.round((Math.atan(num("i2s")) / R) * 2) / 2).toFixed(1); s2(); };
+
+  /* ---------- 3. types ---------- */
+  const TY = ["Type 1: no apparent impending motion", "Type 2: impending motion at all contacts", "Type 3: impending motion at some contacts"];
+  const CASES = [
+    { t: "Fig. 8–4", d: "Two-member frame ABC, members 100 N each, rests on rough floors at A (µ = 0.3) and C (µ = 0.5). Is it in equilibrium?", a: 0, why: "Unknowns: B<sub>x</sub>, B<sub>y</sub>, F<sub>A</sub>, N<sub>A</sub>, F<sub>C</sub>, N<sub>C</sub> = 6; equations: 3 + 3 = 6. Solve, then check F<sub>A</sub> ≤ 0.3N<sub>A</sub> and F<sub>C</sub> ≤ 0.5N<sub>C</sub>." },
+    { t: "Fig. 8–5", d: "A 100-N bar leans on a wall (µ<sub>B</sub> = 0.4) and floor (µ<sub>A</sub> = 0.3). Find the smallest angle θ without slipping.", a: 1, why: "Unknowns: N<sub>A</sub>, F<sub>A</sub>, N<sub>B</sub>, F<sub>B</sub>, θ = 5; equations: 3 equilibrium + F<sub>A</sub> = 0.3N<sub>A</sub> + F<sub>B</sub> = 0.4N<sub>B</sub> = 5." },
+    { t: "Fig. 8–6", d: "The same frame with a horizontal force P at B. Find P to cause movement.", a: 2, why: "Unknowns: 7 (B<sub>x</sub>, B<sub>y</sub>, F<sub>A</sub>, N<sub>A</sub>, F<sub>C</sub>, N<sub>C</sub>, P); equations: 6 + one friction equation. Try slip at A, then slip at C; the smaller P governs." },
+  ];
+  $("types").innerHTML = CASES.map((c, i) => `<div class="keybox"><b>${c.t}</b><p style="margin:6px 0">${c.d}</p><div class="btnrow">${TY.map((t, k) => `<button class="btn" data-c="${i}" data-k="${k}">${t.split(":")[0]}</button>`).join("")}</div><div class="feedback" id="ty${i}"></div></div>`).join("");
+  $("types").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-c]"); if (!b) return;
+    const c = CASES[+b.dataset.c], ok = +b.dataset.k === c.a, fb = $("ty" + b.dataset.c);
+    b.parentNode.querySelectorAll("button").forEach((x) => x.classList.toggle("on", x === b));
+    fb.className = "feedback " + (ok ? "good" : "bad"); fb.innerHTML = (ok ? "Right — " : "Not quite — it is " + TY[c.a] + ". ") + c.why;
+  });
+
+  /* ---------- 4. which contact ---------- */
+  function s4() {
+    const mB = num("i4B"), mC = num("i4C"), k = num("i4k"), N = 400;
+    $("v4B").textContent = mB; $("v4C").textContent = mC; $("v4k").textContent = k;
+    const P1 = (mB * N) / k, FC1 = P1 - mB * N, ok1 = FC1 <= mC * N + 1e-9;
+    const P2 = (mC * N) / (1 - k), FB2 = P2 * k, ok2 = FB2 <= mB * N + 1e-9;
+    const v = ok2 && (!ok1 || P2 <= P1) ? 2 : 1, P = v === 2 ? P2 : P1;
+    OUT.s4 = { P1, P2, P, v };
+    $("r4").innerHTML = ro([["Case 1 (slip at B): P", s3(P1) + " N"], ["F<sub>C</sub>", `${s3(FC1)} N ${ok1 ? "≤" : "&gt;"} µ<sub>C</sub>N = ${s3(mC * N)} N`], ["Case 2 (slip at C): P", s3(P2) + " N"], ["F<sub>B</sub>", `${s3(FB2)} N ${ok2 ? "≤" : "&gt;"} µ<sub>B</sub>N = ${s3(mB * N)} N`]]);
+    $("k4").innerHTML = `<b>P = ${s3(P)} N</b>: the post ${v === 1 ? "slips at B and rotates about C" : "slips at C and rotates about B"}.${Math.abs(P1 - P2) < 1 ? " Both cases give nearly the same P: both contacts slip together." : ""}`;
+    const top = Math.max(P1, P2), F = FD.fig($("f4"), { x0: 0, y0: 0, x1: 4, y1: 2.6 }, { H: 260, pad: 36 });
+    F.line([0, 0], [4, 0], { w: 1.2 });
+    [[P1, ok1, "Case 1: slip at B"], [P2, ok2, "Case 2: slip at C"]].forEach(([p, ok, l], i) => { const y = (2.2 * p) / top; F.poly([[0.6 + 1.8 * i, 0], [1.6 + 1.8 * i, 0], [1.6 + 1.8 * i, y], [0.6 + 1.8 * i, y]], { fill: ok ? "#bfe6d8" : "#f6c9cb", color: ok ? C.green : C.red }); F.text([1.1 + 1.8 * i, y], s3(p) + " N", { dy: -12, bold: true }); F.text([1.1 + 1.8 * i, 0], l, { dy: 14, size: 12 }); });
+  }
+  ["i4B", "i4C", "i4k"].forEach((id) => $(id).addEventListener("input", s4));
+
+  /* ---------- 5. sense ---------- */
+  let sense = -1;
+  function s5() {
+    const P = 80, th = 30, W = 196.2, Fx = P * Math.cos(th * R);
+    const F = sense === -1 ? Fx : -Fx;
+    OUT.s5 = { F };
+    $("b5L").classList.toggle("on", sense === -1); $("b5R").classList.toggle("on", sense === 1);
+    $("r5").innerHTML = ro([[`→ ΣF<sub>x</sub> = 0: 80 cos 30° ${sense === -1 ? "− F" : "+ F"} = 0 ⇒ F =`, s3(F) + " N"]]);
+    $("k5").innerHTML = F > 0 ? "Positive: the assumed sense (to the left) is correct." : "Negative: F actually acts the other way (to the left), with magnitude " + s3(-F) + " N. Allowed here because F is an equilibrium force. If you wrote F = µ<sub>s</sub>N with this wrong sense, the equations would give a wrong answer instead of a negative sign.";
+    $("k5").classList.toggle("warn", F < 0);
+    const b = 0.8, H = 0.8, Fg = FD.fig($("f5"), { x0: -0.9, y0: -0.3, x1: 0.9, y1: 1 }, { H: 260 });
+    Fg.ground([-0.85, 0], [0.85, 0], { side: 1 }); Fg.rect([-b / 2, 0], b, H, 0, { fill: C.wood });
+    Fg.force([-b / 2, 0.2], -30, { label: "80 N", len: 60 });
+    Fg.force([0, H * 0.75], -90, { mode: "tail", label: "W", color: C.teal, len: 30, ldx: -14 });
+    Fg.force([0.25, 0], sense === -1 ? 180 : 0, { mode: "tail", label: "F (assumed)", color: C.green, len: 46, ldy: 16 });
+    void W;
+  }
+  $("b5L").onclick = () => { sense = -1; s5(); }; $("b5R").onclick = () => { sense = 1; s5(); };
+
+  /* ---------- 6. quiz ---------- */
+  const Q = [
+    { q: "A 100-N block rests on a floor with µ<sub>s</sub> = 0.5. A horizontal force of 20 N acts on it. The friction force is…", o: ["50 N", "20 N", "0", "Cannot tell"], a: 1, w: "It does not slip (20 &lt; 50), so friction is an equilibrium force: F = P = 20 N. F = µ<sub>s</sub>N only at impending motion." },
+    { q: "Doubling the contact area of a block (same weight, same materials) changes F<sub>s</sub> by…", o: ["×2", "×½", "Nothing", "×4"], a: 2, w: "F<sub>s</sub> = µ<sub>s</sub>N is independent of the contact area (rule 2, p. 391)." },
+    { q: "Which is generally true?", o: ["µ<sub>k</sub> &gt; µ<sub>s</sub>", "µ<sub>k</sub> = µ<sub>s</sub>", "µ<sub>k</sub> &lt; µ<sub>s</sub>", "µ<sub>k</sub> depends on area"], a: 2, w: "Kinetic friction is smaller — typically about 25 % below µ<sub>s</sub>; φ<sub>s</sub> &gt; φ<sub>k</sub>." },
+    { q: "A box slides down a ramp just when θ = 31°. µ<sub>s</sub> is about…", o: ["0.52", "0.60", "0.86", "0.31"], a: 1, w: "Angle of repose: µ<sub>s</sub> = tan 31° = 0.60, independent of the weight (Example 8.2)." },
+    { q: "You use F = µ<sub>s</sub>N at a contact. Can you draw F in either direction and fix it by the sign later?", o: ["Yes, always", "No — F must oppose the impending motion", "Only in 2-D", "Only if N is known"], a: 1, w: "F = µN relates magnitudes only; with the wrong sense the equations give a wrong value, not a negative one." },
+    { q: "A tall crate is pushed high up. Equilibrium gives x (position of N) larger than half the width. What happens?", o: ["It slips", "It tips", "Nothing", "Friction becomes kinetic"], a: 1, w: "N cannot act outside the base. If equilibrium needs x &gt; b/2, the crate tips (Fig. 8–1d, F8–6)." },
+  ];
+  $("quiz").innerHTML = Q.map((q, i) => `<div class="keybox"><b>${i + 1}.</b> ${q.q}<div class="btnrow" style="margin-top:6px">${q.o.map((o, k) => `<button class="btn" data-q="${i}" data-k="${k}">${o}</button>`).join("")}</div><div class="feedback" id="q${i}"></div></div>`).join("");
+  $("quiz").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-q]"); if (!b) return;
+    const q = Q[+b.dataset.q], ok = +b.dataset.k === q.a, fb = $("q" + b.dataset.q);
+    b.parentNode.querySelectorAll("button").forEach((x) => x.classList.toggle("on", x === b));
+    fb.className = "feedback " + (ok ? "good" : "bad"); fb.innerHTML = (ok ? "Correct. " : "Not quite. ") + q.w;
+  });
+
+  /* toc highlight */
+  const links = [...document.querySelectorAll("nav.toc a")];
+  window.addEventListener("scroll", () => { let cur = links[0]; links.forEach((a) => { const s = document.querySelector(a.getAttribute("href")); if (s && s.getBoundingClientRect().top < 120) cur = a; }); links.forEach((a) => a.classList.toggle("on", a === cur)); });
+
+  s1(); s2(); s4(); s5();
+  window.F12C = { OUT, s1, s2, s4, s5, Q, CASES };
+})();
+/* self test: book values reproduced by the page's own controls */
+window.F12C.selfTest = function () {
+  const $ = (id) => document.getElementById(id), set = (id, v) => { $(id).value = v; $(id).dispatchEvent(new Event("input", { bubbles: true })); };
+  const out = [], chk = (name, got, want, tol) => out.push({ name, got: +got.toPrecision(4), want, ok: Math.abs(got - want) <= tol });
+  const O = window.F12C.OUT;
+  set("i1W", 200); set("i1s", 0.4); set("i1k", 0.3); set("i1h", 0.3); set("i1b", 0.8); set("i1P", 40);
+  chk("block static F = P", O.s1.F, 40, 1e-9); chk("x = Ph/W", O.s1.x, 0.06, 1e-9); out.push({ name: "state static", got: O.s1.state, want: "static", ok: O.s1.state === "static" });
+  set("i1P", 100); chk("sliding F = µk N", O.s1.F, 60, 1e-9); out.push({ name: "state sliding", got: O.s1.state, want: "sliding", ok: O.s1.state === "sliding" });
+  set("i1h", 1); set("i1P", 79); out.push({ name: "tips (P_tip 80 < Fs 80?)", got: O.s1.state, want: "static", ok: O.s1.state === "static" });
+  set("i1b", 0.6); set("i1P", 70); out.push({ name: "tips when Ptip 60 < Fs 80", got: O.s1.state, want: "tips", ok: O.s1.state === "tips" });
+  set("i2s", Math.tan(25 * Math.PI / 180).toFixed(3)); chk("Ex 8.2 phi_s = 25°", O.s2.ps, 25, 0.02);
+  set("i2b", 1.2); set("i2t", 25); out.push({ name: "Ex 8.2 at 25° impending", got: O.s2.st, want: "impending", ok: O.s2.st === "impending" });
+  set("i4B", 0.2); set("i4C", 0.5); set("i4k", 0.25); chk("Ex 8.4 case 1 P", O.s4.P1, 320, 0.01); chk("Ex 8.4 case 2 P", O.s4.P2, 266.67, 0.01); chk("Ex 8.4 answer", O.s4.P, 266.67, 0.01);
+  $("b5L").click(); chk("Ex 8.1 F", O.s5.F, 69.28, 0.01);
+  return out;
+};
+
+    </script>
+  </body>
+</html>
