@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Statics — Interactive Teaching Material</title>
+<style>
+  :root{--navy:#15273c;--ink:#1f3448;--muted:#617487;--teal:#147b91;--bg:#f3f6f9}
+  *{box-sizing:border-box} body{margin:0;font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+  header{background:var(--navy);color:#fff;padding:34px clamp(18px,5vw,64px)}
+  header .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#8fd3e2;font-weight:800}
+  header h1{margin:6px 0 8px;font-size:clamp(26px,3.4vw,38px);letter-spacing:-.03em}
+  header p{margin:0;color:#c6d3df;max-width:820px}
+  main{max-width:1100px;margin:0 auto;padding:26px clamp(14px,4vw,40px) 60px}
+  h2{font-size:14px;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);margin:26px 4px 12px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+  a.card{display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid #e2e9f0;border-radius:16px;padding:18px 20px;box-shadow:0 8px 28px rgba(16,37,59,.06);transition:transform .12s,box-shadow .12s}
+  a.card:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(16,37,59,.12)}
+  .tag{display:inline-block;font-size:12px;font-weight:800;color:var(--teal);background:#e6f3f6;border-radius:999px;padding:3px 10px}
+  .card h3{margin:8px 0 6px;font-size:19px;letter-spacing:-.02em}
+  .card p{margin:0;color:var(--muted);font-size:14.5px}
+  footer{color:var(--muted);font-size:13px;text-align:center;margin-top:34px}
+</style>
+</head>
+<body>
+<header>
+  <div class="eyebrow">Engineering Mechanics · Statics</div>
+  <h1>Interactive Teaching Material</h1>
+  <p>Interactive pages for structural analysis and internal forces. Change the numbers, isolate free bodies, check your answers and reveal the solutions. Everything runs in your browser — no installation needed.</p>
+</header>
+<main>
+  <h2>Chapter 6 · Structural Analysis</h2>
+  <div class="grid">
+    <a class="card" href="truss_method_of_joints_lab.html"><span class="tag">Sections 6.2–6.3</span><h3>Trusses: Method of Joints</h3><p>Solve a truss joint by joint with live free-body diagrams, equations and a class challenge.</p></a>
+    <a class="card" href="Method_of_Sections_Interactive_7_Problems.html"><span class="tag">Section 6.4</span><h3>Trusses: Method of Sections</h3><p>Seven levels: cut across a panel, choose a moment center and find member forces — including a four-member K-truss cut.</p></a>
+    <a class="card" href="Frames_and_Machines_Complete_Textbook_10_Problems.html"><span class="tag">Section 6.6</span><h3>Frames and Machines</h3><p>Ten problems with a free-body diagram of every part, equilibrium equations, hints and answer checking.</p></a>
+  </div>
+  <h2>Chapter 7 · Internal Forces</h2>
+  <div class="grid">
+    <a class="card" href="Shear_Moment_Diagrams_Concepts_7.2-7.3.html"><span class="tag">Sections 7.2–7.3 · Concepts</span><h3>Shear and Moment Diagrams — Concepts</h3><p>Sign convention, method of sections, the w–V–M relations, a beam builder and a concept check.</p></a>
+    <a class="card" href="Shear_Moment_Diagrams_Examples_7.2-7.3.html"><span class="tag">Sections 7.2–7.3 · Examples</span><h3>Shear and Moment Diagrams — Worked Examples</h3><p>Ten beams: reactions, V(x) and M(x), step-by-step diagrams and key-value practice.</p></a>
+  </div>
+  <footer>Problems are adapted from examples in Hibbeler, <i>Engineering Mechanics: Statics</i>, Chapters 6–7, for classroom use. All figures are original.</footer>
+</main>
+</body>
+</html>

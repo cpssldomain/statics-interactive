@@ -1,0 +1,2375 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#142337" />
+    <title>Truss Lab | Method of Joints</title>
+    <style>
+      :root {
+        --navy: #15273c;
+        --ink: #20354a;
+        --muted: #637587;
+        --line: #dce5ed;
+        --bg: #f3f6f9;
+        --white: #fff;
+        --teal: #147b91;
+        --red: #c05745;
+        --orange: #d17820;
+        --green: #328469;
+        --purple: #7459a8;
+        --soft: #f8fafc;
+        --shadow: 0 8px 28px rgba(16, 37, 59, 0.055);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+      }
+      body {
+        font:
+          15px/1.5 system-ui,
+          -apple-system,
+          "Segoe UI",
+          Roboto,
+          Arial,
+          sans-serif;
+        color: var(--ink);
+        background: var(--bg);
+      }
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+      button {
+        cursor: pointer;
+      }
+      button:disabled {
+        cursor: not-allowed;
+        opacity: 0.45;
+      }
+      button:focus-visible,
+      input:focus-visible,
+      select:focus-visible {
+        outline: 3px solid #78afde;
+        outline-offset: 2px;
+      }
+      header {
+        background: var(--navy);
+        color: white;
+        padding: 19px clamp(18px, 3.5vw, 55px);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        flex-wrap: wrap;
+      }
+      header h1 {
+        font-size: 24px;
+        letter-spacing: -0.035em;
+        line-height: 1.2;
+        margin: 3px 0 5px;
+        font-weight: 750;
+      }
+      header p {
+        font-size: 13px;
+        color: #c6d3df;
+        margin: 0;
+      }
+      .eyebrow {
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.19em;
+        text-transform: uppercase;
+        color: #8fd3dd;
+      }
+      .header-chip {
+        border: 1px solid #4b6175;
+        border-radius: 100px;
+        padding: 8px 13px;
+        font-size: 12px;
+        color: #d6e2ec;
+      }
+      main {
+        max-width: 1600px;
+        margin: 0 auto;
+        padding: 23px clamp(14px, 2.5vw, 32px) 40px;
+      }
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.35fr) minmax(360px, 0.92fr);
+        align-items: start;
+        gap: 19px;
+      }
+      .stack {
+        display: grid;
+        gap: 19px;
+      }
+      .panel {
+        background: var(--white);
+        border: 1px solid var(--line);
+        border-radius: 13px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .panel-head {
+        padding: 18px 22px;
+        border-bottom: 1px solid var(--line);
+      }
+      .panel-head h2 {
+        margin: 0;
+        font-size: 17px;
+        letter-spacing: -0.02em;
+      }
+      .panel-head p {
+        margin: 3px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .panel-body {
+        padding: 19px 22px;
+      }
+      .controls {
+        display: grid;
+        grid-template-columns: 1.3fr 1fr 1fr 1fr;
+        gap: 15px;
+        align-items: end;
+      }
+      .control label {
+        display: block;
+        font-size: 12px;
+        color: #566a7d;
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+      .control select,
+      .number-input {
+        width: 100%;
+        border: 1px solid #cbd8e4;
+        border-radius: 7px;
+        padding: 10px;
+        background: #fff;
+        color: var(--ink);
+      }
+      .control input[type="range"] {
+        width: 100%;
+        accent-color: var(--teal);
+        margin: 8px 0 7px;
+      }
+      .measure {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        font-size: 12px;
+        color: #526477;
+        font-variant-numeric: tabular-nums;
+      }
+      .measure b {
+        color: var(--ink);
+      }
+      .tools {
+        display: flex;
+        gap: 9px;
+        flex-wrap: wrap;
+        margin-top: 16px;
+      }
+      .button {
+        border: 1px solid #c9d5e0;
+        border-radius: 8px;
+        background: #fff;
+        color: #29435b;
+        font-size: 13px;
+        font-weight: 680;
+        padding: 10px 14px;
+        transition:
+          background 0.15s,
+          border-color 0.15s;
+      }
+      .button:hover:not(:disabled) {
+        background: #eff5f8;
+      }
+      .button.primary {
+        background: var(--navy);
+        color: #fff;
+        border-color: var(--navy);
+      }
+      .button.primary:hover:not(:disabled) {
+        background: #2c435a;
+      }
+      .button.accent {
+        background: #e9f5f6;
+        border-color: #b1dade;
+        color: #116f81;
+      }
+      .button.danger {
+        color: #aa4a3b;
+      }
+      .button.small {
+        padding: 7px 10px;
+        font-size: 12px;
+      }
+      .button.pill {
+        border-radius: 50px;
+      }
+      .svg-wrap {
+        padding: 14px 12px 3px;
+        background: linear-gradient(180deg, #fcfefe 0%, #f6f9fc 100%);
+      }
+      #trussSvg {
+        width: 100%;
+        height: auto;
+        display: block;
+        min-height: 300px;
+        max-height: 560px;
+        touch-action: manipulation;
+      }
+      .legend {
+        display: flex;
+        gap: 18px;
+        flex-wrap: wrap;
+        padding: 14px 21px;
+        border-top: 1px solid var(--line);
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .legend span {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .swatch {
+        width: 18px;
+        height: 5px;
+        border-radius: 3px;
+        display: inline-block;
+      }
+      .hint {
+        font-size: 12px;
+        color: var(--muted);
+        padding: 0px 22px 16px;
+      }
+      .overview {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        border-top: 1px solid var(--line);
+      }
+      .metric {
+        padding: 14px 16px;
+        border-right: 1px solid var(--line);
+        min-width: 0;
+      }
+      .metric:last-child {
+        border-right: 0;
+      }
+      .metric b {
+        font-size: 19px;
+        display: block;
+        white-space: nowrap;
+        font-variant-numeric: tabular-nums;
+      }
+      .metric span {
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .section-label {
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 11px;
+        font-weight: 800;
+        color: #6d7e8f;
+        margin: 0 0 9px;
+      }
+      .row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .subtle {
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .joint-list {
+        display: flex;
+        gap: 7px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+      }
+      .joint-button {
+        width: 43px;
+        height: 43px;
+        border-radius: 9px;
+        border: 1px solid #cbd6e2;
+        background: white;
+        font-weight: 800;
+        color: #43566b;
+        position: relative;
+      }
+      .joint-button:hover {
+        background: #edf4fa;
+      }
+      .joint-button.active {
+        background: #e8f5f8;
+        border: 2px solid var(--teal);
+        color: #0d657b;
+      }
+      .joint-button.done::after {
+        content: "✓";
+        font-size: 9px;
+        background: #2a9372;
+        color: #fff;
+        position: absolute;
+        right: -5px;
+        top: -6px;
+        width: 16px;
+        height: 16px;
+        border-radius: 100%;
+        line-height: 16px;
+      }
+      .joint-button.possible:not(.active):not(.done) {
+        box-shadow: inset 0 0 0 2px #d4e8e8;
+      }
+      .status {
+        padding: 11px 13px;
+        border-radius: 8px;
+        font-size: 13px;
+        background: #f1f5f8;
+        color: #43566b;
+        margin: 15px 0;
+      }
+      .status.ok {
+        background: #e9f5f0;
+        color: #245f4d;
+      }
+      .status.warn {
+        background: #fff3e4;
+        color: #865b20;
+      }
+      .status.bad {
+        background: #fff0ed;
+        color: #984f42;
+      }
+      .equation {
+        background: #f7f9fc;
+        border: 1px solid #e4eaf0;
+        border-radius: 7px;
+        margin: 8px 0;
+        padding: 10px 12px;
+        overflow-x: auto;
+        white-space: nowrap;
+        font-size: 13px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        color: #283e57;
+      }
+      .eq-head {
+        font-size: 12px;
+        color: #697e90;
+        font-weight: 700;
+        margin-top: 14px;
+      }
+      .note {
+        font-size: 12px;
+        color: var(--muted);
+        margin: 10px 0 0;
+      }
+      .selected-edit {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 13px;
+      }
+      .selected-edit label {
+        font-size: 12px;
+        font-weight: 700;
+        color: #566a7d;
+        display: block;
+        margin-bottom: 5px;
+      }
+      .selected-edit input {
+        width: 100%;
+        border: 1px solid #cbd8e4;
+        border-radius: 7px;
+        padding: 8px 10px;
+        color: var(--ink);
+      }
+      .fbd-shell {
+        background: #fbfcfe;
+        border: 1px solid #e5ebf1;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-top: 12px;
+      }
+      #jointFbd {
+        width: 100%;
+        height: auto;
+        max-height: 320px;
+        display: block;
+      }
+      .actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 9px;
+        margin-top: 17px;
+      }
+      .actions .button {
+        min-height: 41px;
+      }
+      .result-lines {
+        display: grid;
+        gap: 7px;
+      }
+      .result-line {
+        padding: 10px 11px;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        font-size: 13px;
+      }
+      .result-line strong {
+        font-variant-numeric: tabular-nums;
+      }
+      .tag {
+        display: inline-block;
+        vertical-align: middle;
+        white-space: nowrap;
+        border-radius: 100px;
+        padding: 3px 8px;
+        font-size: 10px;
+        font-weight: 800;
+      }
+      .tag.tension {
+        background: #e4f4f7;
+        color: #116d80;
+      }
+      .tag.compression {
+        background: #fcebe6;
+        color: #a94435;
+      }
+      .tag.zero {
+        background: #eef1f4;
+        color: #627588;
+      }
+      .tag.unknown {
+        background: #edf0f5;
+        color: #53677c;
+      }
+      .table-scroll {
+        overflow: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+      th {
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-size: 10px;
+        color: #6f8191;
+        text-align: left;
+        background: #f7f9fb;
+      }
+      td,
+      th {
+        padding: 10px 12px;
+        border-bottom: 1px solid #e6ebf0;
+      }
+      td.num {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+      }
+      tbody tr:last-child td {
+        border-bottom: 0;
+      }
+      .history {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+      }
+      .history button {
+        border: 1px solid #ccd7e2;
+        border-radius: 20px;
+        font-size: 12px;
+        padding: 6px 10px;
+        background: #fff;
+        color: #334a61;
+      }
+      .history button:hover {
+        background: #ebf5f6;
+      }
+      .mini {
+        font-size: 12px;
+        color: #65788a;
+      }
+      .steps-empty {
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .check-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr auto;
+        gap: 8px;
+        align-items: end;
+        margin-top: 10px;
+      }
+      .check-grid label {
+        display: block;
+        font-size: 12px;
+        font-weight: 700;
+        color: #5c6e7e;
+        margin-bottom: 5px;
+      }
+      .check-grid input,
+      .check-grid select {
+        width: 100%;
+        border: 1px solid #cfdae4;
+        border-radius: 7px;
+        padding: 9px;
+        color: var(--ink);
+        background: white;
+      }
+      .feedback {
+        min-height: 20px;
+        font-size: 12px;
+        margin: 10px 0 0;
+      }
+      .feedback.good {
+        color: #187359;
+      }
+      .feedback.no {
+        color: #a04738;
+      }
+      .footer {
+        font-size: 12px;
+        color: #697b8a;
+        margin-top: 19px;
+        line-height: 1.65;
+      }
+      .footer strong {
+        color: #415a6f;
+      }
+      .hidden {
+        display: none;
+      }
+      .warning-inline {
+        color: #a04c35;
+      }
+      #memberResults td:nth-child(1) {
+        font-weight: 700;
+      }
+      svg text {
+        font-family:
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          Arial,
+          sans-serif;
+        user-select: none;
+      }
+      svg .node-click {
+        cursor: pointer;
+      }
+      svg .node-click:focus {
+        outline: none;
+      }
+      svg .node-click:hover .node-disc {
+        stroke: #156e85;
+        stroke-width: 4;
+      }
+      svg .node-click:focus-visible .node-disc {
+        stroke: #156e85;
+        stroke-width: 5;
+      }
+      .bottom-two {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+      }
+      .fbd-legend {
+        font-size: 11px;
+        padding: 1px 12px 10px;
+        color: #738496;
+      }
+      .keyboard-note {
+        font-size: 11px;
+        color: #8494a2;
+      }
+      @media (max-width: 1160px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+        .controls {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+        .bottom-two {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      @media (max-width: 700px) {
+        header h1 {
+          font-size: 22px;
+        }
+        main {
+          padding: 12px 10px 26px;
+        }
+        .panel-head,
+        .panel-body {
+          padding: 15px;
+        }
+        .controls {
+          grid-template-columns: 1fr 1fr;
+          gap: 13px;
+        }
+        .controls > .control:first-child {
+          grid-column: span 2;
+        }
+        .overview {
+          grid-template-columns: 1fr 1fr;
+        }
+        .metric:nth-child(2) {
+          border-right: 0;
+        }
+        .metric:nth-child(-n + 2) {
+          border-bottom: 1px solid var(--line);
+        }
+        .bottom-two {
+          grid-template-columns: 1fr;
+        }
+        .check-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+        .check-grid button {
+          grid-column: 1/-1;
+        }
+        .legend {
+          gap: 12px;
+          padding: 12px;
+        }
+        .actions {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      @media print {
+        body {
+          background: white;
+          font-size: 12px;
+        }
+        header {
+          color: #182e43;
+          background: white;
+          border-bottom: 2px solid #182e43;
+        }
+        header p {
+          color: #516576;
+        }
+        .eyebrow {
+          color: #416d80;
+        }
+        main {
+          padding: 10px;
+        }
+        .layout {
+          display: block;
+        }
+        .panel {
+          box-shadow: none;
+          break-inside: avoid;
+          margin-bottom: 12px;
+        }
+        .tools,
+        .actions,
+        .check-grid,
+        .header-chip,
+        .keyboard-note {
+          display: none !important;
+        }
+        .svg-wrap svg {
+          max-height: 320px;
+        }
+        #jointFbd {
+          max-height: 180px;
+        }
+        .panel-body {
+          padding: 9px 15px;
+        }
+        .panel-head {
+          padding: 9px 15px;
+        }
+        .hint {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div>
+        <div class="eyebrow">Interactive statics teaching tool</div>
+        <h1>Truss Lab <span style="font-weight: 400; color: #aabfd1">/ Method of Joints</span></h1>
+        <p>Equilibrium first. Solve joints one at a time. Tension is positive; compression is negative.</p>
+      </div>
+      <div class="header-chip">2D · Pin–roller supports · kN / m</div>
+    </header>
+    <main>
+      <div class="layout">
+        <div class="stack">
+          <section class="panel" aria-label="Truss geometry and loads">
+            <div class="panel-head">
+              <h2>1. Set up the truss</h2>
+              <p>Change the example, dimensions, or loads. Click a joint in the diagram to inspect it.</p>
+            </div>
+            <div class="panel-body">
+              <div class="controls">
+                <div class="control">
+                  <label for="preset">Example</label
+                  ><select id="preset">
+                    <option value="triangle">Three-member triangle</option>
+                    <option value="warren">Warren truss · 5 joints</option>
+                    <option value="pratt">Pratt-style truss · 6 joints</option>
+                    <option value="howe">Howe-style truss · 6 joints</option>
+                  </select>
+                </div>
+                <div class="control">
+                  <label for="span">Span</label
+                  ><input type="range" id="span" min="6" max="16" step="0.5" value="10" />
+                  <div class="measure"><span>6 m</span><b id="spanOut">10.0 m</b></div>
+                </div>
+                <div class="control">
+                  <label for="rise">Rise</label
+                  ><input type="range" id="rise" min="1.5" max="7" step="0.5" value="4" />
+                  <div class="measure"><span>1.5 m</span><b id="riseOut">4.0 m</b></div>
+                </div>
+                <div class="control">
+                  <label for="loadScale">Load scale</label
+                  ><input type="range" id="loadScale" min="0" max="2" step="0.1" value="1" />
+                  <div class="measure"><span>0×</span><b id="scaleOut">1.0×</b></div>
+                </div>
+              </div>
+              <div class="tools">
+                <button type="button" class="button small" id="resetExample">Reset example</button
+                ><button type="button" class="button small" id="printBtn">Print / Save PDF</button
+                ><button type="button" class="button small" id="csvBtn">Export results CSV</button>
+              </div>
+            </div>
+            <div class="svg-wrap">
+              <svg
+                id="trussSvg"
+                viewBox="0 0 920 520"
+                role="img"
+                aria-label="Interactive truss diagram with joints, members, loads, and support reactions"
+              ></svg>
+            </div>
+            <div class="legend">
+              <span><i class="swatch" style="background: #879bad"></i>Unsolved member</span
+              ><span><i class="swatch" style="background: #147b91"></i>Tension</span
+              ><span><i class="swatch" style="background: #c05745"></i>Compression</span
+              ><span><i class="swatch" style="background: #d17820"></i>External load</span
+              ><span><i class="swatch" style="background: #328469"></i>Support reaction</span>
+            </div>
+            <div class="hint">
+              Dimensions are physical; drawing proportions are adjusted to remain readable. Select any
+              circular joint label to examine its equilibrium.
+            </div>
+            <div class="overview">
+              <div class="metric"><b id="countJoints">3</b><span>Joints, j</span></div>
+              <div class="metric"><b id="countMembers">3</b><span>Members, m</span></div>
+              <div class="metric"><b id="countCriterion">m = 2j − 3</b><span>Determinacy count</span></div>
+              <div class="metric"><b id="countSolved">0 / 3</b><span>Forces found</span></div>
+            </div>
+          </section>
+          <div class="bottom-two">
+            <section class="panel">
+              <div class="panel-head">
+                <h2>2. Support reactions</h2>
+                <p>Compute from whole-truss equilibrium before isolating joints.</p>
+              </div>
+              <div class="panel-body" id="reactionSummary"></div>
+            </section>
+            <section class="panel">
+              <div class="panel-head">
+                <h2>3. Solution path</h2>
+                <p>Each step solves one joint using at most two unknown bar forces.</p>
+              </div>
+              <div class="panel-body">
+                <div class="history" id="history"><div class="steps-empty">No joints solved yet.</div></div>
+                <p class="mini" id="progressNote">Use “Next solvable joint” for a guided demonstration.</p>
+              </div>
+            </section>
+          </div>
+          <section class="panel">
+            <div class="panel-head">
+              <div class="row">
+                <h2>Member-force results</h2>
+                <span class="mini" id="residualBadge">Joint equilibrium pending</span>
+              </div>
+              <p>Positive = tension (T). Negative = compression (C). Near zero = zero-force member.</p>
+            </div>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Member</th>
+                    <th>End joints</th>
+                    <th>Force (kN)</th>
+                    <th>Classification</th>
+                  </tr>
+                </thead>
+                <tbody id="memberResults"></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+        <div class="stack">
+          <section class="panel">
+            <div class="panel-head">
+              <h2>4. Method of joints</h2>
+              <p>Isolate one pin joint and apply ∑F<sub>x</sub> = 0, ∑F<sub>y</sub> = 0.</p>
+            </div>
+            <div class="panel-body">
+              <div class="row">
+                <div>
+                  <div class="section-label" style="margin-bottom: 1px">Choose a joint</div>
+                  <div class="subtle">Outlined joints can be solved now.</div>
+                </div>
+                <span class="mini" id="jointIndicator">Joint A</span>
+              </div>
+              <div id="jointButtons" class="joint-list" role="group" aria-label="Choose a truss joint"></div>
+              <div id="jointStatus" class="status">Select a joint.</div>
+              <div class="section-label">Free-body diagram of selected joint</div>
+              <div class="fbd-shell">
+                <svg
+                  id="jointFbd"
+                  viewBox="0 0 440 290"
+                  role="img"
+                  aria-label="Free-body diagram for selected joint"
+                ></svg>
+                <div class="fbd-legend">
+                  Unknown member forces are initially assumed to act away from the joint.
+                </div>
+              </div>
+              <div class="eq-head">Nodal force balance (kN)</div>
+              <div id="equations"></div>
+              <div class="note" id="knownContributions"></div>
+              <div class="actions">
+                <button type="button" class="button primary" id="solveSelected">Solve selected joint</button
+                ><button type="button" class="button accent" id="nextJoint">Next solvable joint</button
+                ><button type="button" class="button" id="undoStep">Undo last step</button
+                ><button type="button" class="button" id="solveAll">Complete solution</button>
+              </div>
+            </div>
+          </section>
+          <section class="panel">
+            <div class="panel-head">
+              <h2>5. Modify joint loads</h2>
+              <p>Applied forces at the selected joint. A positive y-component acts upward.</p>
+            </div>
+            <div class="panel-body">
+              <div class="row">
+                <strong id="loadNodeTitle">Joint A</strong
+                ><span class="mini">Input values before load scale</span>
+              </div>
+              <div class="selected-edit">
+                <div>
+                  <label for="jointFx">F<sub>x</sub> (kN)</label
+                  ><input id="jointFx" type="number" step="1" min="-500" max="500" value="0" />
+                </div>
+                <div>
+                  <label for="jointFy">F<sub>y</sub> (kN)</label
+                  ><input id="jointFy" type="number" step="1" min="-500" max="500" value="0" />
+                </div>
+              </div>
+              <p class="note">
+                Changing any dimension or load clears the previous solution. Reactions and equations are
+                recalculated.
+              </p>
+            </div>
+          </section>
+          <section class="panel">
+            <div class="panel-head">
+              <h2>6. Class challenge</h2>
+              <p>Predict one unknown member force before revealing the solution.</p>
+            </div>
+            <div class="panel-body">
+              <div class="check-grid">
+                <div>
+                  <label for="challengeMember">Member</label
+                  ><select id="challengeMember"></select>
+                </div>
+                <div>
+                  <label for="challengeValue">Predicted force (kN)</label
+                  ><input id="challengeValue" type="number" step="0.01" placeholder="e.g., −12.5" />
+                </div>
+                <button type="button" class="button" id="checkGuess">Check</button>
+              </div>
+              <div id="challengeFeedback" class="feedback" aria-live="polite"></div>
+              <p class="note">
+                Use a negative value for compression. Assessment checks the actual solved equilibrium, not a
+                visual estimate.
+              </p>
+            </div>
+          </section>
+        </div>
+      </div>
+      <p class="footer">
+        <strong>Assumptions:</strong> pin-connected, two-force members; concentrated forces applied at joints;
+        no member self-weight or distributed member loads; planar statically determinate geometry with one pin
+        and one vertical roller. Whole-truss reactions follow ∑F<sub>x</sub> = 0, ∑F<sub>y</sub> = 0, and
+        ∑M<sub>A</sub> = 0. A member is taken as tensile when its computed force is positive. The member-count
+        condition is necessary, but not sufficient, for stability in general trusses.
+      </p>
+    </main>
+    <script>
+/* ===== StaticsDraw (SD): shared high-quality figure engine with collision-free labels ===== */
+const SD = (() => {
+  "use strict";
+  const COL = {
+    ink: "#1b2b3d",
+    member: "#24466e",
+    memberEdge: "#13304f",
+    memberFill: "#dbe5f0",
+    load: "#d1343a",
+    reaction: "#0d8a6f",
+    internal: "#6a46c2",
+    contact: "#d27a12",
+    cable: "#4f6377",
+    dim: "#6f7f92",
+    support: "#5b6f86",
+    supportFill: "#e9eff6",
+    hatch: "#8d9bab",
+    tension: "#1f6fb2",
+    compression: "#c2412d",
+    zero: "#8995a3",
+    unknown: "#6a46c2",
+    muted: "#9aa8b6",
+    cut: "#e0662c",
+    paper: "#ffffff",
+  };
+  const FONT = 'system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif';
+  let _ctx = null;
+  function measure(text, size = 13, weight = 650, italic = false) {
+    if (!_ctx) {
+      try {
+        _ctx = document.createElement("canvas").getContext("2d");
+      } catch (e) {
+        _ctx = null;
+      }
+    }
+    if (!_ctx) return String(text).length * size * 0.6;
+    _ctx.font = `${italic ? "italic " : ""}${weight} ${size}px ${FONT}`;
+    return _ctx.measureText(String(text)).width;
+  }
+  const esc = (s) =>
+    String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+  const f1 = (v) => (Math.abs(v) < 5e-4 ? "0" : (+v.toFixed(2)).toString());
+  // Rich text: "A_x" -> A with subscript x ; "F_{AB}" -> F with subscript AB.
+  function rich(text) {
+    const parts = [];
+    const re = /_\{([^}]*)\}|_([A-Za-z0-9])/g;
+    let last = 0,
+      m;
+    const s = String(text);
+    while ((m = re.exec(s))) {
+      if (m.index > last) parts.push({ t: s.slice(last, m.index) });
+      parts.push({ t: m[1] ?? m[2], sub: true });
+      last = re.lastIndex;
+    }
+    if (last < s.length) parts.push({ t: s.slice(last) });
+    return parts;
+  }
+  function richWidth(text, size, weight, italic) {
+    return rich(text).reduce((w, p) => w + measure(p.t, p.sub ? size * 0.74 : size, weight, italic), 0);
+  }
+  function richSVG(text, size) {
+    return rich(text)
+      .map((p) =>
+        p.sub
+          ? `<tspan font-size="${(size * 0.74).toFixed(1)}" dy="${(size * 0.28).toFixed(1)}">${esc(p.t)}</tspan><tspan dy="${(-size * 0.28).toFixed(1)}">​</tspan>`
+          : `<tspan>${esc(p.t)}</tspan>`,
+      )
+      .join("");
+  }
+  // ---------- geometry helpers ----------
+  function segRectHit(a, b, r, pad) {
+    const x1 = r.x1 - pad,
+      y1 = r.y1 - pad,
+      x2 = r.x2 + pad,
+      y2 = r.y2 + pad;
+    // Liang–Barsky clip
+    let t0 = 0,
+      t1 = 1;
+    const dx = b.x - a.x,
+      dy = b.y - a.y;
+    const p = [-dx, dx, -dy, dy],
+      q = [a.x - x1, x2 - a.x, a.y - y1, y2 - a.y];
+    for (let i = 0; i < 4; i++) {
+      if (Math.abs(p[i]) < 1e-12) {
+        if (q[i] < 0) return 0;
+      } else {
+        const t = q[i] / p[i];
+        if (p[i] < 0) {
+          if (t > t1) return 0;
+          if (t > t0) t0 = t;
+        } else {
+          if (t < t0) return 0;
+          if (t < t1) t1 = t;
+        }
+      }
+    }
+    return (t1 - t0) * Math.hypot(dx, dy);
+  }
+  function circRectHit(c, r, pad) {
+    const nx = Math.max(r.x1, Math.min(c.x, r.x2)),
+      ny = Math.max(r.y1, Math.min(c.y, r.y2));
+    const d = Math.hypot(c.x - nx, c.y - ny);
+    return d < c.r + pad ? c.r + pad - d + 2 : 0;
+  }
+  function rectOverlap(a, b) {
+    return Math.max(0, Math.min(a.x2, b.x2) - Math.max(a.x1, b.x1)) * Math.max(0, Math.min(a.y2, b.y2) - Math.max(a.y1, b.y1));
+  }
+  // ---------- Figure ----------
+  class Fig {
+    /* opts: width, height, bounds [xmin,ymin,xmax,ymax] in model units (y up), margin {l,r,t,b} or number,
+       maxScale (px per unit), cls, bg */
+    constructor(opts = {}) {
+      this.W = opts.width || 760;
+      this.H = opts.height || 420;
+      const m = opts.margin ?? 50;
+      this.m = typeof m === "number" ? { l: m, r: m, t: m, b: m } : { l: 50, r: 50, t: 50, b: 50, ...m };
+      this.layers = { back: [], mid: [], front: [], top: [] };
+      this.segs = []; // obstacles {a,b,w}
+      this.circs = []; // {x,y,r}
+      this.rects = []; // {x1,y1,x2,y2}
+      this.labels = []; // pending labels
+      this.defs = new Set();
+      this.id = "sd" + Math.random().toString(36).slice(2, 8);
+      this.bg = opts.bg ?? "#ffffff";
+      this.cls = opts.cls || "";
+      this.aria = opts.aria || "Figure";
+      this.fontScale = opts.fontScale || 1;
+      if (opts.bounds) this.fit(opts.bounds, opts.maxScale, opts.align);
+      else {
+        this.s = 1;
+        this.ox = 0;
+        this.oy = 0;
+      }
+    }
+    fit([x0, y0, x1, y1], maxScale = 1e9, align = "center") {
+      const aw = this.W - this.m.l - this.m.r,
+        ah = this.H - this.m.t - this.m.b;
+      const w = Math.max(1e-9, x1 - x0),
+        h = Math.max(1e-9, y1 - y0);
+      this.s = Math.min(aw / w, ah / h, maxScale);
+      const used = { w: w * this.s, h: h * this.s };
+      this.ox = this.m.l + (aw - used.w) / 2 - x0 * this.s;
+      // y: model y up -> screen
+      this.oy = this.m.t + (ah - used.h) / 2 + y1 * this.s;
+      if (align === "bottom") this.oy = this.H - this.m.b + y0 * this.s;
+    }
+    P(p) {
+      return { x: this.ox + p[0] * this.s, y: this.oy - p[1] * this.s };
+    }
+    // ---- raw add ----
+    add(svg, layer = "mid") {
+      this.layers[layer].push(svg);
+    }
+    obstacleSeg(a, b, w = 4) {
+      this.segs.push({ a, b, w });
+    }
+    obstacleCirc(x, y, r) {
+      this.circs.push({ x, y, r });
+    }
+    obstacleRect(x1, y1, x2, y2) {
+      this.rects.push({ x1: Math.min(x1, x2), y1: Math.min(y1, y2), x2: Math.max(x1, x2), y2: Math.max(y1, y2) });
+    }
+    // ---- primitives in SCREEN coords ----
+    sLine(a, b, { color = COL.ink, w = 2, dash = "", cap = "round", layer = "mid", obstacle = true, opacity = 1, extra = "" } = {}) {
+      this.add(
+        `<line x1="${a.x.toFixed(2)}" y1="${a.y.toFixed(2)}" x2="${b.x.toFixed(2)}" y2="${b.y.toFixed(2)}" stroke="${color}" stroke-width="${w}" stroke-linecap="${cap}"${dash ? ` stroke-dasharray="${dash}"` : ""}${opacity < 1 ? ` opacity="${opacity}"` : ""} ${extra}/>`,
+        layer,
+      );
+      if (obstacle) this.obstacleSeg(a, b, w);
+    }
+    sPoly(pts, { color = COL.ink, w = 2, fill = "none", close = false, layer = "mid", obstacle = true, dash = "", join = "round", extra = "" } = {}) {
+      const d = pts.map((p, i) => `${i ? "L" : "M"}${p.x.toFixed(2)} ${p.y.toFixed(2)}`).join(" ") + (close ? " Z" : "");
+      this.add(
+        `<path d="${d}" fill="${fill}" stroke="${color}" stroke-width="${w}" stroke-linejoin="${join}" stroke-linecap="round"${dash ? ` stroke-dasharray="${dash}"` : ""} ${extra}/>`,
+        layer,
+      );
+      if (obstacle) for (let i = 0; i < pts.length - 1 + (close ? 1 : 0); i++) this.obstacleSeg(pts[i], pts[(i + 1) % pts.length], w);
+    }
+    sCircle(c, r, { fill = "#fff", stroke = COL.ink, w = 2, layer = "mid", obstacle = true, extra = "" } = {}) {
+      this.add(`<circle cx="${c.x.toFixed(2)}" cy="${c.y.toFixed(2)}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="${w}" ${extra}/>`, layer);
+      if (obstacle) this.obstacleCirc(c.x, c.y, r + w / 2);
+    }
+    // arrowhead polygon at tip with direction u (unit, screen)
+    head(tip, u, color, size = 11, layer = "front") {
+      const n = { x: -u.y, y: u.x },
+        b = { x: tip.x - u.x * size, y: tip.y - u.y * size },
+        w = size * 0.42;
+      this.add(
+        `<path d="M${tip.x.toFixed(2)} ${tip.y.toFixed(2)} L${(b.x + n.x * w).toFixed(2)} ${(b.y + n.y * w).toFixed(2)} L${(b.x + u.x * size * 0.18).toFixed(2)} ${(b.y + u.y * size * 0.18).toFixed(2)} L${(b.x - n.x * w).toFixed(2)} ${(b.y - n.y * w).toFixed(2)} Z" fill="${color}" stroke="${color}" stroke-width="0.8" stroke-linejoin="round"/>`,
+        layer,
+      );
+    }
+    /* Arrow between two screen points (head at b) */
+    sArrow(a, b, { color = COL.load, w = 2.6, size = 11, layer = "front", halo = true, both = false, obstacle = true, dash = "" } = {}) {
+      const L = Math.hypot(b.x - a.x, b.y - a.y);
+      if (L < 1e-6) return;
+      const u = { x: (b.x - a.x) / L, y: (b.y - a.y) / L };
+      const b2 = { x: b.x - u.x * size * 0.8, y: b.y - u.y * size * 0.8 };
+      const a2 = both ? { x: a.x + u.x * size * 0.8, y: a.y + u.y * size * 0.8 } : a;
+      if (halo)
+        this.add(
+          `<line x1="${a2.x.toFixed(2)}" y1="${a2.y.toFixed(2)}" x2="${b2.x.toFixed(2)}" y2="${b2.y.toFixed(2)}" stroke="#fff" stroke-width="${w + 3.5}" stroke-linecap="round" opacity="0.9"/>`,
+          layer,
+        );
+      this.add(
+        `<line x1="${a2.x.toFixed(2)}" y1="${a2.y.toFixed(2)}" x2="${b2.x.toFixed(2)}" y2="${b2.y.toFixed(2)}" stroke="${color}" stroke-width="${w}" stroke-linecap="round"${dash ? ` stroke-dasharray="${dash}"` : ""}/>`,
+        layer,
+      );
+      this.head(b, u, color, size, layer);
+      if (both) this.head(a, { x: -u.x, y: -u.y }, color, size, layer);
+      if (obstacle) this.obstacleSeg(a, b, w + 4);
+    }
+    // ---- labels ----
+    /* Queue a label. anchor: screen point; cands: array of {x,y} label centers (preferred first) or null for default ring.
+       opts: color, size, weight, italic, bg (pill), prio */
+    label(text, anchor, opts = {}) {
+      const size = (opts.size || 13) * this.fontScale,
+        weight = opts.weight || 700,
+        italic = !!opts.italic;
+      const w = richWidth(text, size, weight, italic) + (opts.bg ? 12 : 4),
+        h = size + (opts.bg ? 8 : 3);
+      let cands = opts.cands;
+      if (!cands) {
+        const d = opts.dist ?? 14;
+        cands = [];
+        const dirs = opts.dirs || [
+          [0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1],
+        ];
+        for (const k of [1, 1.6, 2.3, 3.2])
+          for (const [dx, dy] of dirs) {
+            const n = Math.hypot(dx, dy);
+            cands.push({ x: anchor.x + (dx / n) * (d * k + (Math.abs(dx / n) * w) / 2), y: anchor.y + (dy / n) * (d * k + (Math.abs(dy / n) * h) / 2) });
+          }
+      }
+      this.labels.push({ text, anchor, cands, w, h, size, weight, italic, color: opts.color || COL.ink, bg: opts.bg, prio: opts.prio ?? 5, leader: opts.leader ?? true, fixed: !!opts.fixed });
+    }
+    placeLabels() {
+      const placed = [];
+      const order = this.labels.map((l, i) => ({ l, i })).sort((a, b) => b.l.prio - a.l.prio || a.i - b.i);
+      const out = [];
+      for (const { l } of order) {
+        let best = null,
+          bestScore = Infinity;
+        l.cands.forEach((c, ci) => {
+          const r = { x1: c.x - l.w / 2, y1: c.y - l.h / 2, x2: c.x + l.w / 2, y2: c.y + l.h / 2 };
+          let s = ci * 0.6 + Math.hypot(c.x - l.anchor.x, c.y - l.anchor.y) * 0.02;
+          const out = Math.max(0, 4 - r.x1) + Math.max(0, 4 - r.y1) + Math.max(0, r.x2 - this.W + 4) + Math.max(0, r.y2 - this.H + 4);
+          if (out > 0) s += 5000 + out * 100;
+          for (const p of placed) s += rectOverlap(r, { x1: p.x1 - 3, y1: p.y1 - 3, x2: p.x2 + 3, y2: p.y2 + 3 }) * 30;
+          for (const q of this.rects) s += rectOverlap(r, q) * 8;
+          for (const g of this.segs) {
+            const len = segRectHit(g.a, g.b, r, g.w / 2 + 1.5);
+            if (len > 0) s += 140 + len * 6;
+          }
+          for (const k of this.circs) {
+            const d = circRectHit(k, r, 1.5);
+            if (d > 0) s += 140 + d * 10;
+          }
+          if (s < bestScore) {
+            bestScore = s;
+            best = { c, r };
+          }
+        });
+        if (l.fixed) best = { c: l.cands[0], r: { x1: l.cands[0].x - l.w / 2, y1: l.cands[0].y - l.h / 2, x2: l.cands[0].x + l.w / 2, y2: l.cands[0].y + l.h / 2 } };
+        placed.push(best.r);
+        l.at = best.c;
+        l.rect = best.r;
+        out.push(l);
+      }
+      return out;
+    }
+    renderLabels() {
+      const ls = this.placeLabels();
+      const s = [];
+      for (const l of ls) {
+        const { x, y } = l.at;
+        if (l.bg) {
+          s.push(
+            `<rect x="${(l.rect.x1).toFixed(1)}" y="${(l.rect.y1).toFixed(1)}" width="${l.w.toFixed(1)}" height="${l.h.toFixed(1)}" rx="${(l.h / 2).toFixed(1)}" fill="${l.bg === true ? "#fff" : l.bg}" stroke="${l.color}" stroke-opacity="0.35" stroke-width="1"/>`,
+          );
+        }
+        s.push(
+          `<text x="${x.toFixed(1)}" y="${(y + l.size * 0.36).toFixed(1)}" text-anchor="middle" font-size="${l.size.toFixed(1)}" font-weight="${l.weight}"${l.italic ? ' font-style="italic"' : ""} fill="${l.color}"${l.bg ? "" : ' paint-order="stroke" stroke="#fff" stroke-width="3.6" stroke-linejoin="round"'}>${richSVG(l.text, l.size)}</text>`,
+        );
+      }
+      return s.join("");
+    }
+    inner() {
+      const labels = this.renderLabels();
+      return `${this.bg ? `<rect x="0" y="0" width="${this.W}" height="${this.H}" fill="${this.bg}"/>` : ""}${this.layers.back.join("")}${this.layers.mid.join("")}${this.layers.front.join("")}<g class="sd-labels">${labels}</g>${this.layers.top.join("")}`;
+    }
+    mount(svgEl) {
+      svgEl.setAttribute("viewBox", `0 0 ${this.W} ${this.H}`);
+      svgEl.setAttribute("font-family", FONT);
+      svgEl.innerHTML = this.inner();
+    }
+    svg(extraAttrs = "") {
+      const labels = this.renderLabels();
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${this.W} ${this.H}" class="${this.cls}" role="img" aria-label="${esc(this.aria)}" font-family='${FONT}' ${extraAttrs}>${this.bg ? `<rect x="0" y="0" width="${this.W}" height="${this.H}" fill="${this.bg}"/>` : ""}${this.layers.back.join("")}${this.layers.mid.join("")}${this.layers.front.join("")}<g class="sd-labels">${labels}</g>${this.layers.top.join("")}</svg>`;
+    }
+    // ================= MODEL-SPACE drawing helpers =================
+    /* Structural member as a rounded bar through model points */
+    member(pts, { w = 11, color = COL.member, fill = COL.memberFill, layer = "mid", dash = "" } = {}) {
+      const S = pts.map((p) => this.P(p));
+      this.sPoly(S, { color, w, layer, obstacle: false, dash });
+      this.sPoly(S, { color: fill, w: Math.max(2, w - 5.5), layer, obstacle: false, dash });
+      for (let i = 0; i < S.length - 1; i++) this.obstacleSeg(S[i], S[i + 1], w);
+      return S;
+    }
+    /* Thin truss bar (screen width) */
+    bar(a, b, { w = 6, color = COL.member, layer = "mid", dash = "", halo = true } = {}) {
+      const A = this.P(a),
+        B = this.P(b);
+      if (halo) this.sLine(A, B, { color: "#fff", w: w + 4, layer, obstacle: false });
+      this.sLine(A, B, { color, w, layer, dash, obstacle: false });
+      this.obstacleSeg(A, B, w);
+      return [A, B];
+    }
+    cable(pts, { w = 2.4, color = COL.cable, layer = "mid" } = {}) {
+      const S = pts.map((p) => this.P(p));
+      this.sPoly(S, { color, w, layer });
+      return S;
+    }
+    /* Pin joint marker */
+    pin(p, { r = 6.5, layer = "front", fill = "#fff", stroke = COL.memberEdge } = {}) {
+      const c = this.P(p);
+      this.sCircle(c, r, { fill, stroke, w: 2.2, layer });
+      this.add(`<circle cx="${c.x.toFixed(2)}" cy="${c.y.toFixed(2)}" r="${(r * 0.32).toFixed(2)}" fill="${stroke}"/>`, layer);
+      return c;
+    }
+    // ground hatch in screen coords along segment a->b, hatch on side n (screen normal)
+    hatch(a, b, n, { layer = "back", len = 8, gap = 7, color = COL.hatch } = {}) {
+      this.sLine(a, b, { color: COL.support, w: 2, layer });
+      const L = Math.hypot(b.x - a.x, b.y - a.y),
+        u = { x: (b.x - a.x) / L, y: (b.y - a.y) / L };
+      for (let t = 3; t <= L - 2; t += gap) {
+        const p = { x: a.x + u.x * t, y: a.y + u.y * t };
+        this.sLine(p, { x: p.x + n.x * len - u.x * len * 0.7, y: p.y + n.y * len - u.y * len * 0.7 }, { color, w: 1.2, layer, obstacle: false });
+      }
+      this.obstacleRect(Math.min(a.x, b.x, a.x + n.x * len), Math.min(a.y, b.y, a.y + n.y * len), Math.max(a.x, b.x, a.x + n.x * len), Math.max(a.y, b.y, a.y + n.y * len));
+    }
+    /* Pin support: triangle pointing to the joint. side: 'down' (ground below), 'up', 'left' (wall on left), 'right' */
+    pinSupport(p, side = "down", { size = 1 } = {}) {
+      const c = this.P(p);
+      const n = { down: { x: 0, y: 1 }, up: { x: 0, y: -1 }, left: { x: -1, y: 0 }, right: { x: 1, y: 0 } }[side];
+      const t = { x: -n.y, y: n.x };
+      const h = 24 * size,
+        hw = 15 * size;
+      const tri = [
+        { x: c.x + n.x * 4, y: c.y + n.y * 4 },
+        { x: c.x + n.x * h + t.x * hw, y: c.y + n.y * h + t.y * hw },
+        { x: c.x + n.x * h - t.x * hw, y: c.y + n.y * h - t.y * hw },
+      ];
+      this.sPoly(tri, { color: COL.support, w: 1.8, fill: COL.supportFill, close: true, layer: "back" });
+      const g1 = { x: c.x + n.x * h + t.x * (hw + 8), y: c.y + n.y * h + t.y * (hw + 8) },
+        g2 = { x: c.x + n.x * h - t.x * (hw + 8), y: c.y + n.y * h - t.y * (hw + 8) };
+      this.hatch(g1, g2, n, { layer: "back" });
+      this.pin(p);
+      return { base: { x: c.x + n.x * (h + 9), y: c.y + n.y * (h + 9) }, n };
+    }
+    rollerSupport(p, side = "down", { size = 1 } = {}) {
+      const c = this.P(p);
+      const n = { down: { x: 0, y: 1 }, up: { x: 0, y: -1 }, left: { x: -1, y: 0 }, right: { x: 1, y: 0 } }[side];
+      const t = { x: -n.y, y: n.x };
+      const h = 18 * size,
+        hw = 14 * size,
+        rr = 4.3 * size;
+      const tri = [
+        { x: c.x + n.x * 4, y: c.y + n.y * 4 },
+        { x: c.x + n.x * h + t.x * hw, y: c.y + n.y * h + t.y * hw },
+        { x: c.x + n.x * h - t.x * hw, y: c.y + n.y * h - t.y * hw },
+      ];
+      this.sPoly(tri, { color: COL.support, w: 1.8, fill: COL.supportFill, close: true, layer: "back" });
+      for (const k of [-1, 0, 1]) {
+        const q = { x: c.x + n.x * (h + rr) + t.x * k * 9 * size, y: c.y + n.y * (h + rr) + t.y * k * 9 * size };
+        this.sCircle(q, rr, { fill: "#fff", stroke: COL.support, w: 1.5, layer: "back" });
+      }
+      const gy = h + 2 * rr + 1;
+      this.hatch({ x: c.x + n.x * gy + t.x * (hw + 8), y: c.y + n.y * gy + t.y * (hw + 8) }, { x: c.x + n.x * gy - t.x * (hw + 8), y: c.y + n.y * gy - t.y * (hw + 8) }, n, { layer: "back" });
+      this.pin(p);
+      return { base: { x: c.x + n.x * (gy + 9), y: c.y + n.y * (gy + 9) }, n };
+    }
+    /* Fixed (built-in) wall at model point p; wall on given side */
+    fixedSupport(p, side = "left", { half = 34 } = {}) {
+      const c = this.P(p);
+      const n = { left: { x: -1, y: 0 }, right: { x: 1, y: 0 }, down: { x: 0, y: 1 }, up: { x: 0, y: -1 } }[side];
+      const t = { x: -n.y, y: n.x };
+      const a = { x: c.x + t.x * half, y: c.y + t.y * half },
+        b = { x: c.x - t.x * half, y: c.y - t.y * half };
+      this.add(
+        `<path d="M${a.x} ${a.y} L${b.x} ${b.y} L${b.x + n.x * 12} ${b.y + n.y * 12} L${a.x + n.x * 12} ${a.y + n.y * 12} Z" fill="#eef2f7" stroke="none"/>`,
+        "back",
+      );
+      this.hatch(a, b, n, { layer: "back", len: 10 });
+    }
+    /* plain wall/ceiling/ground surface between model points, hatch toward side vector given in screen terms */
+    surface(p1, p2, side = "down", opts = {}) {
+      const a = this.P(p1),
+        b = this.P(p2);
+      const n = { down: { x: 0, y: 1 }, up: { x: 0, y: -1 }, left: { x: -1, y: 0 }, right: { x: 1, y: 0 } }[side];
+      this.add(
+        `<path d="M${a.x} ${a.y} L${b.x} ${b.y} L${b.x + n.x * 11} ${b.y + n.y * 11} L${a.x + n.x * 11} ${a.y + n.y * 11} Z" fill="#eef2f7"/>`,
+        "back",
+      );
+      this.hatch(a, b, n, { layer: "back", ...opts });
+    }
+    pulley(p, rPx, { layer = "mid", hub = true } = {}) {
+      const c = this.P(p);
+      this.add(`<circle cx="${c.x}" cy="${c.y}" r="${rPx}" fill="#f4f7fb" stroke="${COL.memberEdge}" stroke-width="2.6"/>`, layer);
+      this.add(`<circle cx="${c.x}" cy="${c.y}" r="${(rPx - 4).toFixed(1)}" fill="none" stroke="#9fb1c4" stroke-width="1.1"/>`, layer);
+      if (hub) {
+        this.add(`<circle cx="${c.x}" cy="${c.y}" r="${Math.max(4, rPx * 0.2).toFixed(1)}" fill="#dfe7f0" stroke="${COL.memberEdge}" stroke-width="1.6"/>`, layer);
+        this.add(`<circle cx="${c.x}" cy="${c.y}" r="1.8" fill="${COL.memberEdge}"/>`, layer);
+      }
+      this.obstacleCirc(c.x, c.y, rPx + 1);
+      return c;
+    }
+    /* Force arrow in model space.
+       at: model point; dir: [dx,dy] model direction of the FORCE; mode 'push' (head at point) or 'pull' (tail at point)
+       opts: len (px), gap (px from point), color, label, labelOpts, offset (screen lateral px) */
+    force(at, dir, opts = {}) {
+      const c = this.P(at);
+      const L = Math.hypot(dir[0], dir[1]);
+      if (L < 1e-12) return null;
+      const u = { x: dir[0] / L, y: -dir[1] / L };
+      const n = { x: -u.y, y: u.x };
+      const len = opts.len ?? 58,
+        gap = opts.gap ?? 8,
+        off = opts.offset || 0;
+      const base = { x: c.x + n.x * off, y: c.y + n.y * off };
+      let a, b;
+      if ((opts.mode || "push") === "push") {
+        b = { x: base.x - u.x * gap, y: base.y - u.y * gap };
+        a = { x: b.x - u.x * len, y: b.y - u.y * len };
+      } else {
+        a = { x: base.x + u.x * gap, y: base.y + u.y * gap };
+        b = { x: a.x + u.x * len, y: a.y + u.y * len };
+      }
+      const color = opts.color || COL.load;
+      this.sArrow(a, b, { color, w: opts.w || 2.6, size: opts.head || 11, dash: opts.dash || "" });
+      if (opts.label) this.forceLabel(opts.label, a, b, u, color, opts.labelOpts || {});
+      return { a, b, u };
+    }
+    forceLabel(text, a, b, u, color, lo = {}) {
+      // candidates: beyond the free end (tail for push / head for pull), then beside the shaft
+      const mode = lo.end || "tail";
+      const n = { x: -u.y, y: u.x };
+      const size = (lo.size || 13.5) * this.fontScale;
+      const w = richWidth(text, size, lo.weight || 750, !!lo.italic) + 4,
+        h = size + 3;
+      const free = mode === "head" ? b : a;
+      const sgn = mode === "head" ? 1 : -1;
+      const ext = (k) => ({ x: free.x + sgn * u.x * (k + Math.abs(u.x) * w / 2 + Math.abs(u.y) * h / 2), y: free.y + sgn * u.y * (k + Math.abs(u.x) * w / 2 + Math.abs(u.y) * h / 2) });
+      const mid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+      const side = (p, k) => [
+        { x: p.x + n.x * (k + Math.abs(n.x) * w / 2 + Math.abs(n.y) * h / 2), y: p.y + n.y * (k + Math.abs(n.x) * w / 2 + Math.abs(n.y) * h / 2) },
+        { x: p.x - n.x * (k + Math.abs(n.x) * w / 2 + Math.abs(n.y) * h / 2), y: p.y - n.y * (k + Math.abs(n.x) * w / 2 + Math.abs(n.y) * h / 2) },
+      ];
+      const nearFree = { x: free.x * 0.75 + mid.x * 0.25, y: free.y * 0.75 + mid.y * 0.25 };
+      const cands = [ext(5), ...side(nearFree, 7), ...side(mid, 7), ext(14), ...side(nearFree, 16), ...side(mid, 18), ext(26), ...side(free, 26), ...side(mid, 32), ext(40)];
+      this.labels.push({ text, anchor: free, cands, w, h, size, weight: lo.weight || 750, italic: !!lo.italic, color, bg: lo.bg, prio: lo.prio ?? 8 });
+    }
+    /* couple moment arc at model point; ccw true => counterclockwise */
+    couple(at, ccw, { r = 26, color = COL.load, label = "", start = 200, span = 250 } = {}) {
+      const c = this.P(at);
+      const a0 = (start * Math.PI) / 180,
+        a1 = a0 + ((ccw ? -1 : 1) * span * Math.PI) / 180; // screen angles (y down): ccw visually = negative screen angle
+      const p0 = { x: c.x + r * Math.cos(a0), y: c.y + r * Math.sin(a0) },
+        p1 = { x: c.x + r * Math.cos(a1), y: c.y + r * Math.sin(a1) };
+      const large = span > 180 ? 1 : 0,
+        sweep = ccw ? 0 : 1;
+      this.add(`<path d="M${p0.x.toFixed(2)} ${p0.y.toFixed(2)} A ${r} ${r} 0 ${large} ${sweep} ${p1.x.toFixed(2)} ${p1.y.toFixed(2)}" fill="none" stroke="#fff" stroke-width="6" opacity=".9"/>`, "front");
+      this.add(`<path d="M${p0.x.toFixed(2)} ${p0.y.toFixed(2)} A ${r} ${r} 0 ${large} ${sweep} ${p1.x.toFixed(2)} ${p1.y.toFixed(2)}" fill="none" stroke="${color}" stroke-width="2.6"/>`, "front");
+      // tangent at end
+      const tang = ccw ? { x: Math.sin(a1), y: -Math.cos(a1) } : { x: -Math.sin(a1), y: Math.cos(a1) };
+      this.head({ x: p1.x + tang.x * 4, y: p1.y + tang.y * 4 }, tang, color, 11);
+      this.obstacleCirc(c.x, c.y, r + 2);
+      if (label) {
+        const cands = [];
+        for (const k of [10, 20, 32])
+          for (let ang = -90; ang < 270; ang += 45) {
+            const t = (ang * Math.PI) / 180;
+            const size = 13.5 * this.fontScale;
+            const w = richWidth(label, size, 750) + 4;
+            cands.push({ x: c.x + (r + k + w / 2) * Math.cos(t), y: c.y + (r + k + 8) * Math.sin(t) });
+          }
+        this.label(label, c, { cands, color, size: 13.5, weight: 750, prio: 8 });
+      }
+    }
+    /* Dimension line between model points p1,p2 offset (screen px) along normal (left of p1->p2 in screen) */
+    dim(p1, p2, text, { off = 30, color = COL.dim, ext = true } = {}) {
+      const a = this.P(p1),
+        b = this.P(p2);
+      const L = Math.hypot(b.x - a.x, b.y - a.y);
+      if (L < 1) return;
+      const u = { x: (b.x - a.x) / L, y: (b.y - a.y) / L },
+        n = { x: u.y, y: -u.x };
+      const A = { x: a.x + n.x * off, y: a.y + n.y * off },
+        B = { x: b.x + n.x * off, y: b.y + n.y * off };
+      if (ext) {
+        const sg = Math.sign(off) || 1;
+        this.sLine({ x: a.x + n.x * sg * 6, y: a.y + n.y * sg * 6 }, { x: A.x + n.x * sg * 6, y: A.y + n.y * sg * 6 }, { color, w: 1, layer: "back", obstacle: true, opacity: 0.8 });
+        this.sLine({ x: b.x + n.x * sg * 6, y: b.y + n.y * sg * 6 }, { x: B.x + n.x * sg * 6, y: B.y + n.y * sg * 6 }, { color, w: 1, layer: "back", obstacle: true, opacity: 0.8 });
+      }
+      this.sArrow(A, B, { color, w: 1.2, size: 8, both: true, halo: false, layer: "back", obstacle: false });
+      this.obstacleSeg(A, B, 2);
+      const size = 12.5 * this.fontScale;
+      const w = richWidth(text, size, 650, true) + 10;
+      const mid = { x: (A.x + B.x) / 2, y: (A.y + B.y) / 2 };
+      // text sits on the line with a white background
+      this.label(text, mid, { cands: [mid, { x: mid.x + n.x * 11, y: mid.y + n.y * 11 }, { x: mid.x - n.x * 11, y: mid.y - n.y * 11 }], color, size: 12.5, weight: 650, italic: true, bg: "#fff", prio: 9 });
+      this._dimBg = (this._dimBg || 0) + 1;
+      void w;
+    }
+    /* Uniform distributed load on segment p1->p2 (model), arrows pointing along dir (model, unit), height px */
+    distLoad(p1, p2, dir, label, { h = 40, n = 8, color = COL.load } = {}) {
+      const a = this.P(p1),
+        b = this.P(p2);
+      const L = Math.hypot(dir[0], dir[1]);
+      const u = { x: dir[0] / L, y: -dir[1] / L };
+      const ta = { x: a.x - u.x * (h + 3), y: a.y - u.y * (h + 3) },
+        tb = { x: b.x - u.x * (h + 3), y: b.y - u.y * (h + 3) };
+      this.add(`<path d="M${a.x - u.x * 3} ${a.y - u.y * 3} L${ta.x} ${ta.y} L${tb.x} ${tb.y} L${b.x - u.x * 3} ${b.y - u.y * 3} Z" fill="${color}" fill-opacity="0.07"/>`, "back");
+      this.sLine(ta, tb, { color, w: 1.8, layer: "front" });
+      for (let i = 0; i <= n; i++) {
+        const t = i / n;
+        const tip = { x: a.x + (b.x - a.x) * t - u.x * 3, y: a.y + (b.y - a.y) * t - u.y * 3 };
+        const tail = { x: tip.x - u.x * h, y: tip.y - u.y * h };
+        this.sArrow(tail, tip, { color, w: 1.6, size: 8, halo: false, obstacle: false });
+      }
+      this.obstacleRect(Math.min(ta.x, tb.x, a.x, b.x), Math.min(ta.y, tb.y, a.y, b.y), Math.max(ta.x, tb.x, a.x, b.x), Math.max(ta.y, tb.y, a.y, b.y));
+      if (label) {
+        const mid = { x: (ta.x + tb.x) / 2, y: (ta.y + tb.y) / 2 };
+        const size = 13.5 * this.fontScale;
+        const hh = size + 3;
+        this.label(label, mid, { cands: [{ x: mid.x - u.x * (hh / 2 + 6), y: mid.y - u.y * (hh / 2 + 6) }, { x: mid.x - u.x * (hh / 2 + 16), y: mid.y - u.y * (hh / 2 + 16) }], color, size: 13.5, weight: 750, prio: 8 });
+      }
+    }
+    /* joint/point name label near model point */
+    name(p, text, opts = {}) {
+      const c = this.P(p);
+      this.label(text, c, { color: COL.ink, size: 15, weight: 800, italic: false, dist: opts.dist ?? 13, prio: opts.prio ?? 6, dirs: opts.dirs, cands: opts.cands });
+    }
+    /* free text at screen point (fixed) */
+    text(x, y, t, { size = 12, color = COL.dim, weight = 600, anchor = "start", italic = false, layer = "top" } = {}) {
+      this.add(`<text x="${x}" y="${y}" font-size="${size}" font-weight="${weight}" fill="${color}" text-anchor="${anchor}"${italic ? ' font-style="italic"' : ""}>${richSVG(t, size)}</text>`, layer);
+      const w = richWidth(t, size, weight, italic);
+      const x1 = anchor === "middle" ? x - w / 2 : anchor === "end" ? x - w : x;
+      this.obstacleRect(x1 - 2, y - size, x1 + w + 2, y + 4);
+    }
+  }
+  return { Fig, COL, measure, esc, rich, richSVG, richWidth, f1 };
+})();
+
+    </script>
+    <script>
+      (() => {
+        "use strict";
+        const $ = (id) => document.getElementById(id);
+        const EPS = 1e-8;
+        const configs = {
+          triangle: {
+            span: 10,
+            rise: 4,
+            nodes: [
+              ["A", 0, 0],
+              ["B", 0.5, 1],
+              ["C", 1, 0],
+            ],
+            members: [
+              ["A", "B"],
+              ["B", "C"],
+              ["A", "C"],
+            ],
+            pin: "A",
+            roller: "C",
+            loads: { B: [0, -12] },
+          },
+          warren: {
+            span: 12,
+            rise: 3,
+            nodes: [
+              ["A", 0, 0],
+              ["B", 0.5, 0],
+              ["C", 1, 0],
+              ["D", 0.25, 1],
+              ["E", 0.75, 1],
+            ],
+            members: [
+              ["A", "B"],
+              ["B", "C"],
+              ["A", "D"],
+              ["D", "B"],
+              ["B", "E"],
+              ["E", "C"],
+              ["D", "E"],
+            ],
+            pin: "A",
+            roller: "C",
+            loads: { D: [0, -10], E: [0, -10] },
+          },
+          pratt: {
+            span: 12,
+            rise: 4,
+            nodes: [
+              ["A", 0, 0],
+              ["B", 0.5, 0],
+              ["C", 1, 0],
+              ["D", 0, 1],
+              ["E", 0.5, 1],
+              ["F", 1, 1],
+            ],
+            members: [
+              ["A", "B"],
+              ["B", "C"],
+              ["D", "E"],
+              ["E", "F"],
+              ["A", "D"],
+              ["B", "E"],
+              ["C", "F"],
+              ["D", "B"],
+              ["B", "F"],
+            ],
+            pin: "A",
+            roller: "C",
+            loads: { D: [0, -6], E: [0, -14], F: [0, -6] },
+          },
+          howe: {
+            span: 12,
+            rise: 4,
+            nodes: [
+              ["A", 0, 0],
+              ["B", 0.5, 0],
+              ["C", 1, 0],
+              ["D", 0, 1],
+              ["E", 0.5, 1],
+              ["F", 1, 1],
+            ],
+            members: [
+              ["A", "B"],
+              ["B", "C"],
+              ["D", "E"],
+              ["E", "F"],
+              ["A", "D"],
+              ["B", "E"],
+              ["C", "F"],
+              ["A", "E"],
+              ["E", "C"],
+            ],
+            pin: "A",
+            roller: "C",
+            loads: { D: [0, -6], E: [0, -14], F: [0, -6] },
+          },
+        };
+        const S = {
+          preset: "triangle",
+          span: 10,
+          rise: 4,
+          scale: 1,
+          baseLoads: {},
+          selected: "A",
+          history: [],
+          feedback: "",
+        };
+        const nfmt = (x, d = 2) => (Math.abs(x) < 0.5 * Math.pow(10, -d) ? (0).toFixed(d) : x.toFixed(d));
+        const signed = (x, d = 2) => `${x >= -EPS ? "+" : "−"}${nfmt(Math.abs(x), d)}`;
+        const safely = (x) => (Number.isFinite(x) ? x : 0);
+        const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+        const allNodes = () =>
+          configs[S.preset].nodes.map(([id, px, py]) => ({ id, x: px * S.span, y: py * S.rise, px, py }));
+        const nodesById = () => Object.fromEntries(allNodes().map((n) => [n.id, n]));
+        const members = () => configs[S.preset].members.map(([a, b]) => ({ id: a + b, a, b }));
+        const loads = () =>
+          Object.fromEntries(
+            allNodes().map((n) => [
+              n.id,
+              { fx: safely(S.baseLoads[n.id]?.[0]) * S.scale, fy: safely(S.baseLoads[n.id]?.[1]) * S.scale },
+            ]),
+          );
+        function memberUnit(m, at, N) {
+          const p = N[at],
+            q = N[m.a === at ? m.b : m.a],
+            dx = q.x - p.x,
+            dy = q.y - p.y,
+            L = Math.hypot(dx, dy);
+          return { ux: dx / L, uy: dy / L, L };
+        }
+        function reactions(N, P) {
+          const c = configs[S.preset],
+            a = N[c.pin],
+            b = N[c.roller];
+          const fx = Object.values(P).reduce((s, v) => s + v.fx, 0),
+            fy = Object.values(P).reduce((s, v) => s + v.fy, 0);
+          const mom = allNodes().reduce(
+            (sum, n) => sum + (n.x - a.x) * P[n.id].fy - (n.y - a.y) * P[n.id].fx,
+            0,
+          );
+          const by = -mom / (b.x - a.x),
+            ay = -fy - by,
+            ax = -fx;
+          return {
+            pin: { fx: ax, fy: ay },
+            roller: { fx: 0, fy: by },
+            loadsFx: fx,
+            loadsFy: fy,
+            moment: mom,
+          };
+        }
+        function currentKnown() {
+          const K = {};
+          for (const step of S.history) for (const x of step.found) K[x.id] = x.force;
+          return K;
+        }
+        function jointData(id, K = currentKnown()) {
+          const N = nodesById(),
+            P = loads(),
+            R = reactions(N, P),
+            cfg = configs[S.preset];
+          let fx = P[id].fx,
+            fy = P[id].fy;
+          if (id === cfg.pin) {
+            fx += R.pin.fx;
+            fy += R.pin.fy;
+          }
+          if (id === cfg.roller) fy += R.roller.fy;
+          const base = { fx, fy };
+          const attached = members()
+            .filter((m) => m.a === id || m.b === id)
+            .map((m) => ({ ...m, ...memberUnit(m, id, N), known: Object.hasOwn(K, m.id), force: K[m.id] }));
+          for (const m of attached)
+            if (m.known) {
+              fx += m.force * m.ux;
+              fy += m.force * m.uy;
+            }
+          const unknown = attached.filter((m) => !m.known);
+          const target = { fx: -fx, fy: -fy };
+          let solvable = false,
+            values = [],
+            reason = "";
+          if (unknown.length === 0) {
+            reason = "All attached member forces are already known.";
+          } else if (unknown.length > 2) {
+            reason = `${unknown.length} unknown member forces but only two independent equilibrium equations. Solve a neighboring joint first.`;
+          } else if (unknown.length === 1) {
+            const u = unknown[0],
+              v = target.fx * u.ux + target.fy * u.uy;
+            if (Math.hypot(target.fx - v * u.ux, target.fy - v * u.uy) < 1e-6) {
+              solvable = true;
+              values = [v];
+            } else
+              reason =
+                "The equilibrium equations are inconsistent for the remaining unknown. Inspect the truss geometry.";
+          } else {
+            const [u, v] = unknown,
+              det = u.ux * v.uy - u.uy * v.ux;
+            if (Math.abs(det) < EPS)
+              reason =
+                "The two unknown member directions are collinear, so these equations cannot determine both forces.";
+            else {
+              values = [
+                (target.fx * v.uy - target.fy * v.ux) / det,
+                (u.ux * target.fy - u.uy * target.fx) / det,
+              ];
+              solvable = values.every(Number.isFinite);
+            }
+          }
+          return { id, fx, fy, base, attached, unknown, target, solvable, values, reason, R, P };
+        }
+        function availableJoints(K = currentKnown()) {
+          return allNodes()
+            .map((n) => jointData(n.id, K))
+            .filter((j) => j.solvable);
+        }
+        function completion() {
+          return Object.keys(currentKnown()).length === members().length;
+        }
+        function forceType(f) {
+          return Math.abs(f) < 1e-6 ? "zero" : f > 0 ? "tension" : "compression";
+        }
+        function residual() {
+          const K = currentKnown();
+          if (!completion()) return null;
+          let max = 0;
+          for (const n of allNodes()) {
+            const j = jointData(n.id, K);
+            max = Math.max(max, Math.hypot(j.fx, j.fy));
+          }
+          return max;
+        }
+        function loadConfig(preset) {
+          const cfg = configs[preset];
+          S.preset = preset;
+          S.span = cfg.span;
+          S.rise = cfg.rise;
+          S.scale = 1;
+          S.baseLoads = Object.fromEntries(cfg.nodes.map((n) => [n[0], [...(cfg.loads[n[0]] || [0, 0])]]));
+          S.selected = cfg.pin;
+          S.history = [];
+          S.feedback = "";
+          syncInputs();
+          render();
+        }
+        function syncInputs() {
+          $("preset").value = S.preset;
+          $("span").value = S.span;
+          $("rise").value = S.rise;
+          $("loadScale").value = S.scale;
+          $("spanOut").textContent = nfmt(S.span, 1) + " m";
+          $("riseOut").textContent = nfmt(S.rise, 1) + " m";
+          $("scaleOut").textContent = nfmt(S.scale, 1) + "×";
+          syncJointInputs();
+        }
+        function syncJointInputs() {
+          $("jointFx").value = S.baseLoads[S.selected]?.[0] ?? 0;
+          $("jointFy").value = S.baseLoads[S.selected]?.[1] ?? 0;
+          $("jointFx").dataset.joint = S.selected;
+          $("jointFy").dataset.joint = S.selected;
+          $("loadNodeTitle").textContent = `Joint ${S.selected}`;
+          $("jointIndicator").textContent = `Joint ${S.selected}`;
+        }
+        function clearSolution() {
+          S.history = [];
+          S.feedback = "";
+          $("challengeValue").value = "";
+        }
+        function render() {
+          renderDiagram();
+          renderReactions();
+          renderJoint();
+          renderResults();
+          renderHistory();
+          $("countJoints").textContent = allNodes().length;
+          $("countMembers").textContent = members().length;
+          $("countCriterion").textContent =
+            members().length === 2 * allNodes().length - 3 ? "m = 2j − 3" : "Count fails";
+          $("countSolved").textContent = `${Object.keys(currentKnown()).length} / ${members().length}`;
+        }
+        const svgEsc = (x) => SD.esc(x);
+        // ===== Figures (drawn with the shared SD engine: no overlapping labels) =====
+        const JC = {
+          unknown: "#7d93a8",
+          tension: "#147b91",
+          compression: "#c05745",
+          zero: "#8f9aa5",
+          load: "#d17820",
+          reaction: "#328469",
+          unknownF: "#7459a8",
+        };
+        const angDiff = (a, b) => {
+          let d = Math.abs(a - b) % (2 * Math.PI);
+          return d > Math.PI ? 2 * Math.PI - d : d;
+        };
+        function renderDiagram() {
+          const N = nodesById(),
+            P = loads(),
+            R = reactions(N, P),
+            K = currentKnown(),
+            cfg = configs[S.preset],
+            memb = members();
+          const fig = new SD.Fig({
+            width: 920,
+            height: 520,
+            margin: { l: 95, r: 95, t: 105, b: 140 },
+            bounds: [0, 0, S.span, S.rise],
+            bg: null,
+          });
+          // members
+          const segs = [];
+          for (const m of memb) {
+            const known = Object.hasOwn(K, m.id),
+              type = known ? forceType(K[m.id]) : "unknown";
+            const color = JC[type];
+            const [A, B] = fig.bar([N[m.a].x, N[m.a].y], [N[m.b].x, N[m.b].y], {
+              w: known ? 7 : 6,
+              color,
+              dash: type === "zero" ? "9 6" : "",
+            });
+            segs.push({ m, A, B, known, type, color });
+          }
+          // supports
+          const pinS = fig.pinSupport([N[cfg.pin].x, N[cfg.pin].y], "down");
+          const rolS = fig.rollerSupport([N[cfg.roller].x, N[cfg.roller].y], "down");
+          // member labels (placed along the bar, avoiding everything else)
+          for (const g of segs) {
+            const L = Math.hypot(g.B.x - g.A.x, g.B.y - g.A.y),
+              u = { x: (g.B.x - g.A.x) / L, y: (g.B.y - g.A.y) / L },
+              n = { x: -u.y, y: u.x };
+            const txt = g.known ? g.type === "zero" ? `${g.m.id}  0` : `${g.m.id}  ${nfmt(Math.abs(K[g.m.id]), 2)} ${g.type === "tension" ? "T" : "C"}` : g.m.id;
+            const size = 13;
+            const w = SD.richWidth(txt, size, 750) + 14,
+              h = size + 8;
+            const cands = [];
+            for (const t of [0.5, 0.4, 0.6, 0.3, 0.7, 0.22, 0.78])
+              for (const sgn of [1, -1]) {
+                const d = 6 + Math.abs(n.x) * w / 2 + Math.abs(n.y) * h / 2;
+                cands.push({ x: g.A.x + u.x * L * t + n.x * d * sgn, y: g.A.y + u.y * L * t + n.y * d * sgn });
+              }
+            fig.label(txt, { x: g.A.x + u.x * L * 0.5, y: g.A.y + u.y * L * 0.5 }, {
+              cands,
+              color: g.known ? g.color : "#3f5870",
+              size,
+              weight: 750,
+              bg: "#fff",
+              prio: 4,
+            });
+          }
+          // joints (clickable discs) – drawn on top
+          const done = new Set(S.history.map((s) => s.id));
+          const nodeR = {};
+          for (const n of allNodes()) {
+            const p = fig.P([n.x, n.y]),
+              active = n.id === S.selected,
+              r = active ? 16 : 13;
+            nodeR[n.id] = r;
+            fig.obstacleCirc(p.x, p.y, r + 2);
+            fig.add(
+              `<g class="node-click" data-node="${n.id}" role="button" tabindex="0" aria-label="Select joint ${n.id}"><circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${r}" fill="${active ? "#f6e4b7" : "#fff"}" stroke="${active ? "#ba862f" : done.has(n.id) ? "#328469" : "#29465d"}" stroke-width="${active ? 4 : 3}" class="node-disc"/><text x="${p.x.toFixed(1)}" y="${(p.y + 5).toFixed(1)}" text-anchor="middle" font-weight="850" font-size="15" fill="#162d44" pointer-events="none">${n.id}</text></g>`,
+              "top",
+            );
+          }
+          // angular occupancy of members at each joint (screen angles)
+          const occ = {};
+          for (const g of segs) {
+            (occ[g.m.a] ??= []).push(Math.atan2(g.B.y - g.A.y, g.B.x - g.A.x));
+            (occ[g.m.b] ??= []).push(Math.atan2(g.A.y - g.B.y, g.A.x - g.B.x));
+          }
+          const isSupport = (id) => id === cfg.pin || id === cfg.roller;
+          // applied loads
+          for (const n of allNodes()) {
+            const L = P[n.id];
+            const mag = Math.hypot(L.fx, L.fy);
+            if (mag < EPS) continue;
+            const uAng = Math.atan2(-L.fy, L.fx); // screen angle of force direction
+            const used = [...(occ[n.id] || [])];
+            if (isSupport(n.id)) used.push(Math.PI / 2); // support below the joint
+            const pushSide = uAng + Math.PI; // a push arrow sits on the side opposite to the force
+            const pushFree = used.every((a) => angDiff(a, pushSide) > 0.3);
+            const pullFree = used.every((a) => angDiff(a, uAng) > 0.3);
+            const mode = pushFree || !pullFree ? "push" : "pull";
+            const off = !pushFree && !pullFree ? 13 : 0;
+            fig.force([n.x, n.y], [L.fx, L.fy], {
+              mode,
+              gap: nodeR[n.id] + 3,
+              len: 62,
+              color: JC.load,
+              w: 3.2,
+              head: 13,
+              offset: off,
+              label: `${nfmt(mag, 1)} kN`,
+              labelOpts: { size: 14, end: mode === "push" ? "tail" : "head" },
+            });
+          }
+          // support reactions (drawn below / beside the support symbols)
+          const reactArrow = (id, comp, val, base) => {
+            if (Math.abs(val) < 1e-9) return;
+            const p = fig.P([N[id].x, N[id].y]);
+            const lbl = `R_{${id}${comp}} = ${nfmt(Math.abs(val), 1)} kN`;
+            if (comp === "y") {
+              const x = p.x,
+                y0 = base.y + 2;
+              if (val > 0) fig.sArrow({ x, y: y0 + 46 }, { x, y: y0 }, { color: JC.reaction, w: 3.2, size: 13 });
+              else fig.sArrow({ x, y: y0 }, { x, y: y0 + 46 }, { color: JC.reaction, w: 3.2, size: 13 });
+              const size = 14,
+                w = SD.richWidth(lbl, size, 750) + 4;
+              fig.label(lbl, { x, y: y0 + 46 }, {
+                cands: [
+                  { x, y: y0 + 46 + 12 },
+                  { x: x + w / 2 + 10, y: y0 + 26 },
+                  { x: x - w / 2 - 10, y: y0 + 26 },
+                  { x, y: y0 + 46 + 26 },
+                ],
+                color: JC.reaction,
+                size,
+                weight: 750,
+                prio: 9,
+              });
+            } else {
+              const y = p.y,
+                gap = nodeR[id] + 4;
+              const a = val > 0 ? { x: p.x - gap - 50, y } : { x: p.x - gap, y },
+                b = val > 0 ? { x: p.x - gap, y } : { x: p.x - gap - 50, y };
+              fig.sArrow(a, b, { color: JC.reaction, w: 3.2, size: 13 });
+              const size = 14,
+                w = SD.richWidth(lbl, size, 750) + 4;
+              fig.label(lbl, a, {
+                cands: [
+                  { x: p.x - gap - 50 - w / 2 - 6, y },
+                  { x: p.x - gap - 25, y: y - 16 },
+                  { x: p.x - gap - 25, y: y + 18 },
+                ],
+                color: JC.reaction,
+                size,
+                weight: 750,
+                prio: 9,
+              });
+            }
+          };
+          reactArrow(cfg.pin, "x", R.pin.fx, pinS.base);
+          reactArrow(cfg.pin, "y", R.pin.fy, pinS.base);
+          reactArrow(cfg.roller, "y", R.roller.fy, rolS.base);
+          // dimensions
+          const xs = allNodes().map((n) => n.x),
+            ys = allNodes().map((n) => n.y);
+          const yBase = Math.min(...ys),
+            yTop = Math.max(...ys),
+            xR = Math.max(...xs),
+            xL = Math.min(...xs);
+          const baseScreen = fig.P([0, yBase]).y;
+          const dimY = Math.max(pinS.base.y, rolS.base.y) + 86 - baseScreen; // px below the base line
+          fig.dim([xL, yBase], [xR, yBase], `span = ${nfmt(S.span, 1)} m`, { off: -dimY });
+          if (yTop - yBase > 1e-6) {
+            const rx = fig.P([xR, 0]).x;
+            fig.dim([xR, yTop], [xR, yBase], `rise = ${nfmt(S.rise, 1)} m`, { off: 62 });
+            void rx;
+          }
+          fig.mount($("trussSvg"));
+        }
+        function renderFbd(j) {
+          const fig = new SD.Fig({ width: 440, height: 290, margin: 10, bg: null });
+          fig.s = 1;
+          fig.ox = 220;
+          fig.oy = 145;
+          const c = { x: 220, y: 145 };
+          // faint axes
+          fig.sLine({ x: 18, y: c.y }, { x: 422, y: c.y }, { color: "#e3e9ef", w: 1, dash: "4 5", layer: "back", obstacle: false });
+          fig.sLine({ x: c.x, y: 12 }, { x: c.x, y: 278 }, { color: "#e3e9ef", w: 1, dash: "4 5", layer: "back", obstacle: false });
+          fig.text(424, c.y - 6, "x", { size: 11, color: "#9aa8b6", anchor: "end", italic: true, layer: "back" });
+          fig.text(c.x + 6, 22, "y", { size: 11, color: "#9aa8b6", italic: true, layer: "back" });
+          const usedAng = [];
+          const arrows = [];
+          // member forces first (along the members)
+          for (const m of j.attached) {
+            const u = [m.ux, m.uy];
+            const ang = Math.atan2(-m.uy, m.ux);
+            usedAng.push(ang);
+            let color, mode, label;
+            if (!m.known) {
+              color = JC.unknownF;
+              mode = "pull";
+              label = `F_{${m.id}} ?`;
+            } else if (Math.abs(m.force) < 1e-6) {
+              color = JC.zero;
+              mode = "pull";
+              label = `F_{${m.id}} = 0`;
+            } else if (m.force > 0) {
+              color = JC.tension;
+              mode = "pull";
+              label = `F_{${m.id}} = ${nfmt(m.force, 2)} (T)`;
+            } else {
+              color = JC.compression;
+              mode = "push";
+              label = `F_{${m.id}} = ${nfmt(-m.force, 2)} (C)`;
+            }
+            // compression pushes on the joint: force vector points toward the joint
+            const dir = mode === "push" ? [-m.ux, -m.uy] : u;
+            // draw a faint stub of the member
+            fig.sLine(c, { x: c.x + m.ux * 82, y: c.y - m.uy * 82 }, { color: "#d6dee6", w: 7, layer: "back", obstacle: false });
+            arrows.push({ dir, mode, color, label });
+          }
+          const cfgP = configs[S.preset];
+          const F = j.P[j.id];
+          const r = j.id === cfgP.pin ? j.R.pin : j.id === cfgP.roller ? j.R.roller : { fx: 0, fy: 0 };
+          const extra = [];
+          if (Math.hypot(F.fx, F.fy) > EPS) extra.push({ v: [F.fx, F.fy], color: JC.load, label: `P = ${nfmt(Math.hypot(F.fx, F.fy), 2)} kN` });
+          if (Math.abs(r.fx) > EPS) extra.push({ v: [r.fx, 0], color: JC.reaction, label: `R_{${j.id}x} = ${nfmt(Math.abs(r.fx), 2)} kN` });
+          if (Math.abs(r.fy) > EPS) extra.push({ v: [0, r.fy], color: JC.reaction, label: `R_{${j.id}y} = ${nfmt(Math.abs(r.fy), 2)} kN` });
+          for (const e of extra) {
+            const fAng = Math.atan2(-e.v[1], e.v[0]);
+            const pushSide = fAng + Math.PI;
+            const pushFree = usedAng.every((a) => angDiff(a, pushSide) > 0.35);
+            const pullFree = usedAng.every((a) => angDiff(a, fAng) > 0.35);
+            const mode = pushFree || !pullFree ? "push" : "pull";
+            usedAng.push(mode === "push" ? pushSide : fAng);
+            arrows.push({ dir: e.v, mode, color: e.color, label: e.label, offset: !pushFree && !pullFree ? 12 : 0 });
+          }
+          for (const a of arrows)
+            fig.force([0, 0], a.dir, {
+              mode: a.mode,
+              gap: 15,
+              len: 66,
+              color: a.color,
+              w: 2.8,
+              head: 12,
+              offset: a.offset || 0,
+              label: a.label,
+              labelOpts: { size: 13, end: a.mode === "push" ? "tail" : "head" },
+            });
+          fig.sCircle(c, 12, { fill: "#fef6dd", stroke: "#ad822e", w: 3, layer: "front" });
+          fig.add(`<text x="${c.x}" y="${c.y + 4.5}" text-anchor="middle" font-size="13" font-weight="800" fill="#6d5319">${j.id}</text>`, "top");
+          fig.mount($("jointFbd"));
+        }
+        function reactionFormula() {
+          const N = nodesById(),
+            P = loads(),
+            R = reactions(N, P),
+            cfg = configs[S.preset];
+          const A = N[cfg.pin],
+            B = N[cfg.roller],
+            lever = B.x - A.x;
+          let terms = [];
+          for (const n of allNodes()) {
+            const v = P[n.id],
+              m = (n.x - A.x) * v.fy - (n.y - A.y) * v.fx;
+            if (Math.abs(m) > 1e-7) terms.push(`${signed(m, 2)}`);
+          }
+          const mtxt = terms.length ? terms.join(" ") : "0.00";
+          return { R, lever, mtxt };
+        }
+        function renderReactions() {
+          const { R, lever, mtxt } = reactionFormula(),
+            cfg = configs[S.preset];
+          $("reactionSummary").innerHTML = `
+    <div class="section-label">Sum of moments about ${cfg.pin}</div><div class="equation">ΣM<sub>${cfg.pin}</sub> = (${nfmt(lever, 2)})R<sub>${cfg.roller}y</sub> ${mtxt} = 0</div>
+    <div class="section-label" style="margin-top:13px">Reaction components</div>
+    <div class="result-lines"><div class="result-line"><span>Horizontal at ${cfg.pin} (R<sub>${cfg.pin}x</sub>)</span><strong>${nfmt(R.pin.fx, 2)} kN</strong></div><div class="result-line"><span>Vertical at ${cfg.pin} (R<sub>${cfg.pin}y</sub>)</span><strong>${nfmt(R.pin.fy, 2)} kN</strong></div><div class="result-line"><span>Vertical at ${cfg.roller} (R<sub>${cfg.roller}y</sub>)</span><strong>${nfmt(R.roller.fy, 2)} kN</strong></div></div>
+    <p class="note">ΣF<sub>x</sub> = 0 gives R<sub>${cfg.pin}x</sub> = ${nfmt(-R.loadsFx, 2)} kN. ΣF<sub>y</sub> = 0 gives R<sub>${cfg.pin}y</sub> + R<sub>${cfg.roller}y</sub> = ${nfmt(-R.loadsFy, 2)} kN.</p>`;
+        }
+        function forceEquation(j, component) {
+          const x = component === "x",
+            base = x ? j.base.fx : j.base.fy;
+          let str = signed(base, 2);
+          for (const m of j.attached) {
+            const u = x ? m.ux : m.uy;
+            if (Math.abs(u) < 1e-8) continue;
+            if (m.known) str += ` ${signed(m.force * u, 2)}`;
+            else str += ` ${signed(u, 3)} F_${m.id}`;
+          }
+          return str + " = 0";
+        }
+        function renderJoint() {
+          const K = currentKnown(),
+            j = jointData(S.selected, K),
+            A = availableJoints(K),
+            doneIds = new Set(S.history.map((h) => h.id));
+          // update the joint buttons in place so a click is never lost to a re-render
+          const jb = $("jointButtons"),
+            ids = allNodes().map((n) => n.id);
+          if ([...jb.children].map((b) => b.dataset.pick).join() !== ids.join())
+            jb.innerHTML = ids.map((id) => `<button type="button" class="joint-button" data-pick="${id}">${id}</button>`).join("");
+          for (const btn of jb.children) {
+            const id = btn.dataset.pick;
+            btn.className = `joint-button ${S.selected === id ? "active" : ""} ${doneIds.has(id) ? "done" : ""} ${A.some((x) => x.id === id) ? "possible" : ""}`;
+            btn.setAttribute("aria-pressed", String(S.selected === id));
+          }
+          const stat = $("jointStatus");
+          stat.className = "status";
+          if (completion()) {
+            stat.classList.add("ok");
+            stat.textContent = "All member forces have been determined. Joint equilibrium has been checked.";
+          } else if (j.solvable) {
+            stat.classList.add("ok");
+            stat.textContent = `Joint ${j.id} can be solved: ${j.unknown.length} unknown member force${j.unknown.length === 1 ? "" : "s"} and two scalar equilibrium equations.`;
+          } else if (j.unknown.length === 0) {
+            stat.textContent = `Joint ${j.id} has no remaining unknown member forces. ${j.reason}`;
+          } else {
+            stat.classList.add("warn");
+            stat.textContent = j.reason;
+          }
+          const old = S.history.find((h) => h.id === j.id);
+          const eqx = old ? old.eqx : forceEquation(j, "x"),
+            eqy = old ? old.eqy : forceEquation(j, "y");
+          const dir = old ? old.directions : j.unknown;
+          const vectorInfo = dir.length
+            ? `<p class="note" style="margin-top:8px">Member direction cosines (cos θ, sin θ): ${dir.map((m) => `${m.id} = (${nfmt(m.ux, 3)}, ${nfmt(m.uy, 3)})`).join("; ")}.</p>`
+            : "";
+          const solutions = old
+            ? `<div class="eq-head">Solved in step ${S.history.indexOf(old) + 1}</div>${old.found.map((f) => `<div class="result-line"><span>F<sub>${f.id}</sub></span><strong>${nfmt(f.force, 3)} kN &nbsp; <span class="tag ${forceType(f.force)}">${forceType(f.force)}</span></strong></div>`).join("")}`
+            : "";
+          $("equations").innerHTML =
+            `<div class="equation">ΣF<sub>x</sub>: ${svgEsc(eqx)}</div><div class="equation">ΣF<sub>y</sub>: ${svgEsc(eqy)}</div>${vectorInfo}${solutions}`;
+          let info = `External load + reaction at this joint: (${nfmt(j.base.fx, 2)}, ${nfmt(j.base.fy, 2)}) kN.`;
+          const known = j.attached.filter((m) => m.known);
+          if (known.length)
+            info += ` Known member forces included: ${known.map((m) => `${m.id} = ${nfmt(m.force, 2)} kN`).join("; ")}.`;
+          info += ` Unknown forces: ${j.unknown.length ? j.unknown.map((m) => "F_" + m.id).join(", ") : "none"}.`;
+          if (old)
+            info += ` This joint was solved in step ${S.history.indexOf(old) + 1}: ${old.found.map((f) => `${f.id} = ${nfmt(f.force, 2)} kN (${forceType(f.force)})`).join("; ")}.`;
+          $("knownContributions").textContent = info;
+          $("solveSelected").disabled = !j.solvable || completion();
+          $("nextJoint").disabled = !A.length || completion();
+          $("undoStep").disabled = !S.history.length;
+          $("solveAll").disabled = completion() || !A.length;
+          $("solveSelected").textContent = j.solvable ? `Solve joint ${j.id}` : "Cannot solve this joint";
+          renderFbd(j);
+          renderChallenge(j);
+        }
+        function renderResults() {
+          const K = currentKnown();
+          $("memberResults").innerHTML = members()
+            .map((m) => {
+              const f = K[m.id],
+                known = Object.hasOwn(K, m.id),
+                type = known ? forceType(f) : "unknown";
+              return `<tr><td>${m.id}</td><td>${m.a} – ${m.b}</td><td class="num">${known ? nfmt(f, 3) : "—"}</td><td><span class="tag ${type}">${type === "unknown" ? "Not solved" : type === "zero" ? "Zero" : type === "tension" ? "Tension (T)" : "Compression (C)"}</span></td></tr>`;
+            })
+            .join("");
+          const r = residual();
+          $("residualBadge").textContent =
+            r === null
+              ? `${Object.keys(K).length} of ${members().length} members solved`
+              : `Max. joint residual = ${nfmt(r, 8)} kN`;
+        }
+        function renderHistory() {
+          const el = $("history");
+          if (!S.history.length) {
+            el.innerHTML = '<div class="steps-empty">No joints solved yet.</div>';
+          } else {
+            el.innerHTML = S.history
+              .map(
+                (h, i) =>
+                  `<button type="button" data-history="${i}">Step ${i + 1}: ${h.id} (${h.found.map((x) => x.id).join(", ")})</button>`,
+              )
+              .join("");
+          }
+          const n = Object.keys(currentKnown()).length;
+          $("progressNote").textContent = completion()
+            ? `Complete: ${members().length} member forces obtained. ${S.history.length} joint steps. Click a history step to rewind.`
+            : `Progress: ${n} / ${members().length} forces found. Click a history step to rewind to it.`;
+        }
+        function solveId(id) {
+          const j = jointData(id);
+          if (!j.solvable) return false;
+          S.history.push({
+            id,
+            found: j.unknown.map((u, i) => ({
+              id: u.id,
+              force: Math.abs(j.values[i]) < 1e-9 ? 0 : j.values[i],
+            })),
+            directions: j.unknown.map((u) => ({ id: u.id, ux: u.ux, uy: u.uy })),
+            eqx: forceEquation(j, "x"),
+            eqy: forceEquation(j, "y"),
+          });
+          S.selected = id;
+          S.feedback = "";
+          return true;
+        }
+        function nextId() {
+          const candidates = availableJoints();
+          candidates.sort((a, b) => a.unknown.length - b.unknown.length || a.id.localeCompare(b.id));
+          return candidates[0]?.id;
+        }
+        function solveAll() {
+          let guard = 50;
+          while (!completion() && guard-- > 0) {
+            const id = nextId();
+            if (!id || !solveId(id)) break;
+          }
+          render();
+        }
+        function exactSolution() {
+          const savedSelected = S.selected,
+            savedFeedback = S.feedback;
+          const save = S.history.map((h) => ({
+            id: h.id,
+            found: h.found.map((f) => ({ ...f })),
+            directions: h.directions.map((d) => ({ ...d })),
+            eqx: h.eqx,
+            eqy: h.eqy,
+          }));
+          let guard = 50;
+          while (!completion() && guard-- > 0) {
+            const id = nextId();
+            if (!id || !solveId(id)) break;
+          }
+          const answer = currentKnown();
+          S.history = save;
+          S.selected = savedSelected;
+          S.feedback = savedFeedback;
+          return Object.keys(answer).length === members().length ? answer : null;
+        }
+        function renderChallenge(j) {
+          const sel = $("challengeMember"),
+            old = sel.value;
+          const unknown = members().filter((m) => !Object.hasOwn(currentKnown(), m.id));
+          sel.innerHTML = unknown.map((m) => `<option value="${m.id}">${m.id}</option>`).join("");
+          if (unknown.some((m) => m.id === old)) sel.value = old;
+          else if (j.unknown.length && unknown.some((m) => m.id === j.unknown[0].id))
+            sel.value = j.unknown[0].id;
+          $("challengeMember").disabled = !unknown.length;
+          $("challengeValue").disabled = !unknown.length;
+          $("checkGuess").disabled = !unknown.length;
+          $("challengeFeedback").textContent = S.feedback;
+          $("challengeFeedback").className = "feedback";
+        }
+        $("trussSvg").addEventListener("pointerdown", (e) => {
+          const el = e.target.closest("[data-node]");
+          if (el && el.dataset.node !== S.selected) {
+            S.selected = el.dataset.node;
+            syncJointInputs();
+            S.feedback = "";
+            render();
+          }
+        });
+        $("trussSvg").addEventListener("click", (e) => {
+          const el = e.target.closest("[data-node]");
+          if (el) {
+            S.selected = el.dataset.node;
+            syncJointInputs();
+            S.feedback = "";
+            render();
+          }
+        });
+        $("trussSvg").addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            const el = e.target.closest("[data-node]");
+            if (el) {
+              e.preventDefault();
+              S.selected = el.dataset.node;
+              syncJointInputs();
+              S.feedback = "";
+              render();
+            }
+          }
+        });
+        $("jointButtons").addEventListener("click", (e) => {
+          const el = e.target.closest("[data-pick]");
+          if (el) {
+            S.selected = el.dataset.pick;
+            syncJointInputs();
+            S.feedback = "";
+            render();
+          }
+        });
+        $("history").addEventListener("click", (e) => {
+          const el = e.target.closest("[data-history]");
+          if (el) {
+            const i = Number(el.dataset.history);
+            S.history = S.history.slice(0, i + 1);
+            S.selected = S.history.at(-1).id;
+            syncJointInputs();
+            render();
+          }
+        });
+        $("preset").addEventListener("change", (e) => loadConfig(e.target.value));
+        for (const key of ["span", "rise", "loadScale"])
+          $(key).addEventListener("input", (e) => {
+            if (key === "loadScale") S.scale = Number(e.target.value);
+            else S[key] = Number(e.target.value);
+            clearSolution();
+            syncInputs();
+            render();
+          });
+        for (const key of ["jointFx", "jointFy"])
+          $(key).addEventListener("change", (e) => {
+            const n = clamp(safely(Number(e.target.value)), -500, 500);
+            const jid = e.target.dataset.joint || S.selected;
+            if (!S.baseLoads[jid]) return;
+            S.baseLoads[jid][key === "jointFx" ? 0 : 1] = n;
+            clearSolution();
+            syncInputs();
+            render();
+          });
+        $("resetExample").addEventListener("click", () => loadConfig(S.preset));
+        $("solveSelected").addEventListener("click", () => {
+          if (solveId(S.selected)) render();
+        });
+        $("nextJoint").addEventListener("click", () => {
+          const n = nextId();
+          if (n && solveId(n)) {
+            syncJointInputs();
+            render();
+          }
+        });
+        $("undoStep").addEventListener("click", () => {
+          if (S.history.length) {
+            const h = S.history.pop();
+            S.selected = h.id;
+            syncJointInputs();
+            render();
+          }
+        });
+        $("solveAll").addEventListener("click", solveAll);
+        $("checkGuess").addEventListener("click", () => {
+          const id = $("challengeMember").value,
+            raw = $("challengeValue").value.trim(),
+            guess = Number(raw);
+          if (!raw || !Number.isFinite(guess)) {
+            S.feedback = "Enter a numeric force in kN.";
+            renderChallenge(jointData(S.selected));
+            $("challengeFeedback").classList.add("no");
+            return;
+          }
+          const answer = exactSolution();
+          if (!answer || !Object.hasOwn(answer, id)) {
+            S.feedback = "This example cannot be completely solved by the current sequence.";
+            renderChallenge(jointData(S.selected));
+            $("challengeFeedback").classList.add("no");
+            return;
+          }
+          const right = answer[id],
+            tol = Math.max(0.05, 0.01 * Math.abs(right));
+          const good = Math.abs(guess - right) <= tol;
+          S.feedback = good
+            ? `Correct. F_${id} = ${nfmt(right, 2)} kN (${forceType(right)}).`
+            : `Not correct. Your result is ${nfmt(guess, 2)} kN. Review force direction and signs; expected tolerance ±${nfmt(tol, 2)} kN.`;
+          renderChallenge(jointData(S.selected));
+          $("challengeFeedback").classList.add(good ? "good" : "no");
+        });
+        $("csvBtn").addEventListener("click", () => {
+          const K = currentKnown(),
+            N = nodesById(),
+            R = reactions(N, loads()),
+            cfg = configs[S.preset];
+          const rows = [
+            ["Type", "ID", "Value_kN", "State"],
+            ["Reaction", `${cfg.pin}x`, nfmt(R.pin.fx, 6), ""],
+            ["Reaction", `${cfg.pin}y`, nfmt(R.pin.fy, 6), ""],
+            ["Reaction", `${cfg.roller}y`, nfmt(R.roller.fy, 6), ""],
+            ...members().map((m) => [
+              "Member",
+              m.id,
+              Object.hasOwn(K, m.id) ? nfmt(K[m.id], 6) : "",
+              Object.hasOwn(K, m.id) ? forceType(K[m.id]) : "Not solved",
+            ]),
+          ];
+          const text = rows.map((row) => row.join(",")).join("\r\n");
+          const blob = new Blob([text], { type: "text/csv;charset=utf-8" }),
+            url = URL.createObjectURL(blob),
+            a = document.createElement("a");
+          a.href = url;
+          a.download = `truss_${S.preset}_results.csv`;
+          a.click();
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+        });
+        $("printBtn").addEventListener("click", () => window.print());
+        loadConfig("triangle");
+        // Test hook: pure UI diagnostics are intentionally local to this standalone teaching page.
+        window.TrussLabTest = {
+          getState: () => ({
+            preset: S.preset,
+            span: S.span,
+            rise: S.rise,
+            scale: S.scale,
+            known: currentKnown(),
+            history: S.history.map((x) => x.id),
+            reactions: reactions(nodesById(), loads()),
+            residual: residual(),
+            joints: allNodes().length,
+            members: members().length,
+          }),
+          solveAll,
+          reset: loadConfig,
+        };
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,3401 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>Method of Sections | Interactive Truss Studio</title>
+    <style>
+      :root {
+        --bg: #f5f7f7;
+        --paper: #fff;
+        --ink: #142a37;
+        --muted: #5d7180;
+        --line: #dce5e9;
+        --soft: #edf2f3;
+        --navy: #112b3a;
+        --teal: #147b88;
+        --teal-soft: #e3f3f1;
+        --orange: #d5653c;
+        --orange-soft: #fff0e7;
+        --red: #b45149;
+        --blue: #146f9d;
+        --success: #14744f;
+        --radius: 16px;
+        --shadow: 0 8px 30px rgba(28, 60, 70, 0.065);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font:
+          15px/1.5 system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+      }
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+      button {
+        cursor: pointer;
+      }
+      button:focus-visible,
+      input:focus-visible,
+      select:focus-visible {
+        outline: 3px solid #67b7c6;
+        outline-offset: 2px;
+      }
+      header {
+        background: linear-gradient(120deg, #102a39, #1b4353 72%, #265a62);
+        color: white;
+        position: relative;
+        overflow: hidden;
+      }
+      header:after {
+        content: "";
+        position: absolute;
+        right: -130px;
+        top: -160px;
+        border: 1px solid #ffffff27;
+        border-radius: 50%;
+        width: 430px;
+        height: 430px;
+        box-shadow:
+          0 0 0 65px #ffffff06,
+          0 0 0 125px #ffffff05;
+        pointer-events: none;
+      }
+      .header-inner {
+        max-width: 1450px;
+        margin: auto;
+        padding: 31px 28px 33px;
+        position: relative;
+        z-index: 1;
+      }
+      .eyebrow {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: #8fd4d6;
+        margin-bottom: 6px;
+      }
+      .heading {
+        display: flex;
+        justify-content: space-between;
+        gap: 26px;
+        align-items: flex-end;
+      }
+      .heading h1 {
+        margin: 0;
+        font-size: clamp(31px, 3.5vw, 51px);
+        letter-spacing: -0.055em;
+        line-height: 1.07;
+        font-weight: 760;
+      }
+      .heading p {
+        max-width: 710px;
+        margin: 12px 0 0;
+        color: #d5e5e9;
+        font-size: 15px;
+      }
+      .header-badge {
+        border: 1px solid #ffffff40;
+        background: #ffffff13;
+        border-radius: 12px;
+        padding: 10px 15px;
+        font-size: 12px;
+        white-space: nowrap;
+      }
+      .header-badge strong {
+        font-size: 20px;
+        display: block;
+        color: #fff;
+      }
+      .wrap {
+        max-width: 1450px;
+        margin: auto;
+        padding: 22px 28px 56px;
+      }
+      .tabs {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      .tab {
+        min-height: 87px;
+        position: relative;
+        text-align: left;
+        border: 1px solid var(--line);
+        background: white;
+        border-radius: 12px;
+        padding: 13px 14px;
+        box-shadow: 0 1px 5px #102a3906;
+        color: var(--ink);
+        transition: 0.12s;
+      }
+      .tab:hover {
+        border-color: #88a9b0;
+      }
+      .tab.active {
+        background: #e7f4f2;
+        border-color: #5ea9aa;
+        box-shadow: inset 0 0 0 1px #5ea9aa;
+      }
+      .tab-num {
+        font-weight: 800;
+        color: var(--teal);
+        font-size: 11px;
+        letter-spacing: 0.05em;
+        display: block;
+      }
+      .tab-title {
+        font-weight: 800;
+        display: block;
+        font-size: 14px;
+        margin: 3px 0;
+      }
+      .tab-lvl {
+        color: var(--muted);
+        font-size: 11px;
+        display: block;
+      }
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.7fr) minmax(300px, 0.92fr);
+        gap: 18px;
+        align-items: start;
+      }
+      .panel {
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        min-width: 0;
+        overflow: hidden;
+      }
+      .panelhead {
+        padding: 18px 20px 13px;
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .panelhead h2,
+      .panelhead h3 {
+        font-size: 18px;
+        letter-spacing: -0.02em;
+        margin: 0;
+        font-weight: 800;
+      }
+      .panelhead .sub {
+        font-size: 12px;
+        color: var(--muted);
+        margin: 3px 0 0;
+      }
+      .smallcap {
+        font-size: 11px;
+        letter-spacing: 0.11em;
+        font-weight: 800;
+        color: var(--teal);
+        text-transform: uppercase;
+      }
+      .viz-toolbar {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 9px;
+        padding: 13px 18px 3px;
+      }
+      .pill {
+        background: #e9eff1;
+        color: #365566;
+        border-radius: 100px;
+        padding: 4px 9px;
+        font-size: 11px;
+        font-weight: 750;
+      }
+      .pill.good {
+        background: #e2f4e9;
+        color: #156944;
+      }
+      .pill.warn {
+        background: #fff0e2;
+        color: #a34f2d;
+      }
+      .btn {
+        background: #fff;
+        border: 1px solid #c6d5db;
+        color: var(--ink);
+        padding: 9px 12px;
+        border-radius: 9px;
+        font-size: 12px;
+        font-weight: 750;
+        line-height: 1.2;
+      }
+      .btn:hover {
+        background: #f1f6f7;
+        border-color: #87a9ae;
+      }
+      .btn.primary {
+        background: #166879;
+        border-color: #166879;
+        color: white;
+      }
+      .btn.primary:hover {
+        background: #125866;
+      }
+      .btn.ghost {
+        border-color: transparent;
+        background: transparent;
+        color: #41717b;
+      }
+      .btn.danger {
+        color: #b45335;
+      }
+      .btn:disabled {
+        opacity: 0.43;
+        cursor: not-allowed;
+      }
+      .modelbox {
+        padding: 2px 12px 4px;
+        position: relative;
+      }
+      .drawing {
+        width: 100%;
+        display: block;
+        overflow: visible;
+        touch-action: manipulation;
+      }
+      .model-svg {
+        height: auto;
+        max-height: 465px;
+        min-height: 280px;
+      }
+      .captionbar {
+        display: flex;
+        gap: 15px;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        padding: 12px 18px 16px;
+        border-top: 1px solid #eef2f2;
+        background: #fcfdfd;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .legend {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        flex-wrap: wrap;
+        font-size: 11px;
+      }
+      .legend b {
+        display: inline-block;
+        vertical-align: middle;
+        width: 20px;
+        height: 3px;
+        margin-right: 5px;
+        border-radius: 3px;
+      }
+      .legend .base {
+        background: #78919a;
+      }
+      .legend .cut {
+        background: var(--orange);
+      }
+      .legend .tension {
+        background: var(--blue);
+      }
+      .legend .compression {
+        background: var(--red);
+      }
+      .legend .section-path {
+        height: 0;
+        width: 25px;
+        border-top: 3px dashed #db572e;
+        background: none;
+      }
+      .case-content {
+        padding: 16px 19px 20px;
+      }
+      .brief {
+        font-size: 14px;
+        line-height: 1.58;
+        color: #355262;
+      }
+      .brief b {
+        color: var(--ink);
+      }
+      .tip {
+        border-left: 3px solid var(--teal);
+        background: #eff7f6;
+        padding: 11px 12px;
+        font-size: 12px;
+        color: #305662;
+        border-radius: 0 7px 7px 0;
+        margin: 13px 0;
+      }
+      .divider {
+        border: 0;
+        border-top: 1px solid var(--line);
+        margin: 17px 0;
+      }
+      .formtitle {
+        font-weight: 800;
+        margin: 0 0 11px;
+        font-size: 14px;
+      }
+      .twocol {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+      .field label {
+        font-size: 12px;
+        color: var(--muted);
+        font-weight: 700;
+      }
+      .field input[type="range"] {
+        width: 100%;
+        accent-color: var(--teal);
+      }
+      .field input[type="number"],
+      .field select,
+      .field input[type="text"] {
+        width: 100%;
+        min-width: 0;
+        border: 1px solid #c9d7db;
+        background: #fff;
+        color: var(--ink);
+        border-radius: 8px;
+        padding: 9px 10px;
+      }
+      .field .val {
+        color: var(--teal);
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+      }
+      .mini-note {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 7px;
+      }
+      .load-editor {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr 1fr;
+        gap: 9px;
+        margin-top: 12px;
+      }
+      .load-summary {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin: 10px 0 0;
+      }
+      .load-chip {
+        font-size: 11px;
+        border: 1px solid #dde7e8;
+        background: #f8fbfb;
+        border-radius: 6px;
+        padding: 5px 7px;
+        color: #4a626d;
+      }
+      .muted {
+        color: var(--muted);
+      }
+      .status {
+        padding: 11px 15px;
+        border-radius: 10px;
+        font-size: 12px;
+        margin-top: 13px;
+        background: #edf3f5;
+        border: 1px solid #d6e2e5;
+        color: #45616b;
+      }
+      .status.invalid {
+        background: #fff0e7;
+        border-color: #f4d6c5;
+        color: #93512f;
+      }
+      .status.valid {
+        background: #eaf6ef;
+        border-color: #bfe3d1;
+        color: #246147;
+      }
+      .analysis {
+        margin-top: 19px;
+      }
+      .analysis-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        align-items: center;
+        margin: 0 0 12px;
+      }
+      .analysis-head h2 {
+        margin: 0;
+        font-size: 23px;
+        letter-spacing: -0.035em;
+      }
+      .analysis-sub {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .analysis-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+        gap: 18px;
+      }
+      .fbd-content {
+        padding: 0 15px 17px;
+      }
+      .fbdbox {
+        padding: 4px 0 0;
+      }
+      .fbd-svg {
+        height: auto;
+        min-height: 230px;
+      }
+      .fbd-footer {
+        font-size: 12px;
+        color: #496574;
+        margin: 5px 5px 0;
+      }
+      .equations {
+        padding: 17px 18px 20px;
+      }
+      .inline-fields {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 9px;
+        margin: 14px 0;
+      }
+      .eqblock {
+        background: #f7f9f9;
+        border: 1px solid #e2e9eb;
+        border-radius: 9px;
+        padding: 11px 12px;
+        margin: 8px 0;
+        font-size: 13px;
+        overflow-wrap: anywhere;
+      }
+      .eqblock .eqname {
+        font-size: 11px;
+        font-weight: 800;
+        color: var(--teal);
+        margin-bottom: 4px;
+        letter-spacing: 0.02em;
+      }
+      .eqline {
+        font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+        font-size: 12px;
+        color: #253f4e;
+        line-height: 1.7;
+      }
+      .eqhint {
+        font-size: 12px;
+        color: #4a6b71;
+        margin: 11px 0 0;
+        background: #ecf6f5;
+        border-radius: 9px;
+        padding: 9px 12px;
+      }
+      .answer {
+        padding: 20px;
+      }
+      .answergrid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        margin: 12px 0;
+      }
+      .answergrid .field label {
+        color: #314956;
+      }
+      .answer-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+      }
+      .feedback {
+        font-size: 12px;
+        margin-top: 12px;
+        line-height: 1.55;
+      }
+      .feedback.err {
+        color: #a44932;
+      }
+      .feedback.ok {
+        color: #16714b;
+      }
+      .result-table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-top: 13px;
+        font-size: 12px;
+      }
+      .result-table th {
+        text-align: left;
+        color: var(--muted);
+        font-size: 10px;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        border-bottom: 1px solid #d6e2e5;
+        padding: 8px 6px;
+      }
+      .result-table td {
+        border-bottom: 1px solid #eaf0f1;
+        padding: 9px 6px;
+      }
+      .result-table .force {
+        font-variant-numeric: tabular-nums;
+        font-weight: 800;
+      }
+      .result-table .tens {
+        color: var(--blue);
+      }
+      .result-table .comp {
+        color: var(--red);
+      }
+      .result-table .zero {
+        color: #6a7480;
+      }
+      .steps {
+        margin: 0;
+        padding: 14px 20px 18px 37px;
+        color: #47616d;
+        font-size: 12px;
+      }
+      .steps li {
+        margin: 3px 0;
+      }
+      .step-number {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 23px;
+        height: 23px;
+        background: #e7f3f2;
+        color: #197582;
+        border-radius: 50%;
+        font-weight: 800;
+        font-size: 11px;
+        margin-right: 6px;
+      }
+      .reaction-table {
+        margin: 0;
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+      }
+      .reaction-table td {
+        padding: 6px 2px;
+        border-bottom: 1px solid #eef2f3;
+      }
+      .reaction-table td:last-child {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+        font-weight: 750;
+      }
+      .collapse-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        border: 0;
+        background: #f7fafb;
+        padding: 13px 18px;
+        font-size: 13px;
+        font-weight: 800;
+        color: var(--ink);
+        text-align: left;
+      }
+      .collapse-inner {
+        padding: 11px 18px 15px;
+      }
+      .no-cut {
+        padding: 26px 22px;
+        text-align: center;
+        color: #5d7280;
+        background: linear-gradient(135deg, #f9fcfc, #f1f7f7);
+        border: 1px dashed #bdced4;
+        border-radius: 15px;
+      }
+      .no-cut strong {
+        display: block;
+        color: #294956;
+        font-size: 17px;
+        margin-bottom: 4px;
+      }
+      .footer {
+        color: #70838b;
+        font-size: 12px;
+        text-align: center;
+        margin-top: 28px;
+      }
+      .retained-glow {
+        stroke: #45ad95;
+        stroke-width: 17;
+        opacity: 0.19;
+        stroke-linecap: round;
+        pointer-events: none;
+      }
+      .section-cut-halo {
+        fill: none;
+        stroke: #fff;
+        stroke-width: 12;
+        stroke-linejoin: round;
+        stroke-linecap: round;
+        pointer-events: none;
+      }
+      .section-cut-path {
+        fill: none;
+        stroke: #c74e23;
+        stroke-width: 4.2;
+        stroke-dasharray: 12 8;
+        stroke-linejoin: round;
+        stroke-linecap: round;
+        pointer-events: none;
+      }
+      .section-cut-outline {
+        fill: none;
+        stroke: #f4ba9f;
+        stroke-width: 17;
+        stroke-linejoin: round;
+        stroke-linecap: round;
+        opacity: 0.36;
+        pointer-events: none;
+      }
+      .section-point {
+        fill: white;
+        stroke: #bf4c2b;
+        stroke-width: 2.5;
+        pointer-events: none;
+      }
+      .section-end {
+        fill: #ac3a22;
+        stroke: white;
+        stroke-width: 2.6;
+        pointer-events: none;
+      }
+      .section-end-letter {
+        font-size: 13px;
+        font-weight: 900;
+        fill: white;
+        text-anchor: middle;
+        dominant-baseline: central;
+        pointer-events: none;
+      }
+      .section-label {
+        font-size: 12px;
+        font-weight: 900;
+        letter-spacing: 0.055em;
+        fill: #a13d24;
+        paint-order: stroke;
+        stroke: white;
+        stroke-width: 6;
+        pointer-events: none;
+      }
+      .draw-member {
+        stroke: #6f8994;
+        stroke-width: 4.6;
+        stroke-linecap: round;
+        transition:
+          stroke 0.13s,
+          stroke-width 0.13s;
+      }
+      .draw-member.selected {
+        stroke: var(--orange);
+        stroke-width: 7;
+      }
+      .draw-member.faint {
+        stroke: #b6c9ca;
+        stroke-width: 3;
+      }
+      .draw-member.solved-tension {
+        stroke: var(--blue);
+      }
+      .draw-member.solved-compression {
+        stroke: var(--red);
+      }
+      .draw-member.solved-zero {
+        stroke: #b6c1c6;
+      }
+      .hit-member {
+        stroke: transparent;
+        stroke-width: 25;
+        pointer-events: stroke;
+        cursor: pointer;
+      }
+      .hit-member:focus {
+        stroke: #2fa1b228;
+        outline: none;
+      }
+      .joint {
+        fill: #fff;
+        stroke: #1b3c4b;
+        stroke-width: 2.7;
+      }
+      .joint.isolated {
+        fill: #d6f1ed;
+        stroke: #147b88;
+      }
+      .node-label {
+        font-size: 16px;
+        font-weight: 800;
+        fill: #1d3845;
+        paint-order: stroke;
+        stroke: #fff;
+        stroke-width: 4;
+        stroke-linejoin: round;
+      }
+      .member-label {
+        font-size: 13px;
+        font-weight: 800;
+        fill: #56707d;
+        paint-order: stroke;
+        stroke: #fff;
+        stroke-width: 4;
+        stroke-linejoin: round;
+        pointer-events: none;
+      }
+      .member-label.iscut {
+        fill: #ad4c2a;
+      }
+      .load-arrow {
+        stroke: #c4533e;
+        stroke-width: 3.1;
+        fill: none;
+      }
+      .reaction-arrow {
+        stroke: #137d88;
+        stroke-width: 2.8;
+        fill: none;
+      }
+      .cut-arrow {
+        stroke: #ce6138;
+        stroke-width: 3.3;
+        fill: none;
+      }
+      .force-label {
+        fill: #a94b36;
+        font-size: 13px;
+        font-weight: 750;
+        paint-order: stroke;
+        stroke: white;
+        stroke-width: 4;
+      }
+      .reaction-label {
+        fill: #0d7180;
+        font-size: 12px;
+        font-weight: 750;
+        paint-order: stroke;
+        stroke: white;
+        stroke-width: 4;
+      }
+      .cut-label {
+        fill: #b45332;
+        font-size: 14px;
+        font-weight: 850;
+        paint-order: stroke;
+        stroke: white;
+        stroke-width: 5;
+      }
+      .svg-note {
+        fill: #6f8a95;
+        font-size: 12px;
+        font-weight: 600;
+      }
+      .support {
+        fill: #e5eff1;
+        stroke: #486774;
+        stroke-width: 2;
+      }
+      .support-ground {
+        stroke: #7b9099;
+        stroke-width: 2;
+      }
+      .top-hint {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .print-only {
+        display: none;
+      }
+      @media (max-width: 1090px) {
+        .layout {
+          grid-template-columns: 1fr 370px;
+        }
+        .analysis-grid {
+          grid-template-columns: 1fr;
+        }
+        .tabs {
+          gap: 7px;
+        }
+        .tab {
+          padding: 10px;
+        }
+        .tab-title {
+          font-size: 13px;
+        }
+      }
+      @media (max-width: 850px) {
+        .modelbox,
+        .fbdbox {
+          overflow-x: auto;
+        }
+        .model-svg {
+          min-width: 630px;
+        }
+        .fbd-svg {
+          min-width: 610px;
+        }
+        .header-inner {
+          padding: 25px 18px;
+        }
+        .wrap {
+          padding: 16px 14px 35px;
+        }
+        .header-badge {
+          display: none;
+        }
+        .layout {
+          grid-template-columns: 1fr;
+        }
+        .tabs {
+          grid-template-columns: repeat(7, 190px);
+          overflow-x: auto;
+          padding-bottom: 5px;
+          scroll-snap-type: x mandatory;
+        }
+        .tab {
+          scroll-snap-align: start;
+        }
+        .model-svg {
+          min-height: 230px;
+        }
+        .answergrid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+      @media (max-width: 470px) {
+        .heading h1 {
+          font-size: 34px;
+        }
+        .load-editor {
+          grid-template-columns: 1fr 1fr;
+        }
+        .load-editor .field:first-child {
+          grid-column: 1/-1;
+        }
+        .inline-fields {
+          grid-template-columns: 1fr;
+        }
+        .answergrid {
+          grid-template-columns: 1fr;
+        }
+        .panelhead {
+          padding: 15px;
+        }
+        .case-content {
+          padding: 15px;
+        }
+        .tabs {
+          grid-template-columns: repeat(7, 160px);
+        }
+        .model-svg {
+          min-height: 280px;
+        }
+        .btn {
+          padding: 9px 10px;
+        }
+      }
+      @media print {
+        @page {
+          size: landscape;
+          margin: 12mm;
+        }
+        body {
+          background: white;
+          font-size: 11pt;
+        }
+        header {
+          color: #152c39;
+          background: #fff;
+          border-bottom: 2px solid #183b47;
+        }
+        header .heading p,
+        header .eyebrow {
+          color: #294956;
+        }
+        .wrap {
+          max-width: none;
+          padding: 10px;
+        }
+        .tabs,
+        .viz-toolbar,
+        .case-content .field,
+        .case-content .divider,
+        .load-editor,
+        .answer-buttons,
+        .btn,
+        .feedback,
+        .footer,
+        .no-print {
+          display: none !important;
+        }
+        .layout {
+          grid-template-columns: 1.6fr 1fr;
+          gap: 10px;
+        }
+        .panel {
+          box-shadow: none;
+          break-inside: avoid;
+        }
+        .analysis-grid {
+          grid-template-columns: 1fr 1fr;
+          gap: 10px;
+        }
+        .model-svg {
+          min-height: 170px;
+        }
+        .fbd-svg {
+          min-height: 150px;
+        }
+        .panelhead {
+          padding: 7px 12px;
+        }
+        .analysis-head {
+          margin-top: 10px;
+        }
+        .result-table {
+          font-size: 10px;
+        }
+        .print-only {
+          display: block;
+        }
+        .heading h1 {
+          font-size: 26px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-inner">
+        <div class="eyebrow">Statics / Interactive structural analysis</div>
+        <div class="heading">
+          <div>
+            <h1>Method of Sections</h1>
+            <p>
+              Cut a truss, isolate one side, and solve member forces from
+              <b>ΣF<sub>x</sub> = 0, ΣF<sub>y</sub> = 0, ΣM = 0</b>. Seven problems progress from a simple
+              three-panel truss to polygonal-chord and K-web trusses.
+            </p>
+          </div>
+          <div class="header-badge"><strong>7 levels</strong>Works offline · No installation</div>
+        </div>
+      </div>
+    </header>
+    <main class="wrap">
+      <nav class="tabs" id="problemTabs" aria-label="Problem selection"></nav>
+      <div class="layout">
+        <section class="panel" aria-label="Interactive truss drawing">
+          <div class="panelhead">
+            <div>
+              <div class="smallcap">01 / Choose the cut</div>
+              <h2 id="problemTitle">Truss</h2>
+              <div class="sub" id="problemSummary"></div>
+            </div>
+            <span class="pill" id="degreeBadge">Determinate</span>
+          </div>
+          <div class="viz-toolbar">
+            <span class="pill" id="cutCount">Cut members: 0 / 3</span
+            ><button class="btn primary" id="btnTeaching">Use teaching cut</button
+            ><button class="btn" id="btnClear">Clear cut</button
+            ><button class="btn" id="btnRevealModel">Color member forces</button
+            ><button class="btn" id="btnToggleLabels">Hide member labels</button>
+          </div>
+          <div class="modelbox">
+            <svg
+              class="drawing model-svg"
+              id="modelSvg"
+              viewBox="0 0 950 440"
+              role="img"
+              aria-label="Truss diagram with clickable members"
+            ></svg>
+          </div>
+          <div class="captionbar">
+            <span id="cutInstruction"
+              >Select two or three members, or load a teaching cut to draw section S–S.</span
+            >
+            <div class="legend">
+              <span><b class="base"></b>Member</span><span><b class="cut"></b>Cut member</span
+              ><span><b class="section-path"></b>Section S–S</span><span><b class="tension"></b>Tension</span
+              ><span><b class="compression"></b>Compression</span>
+            </div>
+          </div>
+        </section>
+        <aside class="panel" aria-label="Problem settings">
+          <div class="panelhead">
+            <div>
+              <div class="smallcap">Challenge brief</div>
+              <h3 id="briefTitle"></h3>
+            </div>
+            <span class="pill" id="difficultyPill"></span>
+          </div>
+          <div class="case-content">
+            <div class="brief" id="problemBrief"></div>
+            <div class="tip" id="problemTip"></div>
+            <hr class="divider" />
+            <div class="formtitle">Adjust geometry</div>
+            <div class="twocol">
+              <div class="field">
+                <label for="spanScale">Horizontal scale <span class="val" id="spanValue">100%</span></label
+                ><input type="range" min="75" max="140" value="100" step="5" id="spanScale" />
+              </div>
+              <div class="field">
+                <label for="riseScale">Vertical scale <span class="val" id="riseValue">100%</span></label
+                ><input type="range" min="60" max="160" value="100" step="5" id="riseScale" />
+              </div>
+            </div>
+            <div class="mini-note">
+              Changing geometry recalculates reactions, direction cosines, and internal forces.
+            </div>
+            <hr class="divider" />
+            <div class="formtitle">
+              Edit joint loads <span class="muted" style="font-weight: 500">(kN; positive right/up)</span>
+            </div>
+            <div class="load-editor">
+              <div class="field">
+                <label for="loadNode">Joint</label
+                ><select id="loadNode"></select>
+              </div>
+              <div class="field">
+                <label for="loadFx">F<sub>x</sub> (kN)</label><input type="number" step="1" id="loadFx" />
+              </div>
+              <div class="field">
+                <label for="loadFy">F<sub>y</sub> (kN)</label><input type="number" step="1" id="loadFy" />
+              </div>
+            </div>
+            <div class="load-summary" id="loadSummary"></div>
+            <div style="display: flex; justify-content: space-between; gap: 8px; margin-top: 10px">
+              <button class="btn ghost" id="btnResetLoads">Reset loads</button
+              ><button class="btn ghost" id="btnResetGeometry">Reset geometry</button>
+            </div>
+            <div class="status" id="cutStatus">Select a cut to begin.</div>
+          </div>
+        </aside>
+      </div>
+      <section class="analysis" id="sectionAnalysis" aria-label="Section analysis">
+        <div class="analysis-head">
+          <div>
+            <h2>Section analysis</h2>
+            <div class="analysis-sub">
+              Assume every cut-member force points away from the isolated section (tension-positive
+              convention).
+            </div>
+          </div>
+          <button class="btn" id="btnPrint">Print / Save PDF</button>
+        </div>
+        <div id="emptyMessage" class="no-cut">
+          <strong>Make a section cut to begin</strong>Choose <b>Use teaching cut</b> or click two or three
+          members in the truss. The dashed line S–S crosses only the selected members. A valid cut must
+          separate the truss into exactly two parts.
+        </div>
+        <div id="analysisBody" hidden>
+          <div class="analysis-grid">
+            <section class="panel">
+              <div class="panelhead">
+                <div>
+                  <div class="smallcap">02 / Isolate a free body</div>
+                  <h3>Isolated section</h3>
+                  <div class="sub" id="sectionDetails"></div>
+                </div>
+              </div>
+              <div class="viz-toolbar" style="padding-bottom: 0">
+                <span class="top-hint">Retain the side containing</span
+                ><select
+                  id="isolateSide"
+                  aria-label="Choose which side of the cut to retain"
+                  style="
+                    border: 1px solid #c9d7db;
+                    border-radius: 8px;
+                    padding: 7px;
+                    color: var(--ink);
+                    max-width: 200px;
+                  "
+                ></select>
+              </div>
+              <div class="fbd-content">
+                <div class="fbdbox">
+                  <svg
+                    class="drawing fbd-svg"
+                    id="fbdSvg"
+                    viewBox="0 0 950 420"
+                    role="img"
+                    aria-label="Free body diagram of the isolated section"
+                  ></svg>
+                </div>
+                <div class="fbd-footer" id="fbdExplanation"></div>
+              </div>
+            </section>
+            <section class="panel">
+              <div class="panelhead">
+                <div>
+                  <div class="smallcap">03 / Write equilibrium</div>
+                  <h3>Three equilibrium equations</h3>
+                  <div class="sub">Forces in kN; moments in kN·m</div>
+                </div>
+              </div>
+              <div class="equations">
+                <div class="field">
+                  <label for="momentNode">Take moments about joint</label
+                  ><select id="momentNode"></select>
+                </div>
+                <div class="eqblock">
+                  <div class="eqname">ΣF<sub>x</sub> = 0</div>
+                  <div class="eqline" id="eqFx"></div>
+                </div>
+                <div class="eqblock">
+                  <div class="eqname">ΣF<sub>y</sub> = 0</div>
+                  <div class="eqline" id="eqFy"></div>
+                </div>
+                <div class="eqblock">
+                  <div class="eqname" id="eqMomentTitle">ΣM = 0</div>
+                  <div class="eqline" id="eqMoment"></div>
+                </div>
+                <div class="eqhint" id="momentHint"></div>
+              </div>
+            </section>
+          </div>
+          <div class="analysis-grid" style="margin-top: 18px">
+            <section class="panel">
+              <div class="panelhead">
+                <div>
+                  <div class="smallcap">04 / Student workspace</div>
+                  <h3>Predict the cut-member forces</h3>
+                  <div class="sub">Enter signed values: + tension, − compression.</div>
+                </div>
+              </div>
+              <div class="answer">
+                <div class="answergrid" id="answerInputs"></div>
+                <div class="answer-buttons">
+                  <button class="btn primary" id="btnCheck">Check answers</button
+                  ><button class="btn" id="btnShowSolution">Reveal worked solution</button
+                  ><button class="btn" id="btnHideSolution">Hide solution</button>
+                </div>
+                <div id="answerFeedback" class="feedback" aria-live="polite"></div>
+                <div id="solutions" hidden>
+                  <table class="result-table">
+                    <thead>
+                      <tr>
+                        <th>Member</th>
+                        <th>Signed force (kN)</th>
+                        <th>Classification</th>
+                        <th>Angle to +x</th>
+                      </tr>
+                    </thead>
+                    <tbody id="solutionRows"></tbody>
+                  </table>
+                  <div class="formtitle" style="margin-top: 18px">
+                    Worked solution: strategic equation order
+                  </div>
+                  <div id="workedSteps"></div>
+                  <div class="status valid" id="residualMessage"></div>
+                </div>
+              </div>
+            </section>
+            <section class="panel">
+              <div class="panelhead">
+                <div>
+                  <div class="smallcap">Foundation / Global equilibrium</div>
+                  <h3>Support reactions</h3>
+                  <div class="sub">Found from whole-truss equilibrium before making the cut.</div>
+                </div>
+              </div>
+              <button
+                class="collapse-title"
+                id="btnToggleReactions"
+                aria-expanded="false"
+                aria-controls="reactionContent"
+              >
+                Show calculation of reactions <span id="reactionChevron">＋</span>
+              </button>
+              <div class="collapse-inner" id="reactionContent" hidden>
+                <div class="eqblock">
+                  <div class="eqname">Whole-truss equations</div>
+                  <div class="eqline" id="globalEq"></div>
+                </div>
+                <table class="reaction-table" id="reactionRows"></table>
+                <p class="mini-note">
+                  Reaction directions shown with the chosen coordinate axes; a negative value acts opposite
+                  the positive direction.
+                </p>
+              </div>
+              <ol class="steps">
+                <li>Determine support reactions using the entire truss.</li>
+                <li>Cut (usually) three members and isolate one side. A fourth cut member is allowed, but then only forces whose other cut members meet at one point (or are parallel) can be found.</li>
+                <li>Include applied loads, support reactions, and cut forces on that free body.</li>
+                <li>Choose a moment center that eliminates two unknown cut forces when possible.</li>
+                <li>Use the remaining equilibrium equations and classify signs.</li>
+              </ol>
+            </section>
+          </div>
+        </div>
+      </section>
+      <p class="footer">
+        Planar, pin-jointed trusses · Ideal members carry axial force only · Member self-weight neglected ·
+        All calculations are recomputed locally in this browser.
+      </p>
+    </main>
+    <script>
+/* ===== StaticsDraw (SD): shared high-quality figure engine with collision-free labels ===== */
+const SD = (() => {
+  "use strict";
+  const COL = {
+    ink: "#1b2b3d",
+    member: "#24466e",
+    memberEdge: "#13304f",
+    memberFill: "#dbe5f0",
+    load: "#d1343a",
+    reaction: "#0d8a6f",
+    internal: "#6a46c2",
+    contact: "#d27a12",
+    cable: "#4f6377",
+    dim: "#6f7f92",
+    support: "#5b6f86",
+    supportFill: "#e9eff6",
+    hatch: "#8d9bab",
+    tension: "#1f6fb2",
+    compression: "#c2412d",
+    zero: "#8995a3",
+    unknown: "#6a46c2",
+    muted: "#9aa8b6",
+    cut: "#e0662c",
+    paper: "#ffffff",
+  };
+  const FONT = 'system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif';
+  let _ctx = null;
+  function measure(text, size = 13, weight = 650, italic = false) {
+    if (!_ctx) {
+      try {
+        _ctx = document.createElement("canvas").getContext("2d");
+      } catch (e) {
+        _ctx = null;
+      }
+    }
+    if (!_ctx) return String(text).length * size * 0.6;
+    _ctx.font = `${italic ? "italic " : ""}${weight} ${size}px ${FONT}`;
+    return _ctx.measureText(String(text)).width;
+  }
+  const esc = (s) =>
+    String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+  const f1 = (v) => (Math.abs(v) < 5e-4 ? "0" : (+v.toFixed(2)).toString());
+  // Rich text: "A_x" -> A with subscript x ; "F_{AB}" -> F with subscript AB.
+  function rich(text) {
+    const parts = [];
+    const re = /_\{([^}]*)\}|_([A-Za-z0-9])/g;
+    let last = 0,
+      m;
+    const s = String(text);
+    while ((m = re.exec(s))) {
+      if (m.index > last) parts.push({ t: s.slice(last, m.index) });
+      parts.push({ t: m[1] ?? m[2], sub: true });
+      last = re.lastIndex;
+    }
+    if (last < s.length) parts.push({ t: s.slice(last) });
+    return parts;
+  }
+  function richWidth(text, size, weight, italic) {
+    return rich(text).reduce((w, p) => w + measure(p.t, p.sub ? size * 0.74 : size, weight, italic), 0);
+  }
+  function richSVG(text, size) {
+    return rich(text)
+      .map((p) =>
+        p.sub
+          ? `<tspan font-size="${(size * 0.74).toFixed(1)}" dy="${(size * 0.28).toFixed(1)}">${esc(p.t)}</tspan><tspan dy="${(-size * 0.28).toFixed(1)}">​</tspan>`
+          : `<tspan>${esc(p.t)}</tspan>`,
+      )
+      .join("");
+  }
+  // ---------- geometry helpers ----------
+  function segRectHit(a, b, r, pad) {
+    const x1 = r.x1 - pad,
+      y1 = r.y1 - pad,
+      x2 = r.x2 + pad,
+      y2 = r.y2 + pad;
+    // Liang–Barsky clip
+    let t0 = 0,
+      t1 = 1;
+    const dx = b.x - a.x,
+      dy = b.y - a.y;
+    const p = [-dx, dx, -dy, dy],
+      q = [a.x - x1, x2 - a.x, a.y - y1, y2 - a.y];
+    for (let i = 0; i < 4; i++) {
+      if (Math.abs(p[i]) < 1e-12) {
+        if (q[i] < 0) return 0;
+      } else {
+        const t = q[i] / p[i];
+        if (p[i] < 0) {
+          if (t > t1) return 0;
+          if (t > t0) t0 = t;
+        } else {
+          if (t < t0) return 0;
+          if (t < t1) t1 = t;
+        }
+      }
+    }
+    return (t1 - t0) * Math.hypot(dx, dy);
+  }
+  function circRectHit(c, r, pad) {
+    const nx = Math.max(r.x1, Math.min(c.x, r.x2)),
+      ny = Math.max(r.y1, Math.min(c.y, r.y2));
+    const d = Math.hypot(c.x - nx, c.y - ny);
+    return d < c.r + pad ? c.r + pad - d + 2 : 0;
+  }
+  function rectOverlap(a, b) {
+    return Math.max(0, Math.min(a.x2, b.x2) - Math.max(a.x1, b.x1)) * Math.max(0, Math.min(a.y2, b.y2) - Math.max(a.y1, b.y1));
+  }
+  // ---------- Figure ----------
+  class Fig {
+    /* opts: width, height, bounds [xmin,ymin,xmax,ymax] in model units (y up), margin {l,r,t,b} or number,
+       maxScale (px per unit), cls, bg */
+    constructor(opts = {}) {
+      this.W = opts.width || 760;
+      this.H = opts.height || 420;
+      const m = opts.margin ?? 50;
+      this.m = typeof m === "number" ? { l: m, r: m, t: m, b: m } : { l: 50, r: 50, t: 50, b: 50, ...m };
+      this.layers = { back: [], mid: [], front: [], top: [] };
+      this.segs = []; // obstacles {a,b,w}
+      this.circs = []; // {x,y,r}
+      this.rects = []; // {x1,y1,x2,y2}
+      this.labels = []; // pending labels
+      this.defs = new Set();
+      this.id = "sd" + Math.random().toString(36).slice(2, 8);
+      this.bg = opts.bg ?? "#ffffff";
+      this.cls = opts.cls || "";
+      this.aria = opts.aria || "Figure";
+      this.fontScale = opts.fontScale || 1;
+      if (opts.bounds) this.fit(opts.bounds, opts.maxScale, opts.align);
+      else {
+        this.s = 1;
+        this.ox = 0;
+        this.oy = 0;
+      }
+    }
+    fit([x0, y0, x1, y1], maxScale = 1e9, align = "center") {
+      const aw = this.W - this.m.l - this.m.r,
+        ah = this.H - this.m.t - this.m.b;
+      const w = Math.max(1e-9, x1 - x0),
+        h = Math.max(1e-9, y1 - y0);
+      this.s = Math.min(aw / w, ah / h, maxScale);
+      const used = { w: w * this.s, h: h * this.s };
+      this.ox = this.m.l + (aw - used.w) / 2 - x0 * this.s;
+      // y: model y up -> screen
+      this.oy = this.m.t + (ah - used.h) / 2 + y1 * this.s;
+      if (align === "bottom") this.oy = this.H - this.m.b + y0 * this.s;
+    }
+    P(p) {
+      return { x: this.ox + p[0] * this.s, y: this.oy - p[1] * this.s };
+    }
+    // ---- raw add ----
+    add(svg, layer = "mid") {
+      this.layers[layer].push(svg);
+    }
+    obstacleSeg(a, b, w = 4) {
+      this.segs.push({ a, b, w });
+    }
+    obstacleCirc(x, y, r) {
+      this.circs.push({ x, y, r });
+    }
+    obstacleRect(x1, y1, x2, y2) {
+      this.rects.push({ x1: Math.min(x1, x2), y1: Math.min(y1, y2), x2: Math.max(x1, x2), y2: Math.max(y1, y2) });
+    }
+    // ---- primitives in SCREEN coords ----
+    sLine(a, b, { color = COL.ink, w = 2, dash = "", cap = "round", layer = "mid", obstacle = true, opacity = 1, extra = "" } = {}) {
+      this.add(
+        `<line x1="${a.x.toFixed(2)}" y1="${a.y.toFixed(2)}" x2="${b.x.toFixed(2)}" y2="${b.y.toFixed(2)}" stroke="${color}" stroke-width="${w}" stroke-linecap="${cap}"${dash ? ` stroke-dasharray="${dash}"` : ""}${opacity < 1 ? ` opacity="${opacity}"` : ""} ${extra}/>`,
+        layer,
+      );
+      if (obstacle) this.obstacleSeg(a, b, w);
+    }
+    sPoly(pts, { color = COL.ink, w = 2, fill = "none", close = false, layer = "mid", obstacle = true, dash = "", join = "round", extra = "" } = {}) {
+      const d = pts.map((p, i) => `${i ? "L" : "M"}${p.x.toFixed(2)} ${p.y.toFixed(2)}`).join(" ") + (close ? " Z" : "");
+      this.add(
+        `<path d="${d}" fill="${fill}" stroke="${color}" stroke-width="${w}" stroke-linejoin="${join}" stroke-linecap="round"${dash ? ` stroke-dasharray="${dash}"` : ""} ${extra}/>`,
+        layer,
+      );
+      if (obstacle) for (let i = 0; i < pts.length - 1 + (close ? 1 : 0); i++) this.obstacleSeg(pts[i], pts[(i + 1) % pts.length], w);
+    }
+    sCircle(c, r, { fill = "#fff", stroke = COL.ink, w = 2, layer = "mid", obstacle = true, extra = "" } = {}) {
+      this.add(`<circle cx="${c.x.toFixed(2)}" cy="${c.y.toFixed(2)}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="${w}" ${extra}/>`, layer);
+      if (obstacle) this.obstacleCirc(c.x, c.y, r + w / 2);
+    }
+    // arrowhead polygon at tip with direction u (unit, screen)
+    head(tip, u, color, size = 11, layer = "front") {
+      const n = { x: -u.y, y: u.x },
+        b = { x: tip.x - u.x * size, y: tip.y - u.y * size },
+        w = size * 0.42;
+      this.add(
+        `<path d="M${tip.x.toFixed(2)} ${tip.y.toFixed(2)} L${(b.x + n.x * w).toFixed(2)} ${(b.y + n.y * w).toFixed(2)} L${(b.x + u.x * size * 0.18).toFixed(2)} ${(b.y + u.y * size * 0.18).toFixed(2)} L${(b.x - n.x * w).toFixed(2)} ${(b.y - n.y * w).toFixed(2)} Z" fill="${color}" stroke="${color}" stroke-width="0.8" stroke-linejoin="round"/>`,
+        layer,
+      );
+    }
+    /* Arrow between two screen points (head at b) */
+    sArrow(a, b, { color = COL.load, w = 2.6, size = 11, layer = "front", halo = true, both = false, obstacle = true, dash = "" } = {}) {
+      const L = Math.hypot(b.x - a.x, b.y - a.y);
+      if (L < 1e-6) return;
+      const u = { x: (b.x - a.x) / L, y: (b.y - a.y) / L };
+      const b2 = { x: b.x - u.x * size * 0.8, y: b.y - u.y * size * 0.8 };
+      const a2 = both ? { x: a.x + u.x * size * 0.8, y: a.y + u.y * size * 0.8 } : a;
+      if (halo)
+        this.add(
+          `<line x1="${a2.x.toFixed(2)}" y1="${a2.y.toFixed(2)}" x2="${b2.x.toFixed(2)}" y2="${b2.y.toFixed(2)}" stroke="#fff" stroke-width="${w + 3.5}" stroke-linecap="round" opacity="0.9"/>`,
+          layer,
+        );
+      this.add(
+        `<line x1="${a2.x.toFixed(2)}" y1="${a2.y.toFixed(2)}" x2="${b2.x.toFixed(2)}" y2="${b2.y.toFixed(2)}" stroke="${color}" stroke-width="${w}" stroke-linecap="round"${dash ? ` stroke-dasharray="${dash}"` : ""}/>`,
+        layer,
+      );
+      this.head(b, u, color, size, layer);
+      if (both) this.head(a, { x: -u.x, y: -u.y }, color, size, layer);
+      if (obstacle) this.obstacleSeg(a, b, w + 4);
+    }
+    // ---- labels ----
+    /* Queue a label. anchor: screen point; cands: array of {x,y} label centers (preferred first) or null for default ring.
+       opts: color, size, weight, italic, bg (pill), prio */
+    label(text, anchor, opts = {}) {
+      const size = (opts.size || 13) * this.fontScale,
+        weight = opts.weight || 700,
+        italic = !!opts.italic;
+      const w = richWidth(text, size, weight, italic) + (opts.bg ? 12 : 4),
+        h = size + (opts.bg ? 8 : 3);
+      let cands = opts.cands;
+      if (!cands) {
+        const d = opts.dist ?? 14;
+        cands = [];
+        const dirs = opts.dirs || [
+          [0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1],
+        ];
+        for (const k of [1, 1.6, 2.3, 3.2])
+          for (const [dx, dy] of dirs) {
+            const n = Math.hypot(dx, dy);
+            cands.push({ x: anchor.x + (dx / n) * (d * k + (Math.abs(dx / n) * w) / 2), y: anchor.y + (dy / n) * (d * k + (Math.abs(dy / n) * h) / 2) });
+          }
+      }
+      this.labels.push({ text, anchor, cands, w, h, size, weight, italic, color: opts.color || COL.ink, bg: opts.bg, prio: opts.prio ?? 5, leader: opts.leader ?? true, fixed: !!opts.fixed });
+    }
+    placeLabels() {
+      const placed = [];
+      const order = this.labels.map((l, i) => ({ l, i })).sort((a, b) => b.l.prio - a.l.prio || a.i - b.i);
+      const out = [];
+      for (const { l } of order) {
+        let best = null,
+          bestScore = Infinity;
+        l.cands.forEach((c, ci) => {
+          const r = { x1: c.x - l.w / 2, y1: c.y - l.h / 2, x2: c.x + l.w / 2, y2: c.y + l.h / 2 };
+          let s = ci * 0.6 + Math.hypot(c.x - l.anchor.x, c.y - l.anchor.y) * 0.02;
+          const out = Math.max(0, 4 - r.x1) + Math.max(0, 4 - r.y1) + Math.max(0, r.x2 - this.W + 4) + Math.max(0, r.y2 - this.H + 4);
+          if (out > 0) s += 5000 + out * 100;
+          for (const p of placed) s += rectOverlap(r, { x1: p.x1 - 3, y1: p.y1 - 3, x2: p.x2 + 3, y2: p.y2 + 3 }) * 30;
+          for (const q of this.rects) s += rectOverlap(r, q) * 8;
+          for (const g of this.segs) {
+            const len = segRectHit(g.a, g.b, r, g.w / 2 + 1.5);
+            if (len > 0) s += 140 + len * 6;
+          }
+          for (const k of this.circs) {
+            const d = circRectHit(k, r, 1.5);
+            if (d > 0) s += 140 + d * 10;
+          }
+          if (s < bestScore) {
+            bestScore = s;
+            best = { c, r };
+          }
+        });
+        if (l.fixed) best = { c: l.cands[0], r: { x1: l.cands[0].x - l.w / 2, y1: l.cands[0].y - l.h / 2, x2: l.cands[0].x + l.w / 2, y2: l.cands[0].y + l.h / 2 } };
+        placed.push(best.r);
+        l.at = best.c;
+        l.rect = best.r;
+        out.push(l);
+      }
+      return out;
+    }
+    renderLabels() {
+      const ls = this.placeLabels();
+      const s = [];
+      for (const l of ls) {
+        const { x, y } = l.at;
+        if (l.bg) {
+          s.push(
+            `<rect x="${(l.rect.x1).toFixed(1)}" y="${(l.rect.y1).toFixed(1)}" width="${l.w.toFixed(1)}" height="${l.h.toFixed(1)}" rx="${(l.h / 2).toFixed(1)}" fill="${l.bg === true ? "#fff" : l.bg}" stroke="${l.color}" stroke-opacity="0.35" stroke-width="1"/>`,
+          );
+        }
+        s.push(
+          `<text x="${x.toFixed(1)}" y="${(y + l.size * 0.36).toFixed(1)}" text-anchor="middle" font-size="${l.size.toFixed(1)}" font-weight="${l.weight}"${l.italic ? ' font-style="italic"' : ""} fill="${l.color}"${l.bg ? "" : ' paint-order="stroke" stroke="#fff" stroke-width="3.6" stroke-linejoin="round"'}>${richSVG(l.text, l.size)}</text>`,
+        );
+      }
+      return s.join("");
+    }
+    inner() {
+      const labels = this.renderLabels();
+      return `${this.bg ? `<rect x="0" y="0" width="${this.W}" height="${this.H}" fill="${this.bg}"/>` : ""}${this.layers.back.join("")}${this.layers.mid.join("")}${this.layers.front.join("")}<g class="sd-labels">${labels}</g>${this.layers.top.join("")}`;
+    }
+    mount(svgEl) {
+      svgEl.setAttribute("viewBox", `0 0 ${this.W} ${this.H}`);
+      svgEl.setAttribute("font-family", FONT);
+      svgEl.innerHTML = this.inner();
+    }
+    svg(extraAttrs = "") {
+      const labels = this.renderLabels();
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${this.W} ${this.H}" class="${this.cls}" role="img" aria-label="${esc(this.aria)}" font-family='${FONT}' ${extraAttrs}>${this.bg ? `<rect x="0" y="0" width="${this.W}" height="${this.H}" fill="${this.bg}"/>` : ""}${this.layers.back.join("")}${this.layers.mid.join("")}${this.layers.front.join("")}<g class="sd-labels">${labels}</g>${this.layers.top.join("")}</svg>`;
+    }
+    // ================= MODEL-SPACE drawing helpers =================
+    /* Structural member as a rounded bar through model points */
+    member(pts, { w = 11, color = COL.member, fill = COL.memberFill, layer = "mid", dash = "" } = {}) {
+      const S = pts.map((p) => this.P(p));
+      this.sPoly(S, { color, w, layer, obstacle: false, dash });
+      this.sPoly(S, { color: fill, w: Math.max(2, w - 5.5), layer, obstacle: false, dash });
+      for (let i = 0; i < S.length - 1; i++) this.obstacleSeg(S[i], S[i + 1], w);
+      return S;
+    }
+    /* Thin truss bar (screen width) */
+    bar(a, b, { w = 6, color = COL.member, layer = "mid", dash = "", halo = true } = {}) {
+      const A = this.P(a),
+        B = this.P(b);
+      if (halo) this.sLine(A, B, { color: "#fff", w: w + 4, layer, obstacle: false });
+      this.sLine(A, B, { color, w, layer, dash, obstacle: false });
+      this.obstacleSeg(A, B, w);
+      return [A, B];
+    }
+    cable(pts, { w = 2.4, color = COL.cable, layer = "mid" } = {}) {
+      const S = pts.map((p) => this.P(p));
+      this.sPoly(S, { color, w, layer });
+      return S;
+    }
+    /* Pin joint marker */
+    pin(p, { r = 6.5, layer = "front", fill = "#fff", stroke = COL.memberEdge } = {}) {
+      const c = this.P(p);
+      this.sCircle(c, r, { fill, stroke, w: 2.2, layer });
+      this.add(`<circle cx="${c.x.toFixed(2)}" cy="${c.y.toFixed(2)}" r="${(r * 0.32).toFixed(2)}" fill="${stroke}"/>`, layer);
+      return c;
+    }
+    // ground hatch in screen coords along segment a->b, hatch on side n (screen normal)
+    hatch(a, b, n, { layer = "back", len = 8, gap = 7, color = COL.hatch } = {}) {
+      this.sLine(a, b, { color: COL.support, w: 2, layer });
+      const L = Math.hypot(b.x - a.x, b.y - a.y),
+        u = { x: (b.x - a.x) / L, y: (b.y - a.y) / L };
+      for (let t = 3; t <= L - 2; t += gap) {
+        const p = { x: a.x + u.x * t, y: a.y + u.y * t };
+        this.sLine(p, { x: p.x + n.x * len - u.x * len * 0.7, y: p.y + n.y * len - u.y * len * 0.7 }, { color, w: 1.2, layer, obstacle: false });
+      }
+      this.obstacleRect(Math.min(a.x, b.x, a.x + n.x * len), Math.min(a.y, b.y, a.y + n.y * len), Math.max(a.x, b.x, a.x + n.x * len), Math.max(a.y, b.y, a.y + n.y * len));
+    }
+    /* Pin support: triangle pointing to the joint. side: 'down' (ground below), 'up', 'left' (wall on left), 'right' */
+    pinSupport(p, side = "down", { size = 1 } = {}) {
+      const c = this.P(p);
+      const n = { down: { x: 0, y: 1 }, up: { x: 0, y: -1 }, left: { x: -1, y: 0 }, right: { x: 1, y: 0 } }[side];
+      const t = { x: -n.y, y: n.x };
+      const h = 24 * size,
+        hw = 15 * size;
+      const tri = [
+        { x: c.x + n.x * 4, y: c.y + n.y * 4 },
+        { x: c.x + n.x * h + t.x * hw, y: c.y + n.y * h + t.y * hw },
+        { x: c.x + n.x * h - t.x * hw, y: c.y + n.y * h - t.y * hw },
+      ];
+      this.sPoly(tri, { color: COL.support, w: 1.8, fill: COL.supportFill, close: true, layer: "back" });
+      const g1 = { x: c.x + n.x * h + t.x * (hw + 8), y: c.y + n.y * h + t.y * (hw + 8) },
+        g2 = { x: c.x + n.x * h - t.x * (hw + 8), y: c.y + n.y * h - t.y * (hw + 8) };
+      this.hatch(g1, g2, n, { layer: "back" });
+      this.pin(p);
+      return { base: { x: c.x + n.x * (h + 9), y: c.y + n.y * (h + 9) }, n };
+    }
+    rollerSupport(p, side = "down", { size = 1 } = {}) {
+      const c = this.P(p);
+      const n = { down: { x: 0, y: 1 }, up: { x: 0, y: -1 }, left: { x: -1, y: 0 }, right: { x: 1, y: 0 } }[side];
+      const t = { x: -n.y, y: n.x };
+      const h = 18 * size,
+        hw = 14 * size,
+        rr = 4.3 * size;
+      const tri = [
+        { x: c.x + n.x * 4, y: c.y + n.y * 4 },
+        { x: c.x + n.x * h + t.x * hw, y: c.y + n.y * h + t.y * hw },
+        { x: c.x + n.x * h - t.x * hw, y: c.y + n.y * h - t.y * hw },
+      ];
+      this.sPoly(tri, { color: COL.support, w: 1.8, fill: COL.supportFill, close: true, layer: "back" });
+      for (const k of [-1, 0, 1]) {
+        const q = { x: c.x + n.x * (h + rr) + t.x * k * 9 * size, y: c.y + n.y * (h + rr) + t.y * k * 9 * size };
+        this.sCircle(q, rr, { fill: "#fff", stroke: COL.support, w: 1.5, layer: "back" });
+      }
+      const gy = h + 2 * rr + 1;
+      this.hatch({ x: c.x + n.x * gy + t.x * (hw + 8), y: c.y + n.y * gy + t.y * (hw + 8) }, { x: c.x + n.x * gy - t.x * (hw + 8), y: c.y + n.y * gy - t.y * (hw + 8) }, n, { layer: "back" });
+      this.pin(p);
+      return { base: { x: c.x + n.x * (gy + 9), y: c.y + n.y * (gy + 9) }, n };
+    }
+    /* Fixed (built-in) wall at model point p; wall on given side */
+    fixedSupport(p, side = "left", { half = 34 } = {}) {
+      const c = this.P(p);
+      const n = { left: { x: -1, y: 0 }, right: { x: 1, y: 0 }, down: { x: 0, y: 1 }, up: { x: 0, y: -1 } }[side];
+      const t = { x: -n.y, y: n.x };
+      const a = { x: c.x + t.x * half, y: c.y + t.y * half },
+        b = { x: c.x - t.x * half, y: c.y - t.y * half };
+      this.add(
+        `<path d="M${a.x} ${a.y} L${b.x} ${b.y} L${b.x + n.x * 12} ${b.y + n.y * 12} L${a.x + n.x * 12} ${a.y + n.y * 12} Z" fill="#eef2f7" stroke="none"/>`,
+        "back",
+      );
+      this.hatch(a, b, n, { layer: "back", len: 10 });
+    }
+    /* plain wall/ceiling/ground surface between model points, hatch toward side vector given in screen terms */
+    surface(p1, p2, side = "down", opts = {}) {
+      const a = this.P(p1),
+        b = this.P(p2);
+      const n = { down: { x: 0, y: 1 }, up: { x: 0, y: -1 }, left: { x: -1, y: 0 }, right: { x: 1, y: 0 } }[side];
+      this.add(
+        `<path d="M${a.x} ${a.y} L${b.x} ${b.y} L${b.x + n.x * 11} ${b.y + n.y * 11} L${a.x + n.x * 11} ${a.y + n.y * 11} Z" fill="#eef2f7"/>`,
+        "back",
+      );
+      this.hatch(a, b, n, { layer: "back", ...opts });
+    }
+    pulley(p, rPx, { layer = "mid", hub = true } = {}) {
+      const c = this.P(p);
+      this.add(`<circle cx="${c.x}" cy="${c.y}" r="${rPx}" fill="#f4f7fb" stroke="${COL.memberEdge}" stroke-width="2.6"/>`, layer);
+      this.add(`<circle cx="${c.x}" cy="${c.y}" r="${(rPx - 4).toFixed(1)}" fill="none" stroke="#9fb1c4" stroke-width="1.1"/>`, layer);
+      if (hub) {
+        this.add(`<circle cx="${c.x}" cy="${c.y}" r="${Math.max(4, rPx * 0.2).toFixed(1)}" fill="#dfe7f0" stroke="${COL.memberEdge}" stroke-width="1.6"/>`, layer);
+        this.add(`<circle cx="${c.x}" cy="${c.y}" r="1.8" fill="${COL.memberEdge}"/>`, layer);
+      }
+      this.obstacleCirc(c.x, c.y, rPx + 1);
+      return c;
+    }
+    /* Force arrow in model space.
+       at: model point; dir: [dx,dy] model direction of the FORCE; mode 'push' (head at point) or 'pull' (tail at point)
+       opts: len (px), gap (px from point), color, label, labelOpts, offset (screen lateral px) */
+    force(at, dir, opts = {}) {
+      const c = this.P(at);
+      const L = Math.hypot(dir[0], dir[1]);
+      if (L < 1e-12) return null;
+      const u = { x: dir[0] / L, y: -dir[1] / L };
+      const n = { x: -u.y, y: u.x };
+      const len = opts.len ?? 58,
+        gap = opts.gap ?? 8,
+        off = opts.offset || 0;
+      const base = { x: c.x + n.x * off, y: c.y + n.y * off };
+      let a, b;
+      if ((opts.mode || "push") === "push") {
+        b = { x: base.x - u.x * gap, y: base.y - u.y * gap };
+        a = { x: b.x - u.x * len, y: b.y - u.y * len };
+      } else {
+        a = { x: base.x + u.x * gap, y: base.y + u.y * gap };
+        b = { x: a.x + u.x * len, y: a.y + u.y * len };
+      }
+      const color = opts.color || COL.load;
+      this.sArrow(a, b, { color, w: opts.w || 2.6, size: opts.head || 11, dash: opts.dash || "" });
+      if (opts.label) this.forceLabel(opts.label, a, b, u, color, opts.labelOpts || {});
+      return { a, b, u };
+    }
+    forceLabel(text, a, b, u, color, lo = {}) {
+      // candidates: beyond the free end (tail for push / head for pull), then beside the shaft
+      const mode = lo.end || "tail";
+      const n = { x: -u.y, y: u.x };
+      const size = (lo.size || 13.5) * this.fontScale;
+      const w = richWidth(text, size, lo.weight || 750, !!lo.italic) + 4,
+        h = size + 3;
+      const free = mode === "head" ? b : a;
+      const sgn = mode === "head" ? 1 : -1;
+      const ext = (k) => ({ x: free.x + sgn * u.x * (k + Math.abs(u.x) * w / 2 + Math.abs(u.y) * h / 2), y: free.y + sgn * u.y * (k + Math.abs(u.x) * w / 2 + Math.abs(u.y) * h / 2) });
+      const mid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+      const side = (p, k) => [
+        { x: p.x + n.x * (k + Math.abs(n.x) * w / 2 + Math.abs(n.y) * h / 2), y: p.y + n.y * (k + Math.abs(n.x) * w / 2 + Math.abs(n.y) * h / 2) },
+        { x: p.x - n.x * (k + Math.abs(n.x) * w / 2 + Math.abs(n.y) * h / 2), y: p.y - n.y * (k + Math.abs(n.x) * w / 2 + Math.abs(n.y) * h / 2) },
+      ];
+      const nearFree = { x: free.x * 0.75 + mid.x * 0.25, y: free.y * 0.75 + mid.y * 0.25 };
+      const cands = [ext(5), ...side(nearFree, 7), ...side(mid, 7), ext(14), ...side(nearFree, 16), ...side(mid, 18), ext(26), ...side(free, 26), ...side(mid, 32), ext(40)];
+      this.labels.push({ text, anchor: free, cands, w, h, size, weight: lo.weight || 750, italic: !!lo.italic, color, bg: lo.bg, prio: lo.prio ?? 8 });
+    }
+    /* couple moment arc at model point; ccw true => counterclockwise */
+    couple(at, ccw, { r = 26, color = COL.load, label = "", start = 200, span = 250 } = {}) {
+      const c = this.P(at);
+      const a0 = (start * Math.PI) / 180,
+        a1 = a0 + ((ccw ? -1 : 1) * span * Math.PI) / 180; // screen angles (y down): ccw visually = negative screen angle
+      const p0 = { x: c.x + r * Math.cos(a0), y: c.y + r * Math.sin(a0) },
+        p1 = { x: c.x + r * Math.cos(a1), y: c.y + r * Math.sin(a1) };
+      const large = span > 180 ? 1 : 0,
+        sweep = ccw ? 0 : 1;
+      this.add(`<path d="M${p0.x.toFixed(2)} ${p0.y.toFixed(2)} A ${r} ${r} 0 ${large} ${sweep} ${p1.x.toFixed(2)} ${p1.y.toFixed(2)}" fill="none" stroke="#fff" stroke-width="6" opacity=".9"/>`, "front");
+      this.add(`<path d="M${p0.x.toFixed(2)} ${p0.y.toFixed(2)} A ${r} ${r} 0 ${large} ${sweep} ${p1.x.toFixed(2)} ${p1.y.toFixed(2)}" fill="none" stroke="${color}" stroke-width="2.6"/>`, "front");
+      // tangent at end
+      const tang = ccw ? { x: Math.sin(a1), y: -Math.cos(a1) } : { x: -Math.sin(a1), y: Math.cos(a1) };
+      this.head({ x: p1.x + tang.x * 4, y: p1.y + tang.y * 4 }, tang, color, 11);
+      this.obstacleCirc(c.x, c.y, r + 2);
+      if (label) {
+        const cands = [];
+        for (const k of [10, 20, 32])
+          for (let ang = -90; ang < 270; ang += 45) {
+            const t = (ang * Math.PI) / 180;
+            const size = 13.5 * this.fontScale;
+            const w = richWidth(label, size, 750) + 4;
+            cands.push({ x: c.x + (r + k + w / 2) * Math.cos(t), y: c.y + (r + k + 8) * Math.sin(t) });
+          }
+        this.label(label, c, { cands, color, size: 13.5, weight: 750, prio: 8 });
+      }
+    }
+    /* Dimension line between model points p1,p2 offset (screen px) along normal (left of p1->p2 in screen) */
+    dim(p1, p2, text, { off = 30, color = COL.dim, ext = true } = {}) {
+      const a = this.P(p1),
+        b = this.P(p2);
+      const L = Math.hypot(b.x - a.x, b.y - a.y);
+      if (L < 1) return;
+      const u = { x: (b.x - a.x) / L, y: (b.y - a.y) / L },
+        n = { x: u.y, y: -u.x };
+      const A = { x: a.x + n.x * off, y: a.y + n.y * off },
+        B = { x: b.x + n.x * off, y: b.y + n.y * off };
+      if (ext) {
+        const sg = Math.sign(off) || 1;
+        this.sLine({ x: a.x + n.x * sg * 6, y: a.y + n.y * sg * 6 }, { x: A.x + n.x * sg * 6, y: A.y + n.y * sg * 6 }, { color, w: 1, layer: "back", obstacle: true, opacity: 0.8 });
+        this.sLine({ x: b.x + n.x * sg * 6, y: b.y + n.y * sg * 6 }, { x: B.x + n.x * sg * 6, y: B.y + n.y * sg * 6 }, { color, w: 1, layer: "back", obstacle: true, opacity: 0.8 });
+      }
+      this.sArrow(A, B, { color, w: 1.2, size: 8, both: true, halo: false, layer: "back", obstacle: false });
+      this.obstacleSeg(A, B, 2);
+      const size = 12.5 * this.fontScale;
+      const w = richWidth(text, size, 650, true) + 10;
+      const mid = { x: (A.x + B.x) / 2, y: (A.y + B.y) / 2 };
+      // text sits on the line with a white background
+      this.label(text, mid, { cands: [mid, { x: mid.x + n.x * 11, y: mid.y + n.y * 11 }, { x: mid.x - n.x * 11, y: mid.y - n.y * 11 }], color, size: 12.5, weight: 650, italic: true, bg: "#fff", prio: 9 });
+      this._dimBg = (this._dimBg || 0) + 1;
+      void w;
+    }
+    /* Uniform distributed load on segment p1->p2 (model), arrows pointing along dir (model, unit), height px */
+    distLoad(p1, p2, dir, label, { h = 40, n = 8, color = COL.load } = {}) {
+      const a = this.P(p1),
+        b = this.P(p2);
+      const L = Math.hypot(dir[0], dir[1]);
+      const u = { x: dir[0] / L, y: -dir[1] / L };
+      const ta = { x: a.x - u.x * (h + 3), y: a.y - u.y * (h + 3) },
+        tb = { x: b.x - u.x * (h + 3), y: b.y - u.y * (h + 3) };
+      this.add(`<path d="M${a.x - u.x * 3} ${a.y - u.y * 3} L${ta.x} ${ta.y} L${tb.x} ${tb.y} L${b.x - u.x * 3} ${b.y - u.y * 3} Z" fill="${color}" fill-opacity="0.07"/>`, "back");
+      this.sLine(ta, tb, { color, w: 1.8, layer: "front" });
+      for (let i = 0; i <= n; i++) {
+        const t = i / n;
+        const tip = { x: a.x + (b.x - a.x) * t - u.x * 3, y: a.y + (b.y - a.y) * t - u.y * 3 };
+        const tail = { x: tip.x - u.x * h, y: tip.y - u.y * h };
+        this.sArrow(tail, tip, { color, w: 1.6, size: 8, halo: false, obstacle: false });
+      }
+      this.obstacleRect(Math.min(ta.x, tb.x, a.x, b.x), Math.min(ta.y, tb.y, a.y, b.y), Math.max(ta.x, tb.x, a.x, b.x), Math.max(ta.y, tb.y, a.y, b.y));
+      if (label) {
+        const mid = { x: (ta.x + tb.x) / 2, y: (ta.y + tb.y) / 2 };
+        const size = 13.5 * this.fontScale;
+        const hh = size + 3;
+        this.label(label, mid, { cands: [{ x: mid.x - u.x * (hh / 2 + 6), y: mid.y - u.y * (hh / 2 + 6) }, { x: mid.x - u.x * (hh / 2 + 16), y: mid.y - u.y * (hh / 2 + 16) }], color, size: 13.5, weight: 750, prio: 8 });
+      }
+    }
+    /* joint/point name label near model point */
+    name(p, text, opts = {}) {
+      const c = this.P(p);
+      this.label(text, c, { color: COL.ink, size: 15, weight: 800, italic: false, dist: opts.dist ?? 13, prio: opts.prio ?? 6, dirs: opts.dirs, cands: opts.cands });
+    }
+    /* free text at screen point (fixed) */
+    text(x, y, t, { size = 12, color = COL.dim, weight = 600, anchor = "start", italic = false, layer = "top" } = {}) {
+      this.add(`<text x="${x}" y="${y}" font-size="${size}" font-weight="${weight}" fill="${color}" text-anchor="${anchor}"${italic ? ' font-style="italic"' : ""}>${richSVG(t, size)}</text>`, layer);
+      const w = richWidth(t, size, weight, italic);
+      const x1 = anchor === "middle" ? x - w / 2 : anchor === "end" ? x - w : x;
+      this.obstacleRect(x1 - 2, y - size, x1 + w + 2, y + 4);
+    }
+  }
+  return { Fig, COL, measure, esc, rich, richSVG, richWidth, f1 };
+})();
+
+    </script>
+    <script>
+      "use strict";
+      const PROBLEMS = [
+        {
+          id: "panel",
+          name: "Three-panel truss",
+          level: "Beginner",
+          tag: "Straight vertical cut",
+          title: "A three-panel parallel-chord truss",
+          summary: "Six joints · two panel loads",
+          brief:
+            "A three-panel truss has a <b>pin at A</b> and a <b>vertical roller at D</b>. Loads of 8 kN and 14 kN act at the bottom panel points B and C. Pass a vertical section S–S through the <b>middle panel</b> to find the forces in members <b>BC, BF and EF</b>.",
+          tip: "Section S–S cuts the middle panel. Moments about B eliminate BC and BF, so ΣM_B gives F_EF directly. Moments about F then give F_BC, and ΣF_y gives F_BF.",
+          nodes: [
+            ["A", 0, 0],
+            ["B", 3, 0],
+            ["C", 6, 0],
+            ["D", 9, 0],
+            ["E", 3, 3],
+            ["F", 6, 3],
+          ],
+          edges: ["AB", "BC", "CD", "EF", "AE", "BE", "CF", "DF", "BF"],
+          supports: [
+            ["A", "x"],
+            ["A", "y"],
+            ["D", "y"],
+          ],
+          loads: { B: [0, -8], C: [0, -14] },
+          cut: ["BC", "BF", "EF"],
+          anchor: "A",
+          moment: "B",
+        },
+        {
+          id: "king",
+          name: "King-post truss",
+          level: "Easy",
+          tag: "Moment strategy",
+          title: "Three unknown cut forces",
+          summary: "Five joints · asymmetrical vertical loads",
+          brief:
+            "The lower chord is pinned at <b>A</b> and supported by a vertical roller at <b>C</b>. Vertical loads act at D, E and B. Use a three-member section to find the forces in AB, BD and DE without solving every joint.",
+          tip: "Take moments about B. The lines of action of AB and BD pass through B, eliminating both unknown forces from the moment equation.",
+          nodes: [
+            ["A", 0, 0],
+            ["B", 3, 0],
+            ["C", 6, 0],
+            ["D", 1.5, 2.5],
+            ["E", 4.5, 2.5],
+          ],
+          edges: ["AB", "BC", "AD", "DE", "EC", "BD", "BE"],
+          supports: [
+            ["A", "x"],
+            ["A", "y"],
+            ["C", "y"],
+          ],
+          loads: { D: [0, -8], E: [0, -10], B: [0, -6] },
+          cut: ["AB", "BD", "DE"],
+          anchor: "A",
+          moment: "B",
+        },
+        {
+          id: "warren",
+          name: "Warren truss",
+          level: "Intermediate",
+          tag: "Combined loading",
+          title: "Warren truss with inclined loading",
+          summary: "Seven joints · mixed horizontal and vertical loads",
+          brief:
+            "A Warren truss spans 12 m between a <b>pin at A</b> and a <b>vertical roller at D</b>. Three top-joint loads include a horizontal force at E. Find BC, BF and EF from a section through the middle-left bay.",
+          tip: "Cut BC, BF and EF. Moments about B remove BC and BF, revealing the force in EF immediately. Track signs carefully when the load at E is inclined.",
+          nodes: [
+            ["A", 0, 0],
+            ["B", 4, 0],
+            ["C", 8, 0],
+            ["D", 12, 0],
+            ["E", 2, 2.8],
+            ["F", 6, 2.8],
+            ["G", 10, 2.8],
+          ],
+          edges: ["AB", "BC", "CD", "EF", "FG", "AE", "BE", "BF", "CF", "CG", "DG"],
+          supports: [
+            ["A", "x"],
+            ["A", "y"],
+            ["D", "y"],
+          ],
+          loads: { E: [-3, -10], F: [0, -18], G: [0, -12] },
+          cut: ["BC", "BF", "EF"],
+          anchor: "A",
+          moment: "B",
+        },
+        {
+          id: "pratt",
+          name: "Pratt-style truss",
+          level: "Advanced",
+          tag: "Panel-point loading",
+          title: "Parallel-chord Pratt-style truss",
+          summary: "Eight joints · four bottom panels",
+          brief:
+            "A four-panel parallel-chord truss carries loads at F, G, H and C, including a horizontal load at G. A is pinned and E rests on a vertical roller. A section through BC, FC and FG exposes three unknown member forces.",
+          tip: "Moments about F eliminate the forces in FG and CF, leaving only BC in the moment equation. Moments about C eliminate BC and FC instead.",
+          nodes: [
+            ["A", 0, 0],
+            ["B", 3, 0],
+            ["C", 6, 0],
+            ["D", 9, 0],
+            ["E", 12, 0],
+            ["F", 3, 3],
+            ["G", 6, 3],
+            ["H", 9, 3],
+          ],
+          edges: ["AB", "BC", "CD", "DE", "FG", "GH", "BF", "CG", "DH", "AF", "EH", "CF", "CH"],
+          supports: [
+            ["A", "x"],
+            ["A", "y"],
+            ["E", "y"],
+          ],
+          loads: { F: [0, -10], G: [8, -24], H: [0, -10], C: [0, -16] },
+          cut: ["BC", "CF", "FG"],
+          anchor: "A",
+          moment: "F",
+        },
+        {
+          id: "cantilever",
+          name: "Cantilever",
+          level: "Expert",
+          tag: "Wall supports",
+          title: "Cantilever truss with angled tip loading",
+          summary: "Eight joints · horizontal wall roller",
+          brief:
+            "The left end is restrained by a <b>pin at A</b> and a <b>horizontal roller at H</b>. Loads act on the free-end panel, including an inclined force at E. Isolate the <b>right side</b> of a cut through BC, BF and FG: no support reactions appear in that free-body diagram.",
+          tip: "The right section is often easier: it contains no support reactions. Take moments about F to eliminate BF and FG, then solve BC. The upper roller at H reacts horizontally, not vertically.",
+          nodes: [
+            ["A", 0, 0],
+            ["B", 3, 0],
+            ["C", 6, 0],
+            ["D", 9, 0],
+            ["E", 9, 3],
+            ["F", 6, 3],
+            ["G", 3, 3],
+            ["H", 0, 3],
+          ],
+          edges: ["AB", "BC", "CD", "HG", "FG", "FE", "AH", "BG", "CF", "DE", "AG", "BF", "CE"],
+          supports: [
+            ["A", "x"],
+            ["A", "y"],
+            ["H", "x"],
+          ],
+          loads: { E: [8, -16], D: [0, -14], F: [0, -6] },
+          cut: ["BC", "BF", "FG"],
+          anchor: "D",
+          moment: "F",
+        },
+        {
+          id: "camelback",
+          name: "Camelback Warren",
+          level: "Challenge",
+          tag: "Polygonal top chord",
+          title: "Variable-depth Warren truss with multiple panel loads",
+          summary: "13 joints · 23 members · stepped rise",
+          brief:
+            "This six-panel <b>polygonal-chord (camelback-style) Warren truss</b> has a raised center and nonparallel chords. The pin is at A, the vertical roller at G, and multiple inclined or vertical joint loads are applied. Determine the forces in CD, DJ and JK without working through every panel.",
+          tip: "Use the cut CD, DJ, JK. About joint D, the lines of action of CD and DJ disappear, leaving only the JK force in the moment equation. The cut is not necessarily a straight vertical line.",
+          nodes: [
+            ["A", 0, 0],
+            ["B", 2.5, 0],
+            ["C", 5, 0],
+            ["D", 7.5, 0],
+            ["E", 10, 0],
+            ["F", 12.5, 0],
+            ["G", 15, 0],
+            ["H", 1.25, 2.5],
+            ["I", 3.75, 3.5],
+            ["J", 6.25, 4.4],
+            ["K", 8.75, 4.4],
+            ["L", 11.25, 3.5],
+            ["M", 13.75, 2.5],
+          ],
+          edges: [
+            "AB",
+            "BC",
+            "CD",
+            "DE",
+            "EF",
+            "FG",
+            "HI",
+            "IJ",
+            "JK",
+            "KL",
+            "LM",
+            "AH",
+            "BI",
+            "CJ",
+            "DK",
+            "EL",
+            "FM",
+            "BH",
+            "CI",
+            "DJ",
+            "EK",
+            "FL",
+            "GM",
+          ],
+          supports: [
+            ["A", "x"],
+            ["A", "y"],
+            ["G", "y"],
+          ],
+          loads: { I: [0, -9], J: [4, -11], K: [0, -17], L: [-5, -10], M: [0, -7], D: [0, -14], E: [0, -10] },
+          cut: ["CD", "DJ", "JK"],
+          anchor: "A",
+          moment: "D",
+        },
+        {
+          id: "kweb",
+          name: "K-web through truss",
+          level: "Mastery",
+          tag: "Four-member cut",
+          title: "K-truss: a four-member section",
+          summary: "16 joints · 29 members · compound web layout",
+          brief:
+            "This five-panel <b>K-like web truss</b> contains four intermediate web joints, split verticals, and paired diagonals. A pin at A and a vertical roller at F support the structure. Any section through a K-panel cuts <b>four</b> members, one more than the three equilibrium equations. Section S–S cuts the top chord <b>JK</b>, the two half-verticals <b>KS</b> and <b>ES</b>, and the bottom chord <b>DE</b>, bending around the K-joint S. Find the chord forces JK and DE, and see why KS and ES cannot be separated from this section.",
+          tip: "KS and ES lie on the same vertical line through S, so ΣM_S contains only F_JK and F_DE. ΣF_x also contains only these two chord forces (the half-verticals have no x-component), so solve the two equations together. ΣF_y gives only one relation between F_KS and F_ES, so they cannot be separated with this section. To split them, isolate joint K or E afterwards.",
+          nodes: [
+            ["A", 0, 0],
+            ["B", 3, 0],
+            ["C", 6, 0],
+            ["D", 9, 0],
+            ["E", 12, 0],
+            ["F", 15, 0],
+            ["G", 0, 4],
+            ["H", 3, 4],
+            ["I", 6, 4],
+            ["J", 9, 4],
+            ["K", 12, 4],
+            ["L", 15, 4],
+            ["P", 3, 2],
+            ["Q", 6, 2],
+            ["R", 9, 2],
+            ["S", 12, 2],
+          ],
+          edges: [
+            "AB",
+            "BC",
+            "CD",
+            "DE",
+            "EF",
+            "GH",
+            "HI",
+            "IJ",
+            "JK",
+            "KL",
+            "AG",
+            "FL",
+            "BP",
+            "HP",
+            "AP",
+            "GP",
+            "CQ",
+            "IQ",
+            "BQ",
+            "HQ",
+            "DR",
+            "JR",
+            "CR",
+            "IR",
+            "ES",
+            "KS",
+            "DS",
+            "JS",
+            "EL",
+          ],
+          supports: [
+            ["A", "x"],
+            ["A", "y"],
+            ["F", "y"],
+          ],
+          loads: {
+            L: [-10, -18],
+            F: [0, -12],
+            K: [0, -8],
+            J: [5, -7],
+            I: [0, -12],
+            H: [-3, -11],
+            D: [0, -9],
+            E: [0, -6],
+            Q: [0, -4],
+          },
+          cut: ["JK", "KS", "ES", "DE"],
+          anchor: "F",
+          moment: "S",
+        },
+      ];
+      const el = (id) => document.getElementById(id);
+      const MAX_CUT = 4;
+      /* Solve the 3 section equations for the cut forces. With more than three cut members the
+         system is under-determined: a force is still found when it is the same in every solution
+         (its component in the null space is zero), e.g. when the other cut members are concurrent. */
+      function nullSpace(C) {
+        const m = C.length,
+          n = C[0].length,
+          A = C.map((r) => r.slice()),
+          piv = [];
+        let row = 0;
+        for (let c = 0; c < n && row < m; c++) {
+          let b = row;
+          for (let i = row + 1; i < m; i++) if (Math.abs(A[i][c]) > Math.abs(A[b][c])) b = i;
+          if (Math.abs(A[b][c]) < 1e-9) continue;
+          [A[row], A[b]] = [A[b], A[row]];
+          const d = A[row][c];
+          for (let k = 0; k < n; k++) A[row][k] /= d;
+          for (let i = 0; i < m; i++)
+            if (i !== row) {
+              const f = A[i][c];
+              for (let k = 0; k < n; k++) A[i][k] -= f * A[row][k];
+            }
+          piv.push(c);
+          row++;
+        }
+        const free = [...Array(n).keys()].filter((c) => !piv.includes(c));
+        return free.map((f) => {
+          const v = Array(n).fill(0);
+          v[f] = 1;
+          piv.forEach((c, i) => (v[c] = -A[i][f]));
+          return v;
+        });
+      }
+      function solveSection(C, rhs) {
+        const n = C[0].length;
+        if (n <= 3) {
+          const r = solveTall(C, rhs);
+          return { x: r.x, det: r.x.map(() => true), error: r.error };
+        }
+        // minimum-norm particular solution x = Cᵀ (C Cᵀ)⁻¹ b
+        const CCt = C.map((ri) => C.map((rj) => ri.reduce((s, v, k) => s + v * rj[k], 0)));
+        const y = solveSquare(CCt, rhs);
+        const x = Array.from({ length: n }, (_, k) => C.reduce((s, row, i) => s + row[k] * y[i], 0));
+        const N = nullSpace(C);
+        const det = x.map((_, i) => N.every((v) => Math.abs(v[i]) < 1e-8));
+        const error = Math.max(...C.map((row, k) => Math.abs(row.reduce((s, v, i) => s + v * x[i], 0) - rhs[k])));
+        if (error > 1e-6) throw Error("The chosen cut does not satisfy section equilibrium.");
+        return { x: x.map((v, i) => (det[i] ? v : NaN)), det, error, nullSpace: N };
+      }
+      const EPS = 1e-9;
+      let S = {
+        index: 0,
+        span: 1,
+        rise: 1,
+        loads: {},
+        loadNode: "",
+        cut: [],
+        anchor: "",
+        moment: "",
+        showSolution: false,
+        colorModel: false,
+        showReactions: false,
+        showMemberLabels: true,
+        answers: {},
+      };
+      function p() {
+        return PROBLEMS[S.index];
+      }
+      function nodeMap() {
+        return Object.fromEntries(p().nodes.map(([id, x, y]) => [id, { id, x: x * S.span, y: y * S.rise }]));
+      }
+      function edgeEnds(edge) {
+        return [...edge];
+      }
+      function getLoad(id) {
+        return S.loads[id] || [0, 0];
+      }
+      function dot(a, b) {
+        return a.x * b.x + a.y * b.y;
+      }
+      function cross(a, b) {
+        return a.x * b.y - a.y * b.x;
+      }
+      function number(v, d = 2) {
+        if (Math.abs(v) < Math.pow(10, -d) / 2) return (0).toFixed(d);
+        return v.toFixed(d);
+      }
+      function signed(v, d = 2) {
+        return (v >= -EPS ? "+" : "−") + number(Math.abs(v), d);
+      }
+      function esc(s) {
+        return String(s)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;");
+      }
+      function solveSquare(M, rhs) {
+        let n = rhs.length;
+        const a = M.map((r, i) => [...r, rhs[i]]);
+        for (let j = 0; j < n; j++) {
+          let best = j;
+          for (let i = j + 1; i < n; i++) if (Math.abs(a[i][j]) > Math.abs(a[best][j])) best = i;
+          if (Math.abs(a[best][j]) < 1e-10)
+            throw Error("This truss or section is singular. Change the geometry or select another cut.");
+          [a[j], a[best]] = [a[best], a[j]];
+          let pivot = a[j][j];
+          for (let k = j; k <= n; k++) a[j][k] /= pivot;
+          for (let i = 0; i < n; i++)
+            if (i !== j) {
+              let f = a[i][j];
+              for (let k = j; k <= n; k++) a[i][k] -= f * a[j][k];
+            }
+        }
+        return a.map((r) => r[n]);
+      }
+      function solveTall(A, b) {
+        const m = A.length,
+          n = A[0].length,
+          ata = Array.from({ length: n }, (_, i) =>
+            Array.from({ length: n }, (_, j) => A.reduce((s, row) => s + row[i] * row[j], 0)),
+          ),
+          atb = Array.from({ length: n }, (_, i) => A.reduce((s, row, k) => s + row[i] * b[k], 0));
+        const x = solveSquare(ata, atb);
+        const error = Math.max(
+          ...A.map((row, k) => Math.abs(row.reduce((s, v, i) => s + v * x[i], 0) - b[k])),
+        );
+        if (error > 1e-6) throw Error("The chosen cut does not satisfy independent section equilibrium.");
+        return { x, error };
+      }
+      function analyzeWhole() {
+        const P = p(),
+          N = nodeMap(),
+          unknowns = P.edges.length + P.supports.length,
+          size = P.nodes.length * 2;
+        if (unknowns !== size) throw Error("Member/support count is not statically determinate.");
+        let A = Array.from({ length: size }, () => Array(size).fill(0)),
+          b = Array(size).fill(0);
+        const idx = Object.fromEntries(P.nodes.map(([id], i) => [id, i]));
+        P.edges.forEach((m, k) => {
+          const [a, c] = edgeEnds(m),
+            d = { x: N[c].x - N[a].x, y: N[c].y - N[a].y },
+            l = Math.hypot(d.x, d.y),
+            ux = d.x / l,
+            uy = d.y / l;
+          A[2 * idx[a]][k] += ux;
+          A[2 * idx[a] + 1][k] += uy;
+          A[2 * idx[c]][k] -= ux;
+          A[2 * idx[c] + 1][k] -= uy;
+        });
+        P.supports.forEach(([id, axis], j) => {
+          A[2 * idx[id] + (axis === "y" ? 1 : 0)][P.edges.length + j] = 1;
+        });
+        P.nodes.forEach(([id], i) => {
+          let [fx, fy] = getLoad(id);
+          b[2 * i] = -fx;
+          b[2 * i + 1] = -fy;
+        });
+        const x = solveSquare(A, b);
+        let residual = Math.max(
+          ...A.map((row, k) => Math.abs(row.reduce((z, val, i) => z + val * x[i], 0) - b[k])),
+        );
+        return {
+          members: Object.fromEntries(P.edges.map((m, i) => [m, x[i]])),
+          reactions: P.supports.map(([id, axis], j) => ({ id, axis, value: x[P.edges.length + j] })),
+          residual,
+        };
+      }
+      function components(cut) {
+        const verts = p().nodes.map((n) => n[0]),
+          seen = new Set(),
+          sets = [];
+        for (let root of verts) {
+          if (seen.has(root)) continue;
+          const part = new Set([root]),
+            stack = [root];
+          seen.add(root);
+          while (stack.length) {
+            const a = stack.pop();
+            for (const m of p().edges) {
+              if (cut.includes(m)) continue;
+              let [u, v] = edgeEnds(m),
+                other = u === a ? v : v === a ? u : null;
+              if (other && !seen.has(other)) {
+                seen.add(other);
+                part.add(other);
+                stack.push(other);
+              }
+            }
+          }
+          sets.push(part);
+        }
+        return sets;
+      }
+      function validateCut() {
+        if (!S.cut.length)
+          return {
+            valid: false,
+            message: "Click members to create a section cut, or choose the prepared teaching cut.",
+          };
+        if (S.cut.length > MAX_CUT)
+          return {
+            valid: false,
+            message: `Select at most ${MAX_CUT} members. A planar section gives only three equilibrium equations.`,
+          };
+        let comps = components(S.cut);
+        if (comps.length !== 2)
+          return {
+            valid: false,
+            message: `This selection leaves ${comps.length} connected piece${comps.length === 1 ? "" : "s"}. Select members separating the truss into exactly two connected sides.`,
+          };
+        const single = comps.find((c) => c.size === 1);
+        if (single)
+          return {
+            valid: false,
+            message: `This cut only isolates joint ${[...single][0]} — that is the method of joints. Pass the section across a panel so that each side keeps at least two joints.`,
+          };
+        if (
+          S.cut.some((m) => {
+            const [a, b] = edgeEnds(m);
+            return comps[0].has(a) === comps[0].has(b);
+          })
+        )
+          return { valid: false, message: "Every selected member must connect the two isolated parts." };
+        return {
+          valid: true,
+          components: comps,
+          message:
+            S.cut.length > 3
+              ? `Valid cut: ${S.cut.join(", ")}. Four unknowns but only three equations: only some of these forces can be found from this section.`
+              : `Valid cut: ${S.cut.join(", ")}. Choose the isolated side and apply equilibrium.`,
+        };
+      }
+      function chooseSide(info) {
+        if (!info.valid) return null;
+        return info.components.find((c) => c.has(S.anchor)) || info.components[0];
+      }
+      function outerForces(side, whole) {
+        let out = [];
+        for (const id of side) {
+          const [fx, fy] = getLoad(id);
+          if (Math.hypot(fx, fy) > EPS)
+            out.push({ id, fx, fy, type: "load", label: `${id}: (${number(fx, 1)}, ${number(fy, 1)})` });
+        }
+        for (const r of whole.reactions)
+          if (side.has(r.id) && Math.abs(r.value) > EPS)
+            out.push({
+              id: r.id,
+              fx: r.axis === "x" ? r.value : 0,
+              fy: r.axis === "y" ? r.value : 0,
+              type: "reaction",
+              label: `R${r.id}${r.axis}`,
+            });
+        return out;
+      }
+      function sectionAnalysis(info, whole) {
+        if (!info.valid) return null;
+        const N = nodeMap(),
+          side = chooseSide(info),
+          ext = outerForces(side, whole);
+        let cutTerms = S.cut.map((m) => {
+          const [a, b] = edgeEnds(m),
+            inside = side.has(a) ? a : b,
+            outside = inside === a ? b : a;
+          const dx = N[outside].x - N[inside].x,
+            dy = N[outside].y - N[inside].y,
+            len = Math.hypot(dx, dy);
+          return { id: m, inside, outside, ux: dx / len, uy: dy / len };
+        });
+        let C = [
+          cutTerms.map((t) => t.ux),
+          cutTerms.map((t) => t.uy),
+          cutTerms.map((t) =>
+            cross(
+              { x: N[t.inside].x - N[S.moment].x, y: N[t.inside].y - N[S.moment].y },
+              { x: t.ux, y: t.uy },
+            ),
+          ),
+        ];
+        let e = [
+          ext.reduce((s, t) => s + t.fx, 0),
+          ext.reduce((s, t) => s + t.fy, 0),
+          ext.reduce(
+            (s, t) =>
+              s + cross({ x: N[t.id].x - N[S.moment].x, y: N[t.id].y - N[S.moment].y }, { x: t.fx, y: t.fy }),
+            0,
+          ),
+        ];
+        let calc = solveSection(
+          C,
+          e.map((v) => -v),
+        );
+        return { side, ext, cutTerms, C, e, forces: calc.x, det: calc.det, residual: calc.error };
+      }
+      function sideOptions(info) {
+        const options = info.components.map((c) => [...c].sort().join(", "));
+        return options;
+      }
+      function resetProblem(idx) {
+        S.index = idx;
+        S.span = 1;
+        S.rise = 1;
+        S.loads = structuredClone(p().loads);
+        S.loadNode = Object.keys(S.loads)[0] || p().nodes[0][0];
+        S.cut = [];
+        S.anchor = p().anchor;
+        S.moment = p().moment;
+        S.showSolution = false;
+        S.colorModel = false;
+        S.showReactions = false;
+        S.showMemberLabels = true;
+        S.answers = {};
+        el("spanScale").value = "100";
+        el("riseScale").value = "100";
+        el("reactionContent").hidden = true;
+        el("reactionChevron").textContent = "＋";
+        el("btnToggleReactions").setAttribute("aria-expanded", "false");
+        renderAll();
+      }
+
+      // Construct the section S–S in the planar dual graph. Every line segment
+      // between consecutive crossings lies inside a single truss face, so the
+      // cut does not unintentionally intersect an unselected member.
+      function findSectionCutRoute(info, pt) {
+        if (!info.valid) return null;
+        const P = p(),
+          neighbors = new Map(),
+          directedFace = new Map(),
+          faces = [];
+        for (const [id] of P.nodes) neighbors.set(id, []);
+        for (const m of P.edges) {
+          const [u, v] = edgeEnds(m);
+          neighbors.get(u).push(v);
+          neighbors.get(v).push(u);
+        }
+        for (const [id, ns] of neighbors) {
+          const a = pt(id);
+          ns.sort(
+            (u, v) => Math.atan2(pt(u).y - a.y, pt(u).x - a.x) - Math.atan2(pt(v).y - a.y, pt(v).x - a.x),
+          );
+        }
+        for (const m of P.edges) {
+          const [a, b] = edgeEnds(m);
+          for (const [begin, end] of [
+            [a, b],
+            [b, a],
+          ]) {
+            if (directedFace.has(begin + "|" + end)) continue;
+            const vertices = [],
+              walk = [],
+              fid = faces.length;
+            let u = begin,
+              v = end,
+              closed = false;
+            for (let steps = 0; steps < 2 * P.edges.length + 4; steps++) {
+              let key = u + "|" + v;
+              if (directedFace.has(key)) break;
+              directedFace.set(key, fid);
+              vertices.push(u);
+              walk.push(key);
+              const around = neighbors.get(v),
+                i = around.indexOf(u),
+                w = around[(i - 1 + around.length) % around.length];
+              u = v;
+              v = w;
+              if (u === begin && v === end) {
+                closed = true;
+                break;
+              }
+            }
+            if (!closed) return null;
+            const area =
+              vertices.reduce((a, id, i) => {
+                const q = pt(id),
+                  r = pt(vertices[(i + 1) % vertices.length]);
+                return a + q.x * r.y - r.x * q.y;
+              }, 0) / 2;
+            const center = vertices.reduce(
+              (q, id) => ({ x: q.x + pt(id).x / vertices.length, y: q.y + pt(id).y / vertices.length }),
+              { x: 0, y: 0 },
+            );
+            faces.push({ vertices, area, center });
+          }
+        }
+        const outer = faces.findIndex((f) => f.area < -1e-7);
+        if (outer < 0) return null;
+        const faceEdges = new Map(faces.map((_, i) => [i, []])),
+          endpoints = new Map();
+        for (const m of S.cut) {
+          const [u, v] = edgeEnds(m),
+            fa = directedFace.get(u + "|" + v),
+            fb = directedFace.get(v + "|" + u);
+          if (fa === undefined || fb === undefined || fa === fb) return null;
+          faceEdges.get(fa).push(m);
+          faceEdges.get(fb).push(m);
+          endpoints.set(m, [fa, fb]);
+        }
+        const border = faceEdges.get(outer);
+        if (border.length !== 2) return null;
+        const ordered = [],
+          used = new Set();
+        let face = outer;
+        const faceSeq = [];
+        for (let k = 0; k < S.cut.length; k++) {
+          const edge = faceEdges.get(face).find((m) => !used.has(m));
+          if (!edge) return null;
+          ordered.push(edge);
+          used.add(edge);
+          const [a, b] = endpoints.get(edge);
+          face = face === a ? b : a;
+          faceSeq.push(face);
+          if (face === outer && k !== S.cut.length - 1) return null;
+        }
+        if (face !== outer || used.size !== S.cut.length) return null;
+        const middle = ordered.map((m) => {
+          const [a, b] = edgeEnds(m),
+            u = pt(a),
+            v = pt(b);
+          return { x: (u.x + v.x) / 2, y: (u.y + v.y) / 2, member: m };
+        });
+        function outerPoint(m) {
+          const [fa, fb] = endpoints.get(m),
+            inside = fa === outer ? fb : fa;
+          const c = faces[inside].center,
+            q = middle.find((z) => z.member === m);
+          const vx = q.x - c.x,
+            vy = q.y - c.y,
+            l = Math.hypot(vx, vy);
+          if (l < 1e-7) return null;
+          return { x: q.x + (vx / l) * 47, y: q.y + (vy / l) * 47 };
+        }
+        const before = outerPoint(ordered[0]),
+          after = outerPoint(ordered[ordered.length - 1]);
+        if (!before || !after) return null;
+        const pts = [before];
+        middle.forEach((q, k) => {
+          pts.push(q);
+          if (k < middle.length - 1) pts.push(faces[faceSeq[k]].center);
+        });
+        pts.push(after);
+        return { points: pts, crossings: middle };
+      }
+      // ===== Figures drawn with the shared SD engine =====
+      const MC = {
+        member: "#6f8994",
+        cut: "#d5653c",
+        tension: "#146f9d",
+        compression: "#b45149",
+        zero: "#a9b5ba",
+        load: "#c4533e",
+        reaction: "#137d88",
+        cutForce: "#d5653c",
+        retained: "#45ad95",
+        ink: "#1b3c4b",
+      };
+      const angD = (a, b) => {
+        let d = Math.abs(a - b) % (2 * Math.PI);
+        return d > Math.PI ? 2 * Math.PI - d : d;
+      };
+      function makeFig(N, w, h, ids, margin) {
+        const pts = ids.map((id) => N[id]);
+        const xs = pts.map((n) => n.x),
+          ys = pts.map((n) => n.y);
+        return new SD.Fig({
+          width: w,
+          height: h,
+          margin,
+          bounds: [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)],
+          maxScale: 95,
+          bg: null,
+        });
+      }
+      function supportSide(id) {
+        const sup = p().supports;
+        const hasXOnly = Object.entries(
+          sup.reduce((o, [n, ax]) => ((o[n] ??= []).push(ax), o), {}),
+        ).some(([, axes]) => axes.length === 1 && axes[0] === "x");
+        const axes = sup.filter((s) => s[0] === id).map((s) => s[1]);
+        if (!axes.length) return null;
+        const pin = axes.includes("x") && axes.includes("y");
+        if (pin) return { kind: "pin", side: hasXOnly ? "left" : "down" };
+        if (axes[0] === "y") return { kind: "roller", side: "down" };
+        return { kind: "roller", side: "left" };
+      }
+      function drawSupports(fig, N, ids) {
+        const bases = {};
+        for (const id of ids) {
+          const s = supportSide(id);
+          if (!s) continue;
+          const at = [N[id].x, N[id].y];
+          bases[id] = s.kind === "pin" ? fig.pinSupport(at, s.side) : fig.rollerSupport(at, s.side);
+          bases[id].side = s.side;
+        }
+        return bases;
+      }
+      function occupancy(fig, N, ids) {
+        const occ = {};
+        for (const m of p().edges) {
+          const [a, b] = edgeEnds(m);
+          const A = fig.P([N[a].x, N[a].y]),
+            B = fig.P([N[b].x, N[b].y]);
+          if (ids.has(a)) (occ[a] ??= []).push(Math.atan2(B.y - A.y, B.x - A.x));
+          if (ids.has(b)) (occ[b] ??= []).push(Math.atan2(A.y - B.y, A.x - B.x));
+        }
+        return occ;
+      }
+      function drawLoad(fig, N, id, fx, fy, occ, extraUsed = []) {
+        const mag = Math.hypot(fx, fy);
+        if (mag < EPS) return;
+        const uAng = Math.atan2(-fy, fx);
+        const used = [...(occ[id] || []), ...extraUsed];
+        const pushFree = used.every((a) => angD(a, uAng + Math.PI) > 0.3);
+        const pullFree = used.every((a) => angD(a, uAng) > 0.3);
+        const mode = pushFree || !pullFree ? "push" : "pull";
+        fig.force([N[id].x, N[id].y], [fx, fy], {
+          mode,
+          gap: 9,
+          len: 54,
+          color: MC.load,
+          w: 2.8,
+          head: 12,
+          offset: !pushFree && !pullFree ? 12 : 0,
+          label: loadText(fx, fy),
+          labelOpts: { size: 13, end: mode === "push" ? "tail" : "head" },
+        });
+        (occ[id] ??= []).push(mode === "push" ? uAng + Math.PI : uAng);
+      }
+      function drawReaction(fig, N, id, axis, value, base) {
+        if (Math.abs(value) < EPS) return;
+        const pt = fig.P([N[id].x, N[id].y]);
+        const lbl = `R_{${id}${axis}} = ${number(Math.abs(value), 1)} kN`;
+        const size = 13,
+          w = SD.richWidth(lbl, size, 750) + 4;
+        let a, b;
+        if (axis === "y") {
+          const y0 = base && base.side === "down" ? base.base.y + 2 : pt.y + 10;
+          const x = base && base.side === "down" ? pt.x : pt.x + 22;
+          if (value > 0) (a = { x, y: y0 + 44 }), (b = { x, y: y0 });
+          else (a = { x, y: y0 }), (b = { x, y: y0 + 44 });
+          fig.sArrow(a, b, { color: MC.reaction, w: 2.8, size: 12 });
+          fig.label(lbl, { x, y: y0 + 44 }, {
+            cands: [{ x, y: y0 + 58 }, { x: x + w / 2 + 9, y: y0 + 24 }, { x: x - w / 2 - 9, y: y0 + 24 }, { x, y: y0 + 72 }],
+            color: MC.reaction,
+            size,
+            weight: 750,
+            prio: 9,
+          });
+        } else {
+          const left = base && base.side === "left";
+          const x0 = left ? base.base.x - 2 : pt.x - 12;
+          const y = pt.y;
+          if (value > 0) (a = { x: x0 - 46, y }), (b = { x: x0, y });
+          else (a = { x: x0, y }), (b = { x: x0 - 46, y });
+          fig.sArrow(a, b, { color: MC.reaction, w: 2.8, size: 12 });
+          fig.label(lbl, { x: x0 - 46, y }, {
+            cands: [{ x: x0 - 46 - w / 2 - 6, y }, { x: x0 - 23, y: y - 15 }, { x: x0 - 23, y: y + 17 }],
+            color: MC.reaction,
+            size,
+            weight: 750,
+            prio: 9,
+          });
+        }
+      }
+      function memberLabel(fig, A, B, text, color, size, prio, bg = "#fff") {
+        const L = Math.hypot(B.x - A.x, B.y - A.y),
+          u = { x: (B.x - A.x) / L, y: (B.y - A.y) / L },
+          n = { x: -u.y, y: u.x };
+        const w = SD.richWidth(text, size, 750) + 12,
+          h = size + 7;
+        const cands = [];
+        for (const t of [0.5, 0.38, 0.62, 0.28, 0.72])
+          for (const sg of [1, -1]) {
+            const d = 5 + Math.abs(n.x) * w / 2 + Math.abs(n.y) * h / 2;
+            cands.push({ x: A.x + u.x * L * t + n.x * d * sg, y: A.y + u.y * L * t + n.y * d * sg });
+          }
+        fig.label(text, { x: (A.x + B.x) / 2, y: (A.y + B.y) / 2 }, { cands, color, size, weight: 750, bg, prio });
+      }
+      /* A straight section line crossing exactly the cut members (if one exists) */
+      function straightSection(N, cut) {
+        const E = p().edges;
+        const xs = Object.values(N).map((n) => n.x),
+          ys = Object.values(N).map((n) => n.y);
+        const minX = Math.min(...xs),
+          maxX = Math.max(...xs),
+          minY = Math.min(...ys),
+          maxY = Math.max(...ys);
+        const H = maxY - minY,
+          Wd = maxX - minX;
+        const cx0 = (minX + maxX) / 2,
+          cy0 = (minY + maxY) / 2;
+        const R = Math.hypot(Wd, H);
+        let best = null;
+        const crosses = (P0, d, m) => {
+          const [a, b] = edgeEnds(m);
+          const A = N[a],
+            B = N[b];
+          const e = { x: B.x - A.x, y: B.y - A.y };
+          const den = d.x * e.y - d.y * e.x;
+          if (Math.abs(den) < 1e-9) return null;
+          const w = { x: A.x - P0.x, y: A.y - P0.y };
+          const s = (w.x * e.y - w.y * e.x) / den; // along section line
+          const t = (w.x * d.y - w.y * d.x) / den; // along member
+          return { s, t };
+        };
+        for (const deg of [90, 80, 100, 70, 110, 60, 120, 50, 130, 45, 135, 30, 150, 20, 160]) {
+          const th = (deg * Math.PI) / 180,
+            d = { x: Math.cos(th), y: Math.sin(th) };
+          const nrm = { x: -d.y, y: d.x };
+          for (let k = -80; k <= 80; k++) {
+            const off = (k / 80) * R * 0.55;
+            const P0 = { x: cx0 + nrm.x * off, y: cy0 + nrm.y * off };
+            let ok = true,
+              hits = [];
+            for (const m of E) {
+              const c = crosses(P0, d, m);
+              const inside = c && c.t > 0.12 && c.t < 0.88;
+              const near = c && c.t > -0.02 && c.t < 1.02;
+              const isCut = cut.includes(m);
+              if (isCut && !inside) {
+                ok = false;
+                break;
+              }
+              if (!isCut && near) {
+                ok = false;
+                break;
+              }
+              if (isCut) hits.push(c.s);
+            }
+            if (!ok) continue;
+            // the line must not pass within a small distance of any joint
+            const clear = Object.values(N).every((n) => Math.abs((n.x - P0.x) * nrm.x + (n.y - P0.y) * nrm.y) > 0.06 * Math.max(Wd, H));
+            if (!clear) continue;
+            const score = Math.abs(deg - 90) + Math.abs(k) * 0.05;
+            if (!best || score < best.score) best = { score, P0, d, smin: Math.min(...hits), smax: Math.max(...hits) };
+          }
+          if (best && Math.abs(deg - 90) <= 20) break;
+        }
+        return best;
+      }
+      function drawSection(fig, N, info) {
+        if (!info.valid) return;
+        const st = straightSection(N, S.cut);
+        let pts;
+        if (st) {
+          const a = { x: st.P0.x + st.d.x * st.smin, y: st.P0.y + st.d.y * st.smin },
+            b = { x: st.P0.x + st.d.x * st.smax, y: st.P0.y + st.d.y * st.smax };
+          pts = [fig.P([a.x, a.y]), fig.P([b.x, b.y])];
+          const L = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y) || 1,
+            u = { x: (pts[1].x - pts[0].x) / L, y: (pts[1].y - pts[0].y) / L };
+          const ext = 46;
+          pts[0] = { x: pts[0].x - u.x * ext, y: pts[0].y - u.y * ext };
+          pts[1] = { x: pts[1].x + u.x * ext, y: pts[1].y + u.y * ext };
+          for (const q of pts) {
+            q.x = Math.max(16, Math.min(fig.W - 16, q.x));
+            q.y = Math.max(16, Math.min(fig.H - 16, q.y));
+          }
+        } else {
+          const route = findSectionCutRoute(info, (id) => fig.P([N[id].x, N[id].y]));
+          if (!route) return;
+          pts = route.points;
+        }
+        const d = pts.map((q, i) => `${i ? "L" : "M"}${q.x.toFixed(1)} ${q.y.toFixed(1)}`).join(" ");
+        fig.add(`<path d="${d}" class="section-cut-outline"/><path d="${d}" class="section-cut-halo"/><path d="${d}" class="section-cut-path" data-testid="section-cut-path"/>`, "front");
+        for (let i = 0; i < pts.length - 1; i++) fig.obstacleSeg(pts[i], pts[i + 1], 8);
+        for (const q of [pts[0], pts[pts.length - 1]]) {
+          fig.sCircle(q, 12, { fill: "#ac3a22", stroke: "#fff", w: 2.4, layer: "top" });
+          fig.add(`<text x="${q.x.toFixed(1)}" y="${(q.y + 4.6).toFixed(1)}" text-anchor="middle" font-size="13" font-weight="900" fill="#fff">S</text>`, "top");
+        }
+      }
+      function axesIcon(fig, x, y) {
+        fig.sArrow({ x, y }, { x: x + 34, y }, { color: "#7d95a0", w: 1.6, size: 8, halo: false });
+        fig.sArrow({ x, y }, { x, y: y - 34 }, { color: "#7d95a0", w: 1.6, size: 8, halo: false });
+        fig.text(x + 38, y + 4, "x", { size: 12, color: "#6f8a95", italic: true });
+        fig.text(x - 4, y - 38, "y", { size: 12, color: "#6f8a95", italic: true });
+        fig.text(x + 52, y + 4, "kN, m", { size: 11, color: "#8aa0a8" });
+      }
+      function mapXYFactory(N, w = 950, h = 440) {
+        const f = makeFig(N, w, h, Object.keys(N), { l: 110, r: 110, t: 100, b: 105 });
+        return (id) => f.P([N[id].x, N[id].y]);
+      }
+      function modelSvg(whole, info) {
+        const N = nodeMap(),
+          ids = Object.keys(N);
+        const leftWall = p().supports.some(([id, ax]) => ax === "x" && !p().supports.some(([j, b]) => j === id && b === "y"));
+        const fig = makeFig(N, 950, 440, ids, { l: leftWall ? 190 : 150, r: 115, t: 100, b: 105 });
+        const side = info.valid ? chooseSide(info) : new Set();
+        const dense = p().nodes.length > 12;
+        // retained glow
+        if (info.valid)
+          for (const m of p().edges) {
+            const [a, b] = edgeEnds(m);
+            if (side.has(a) && side.has(b)) fig.sLine(fig.P([N[a].x, N[a].y]), fig.P([N[b].x, N[b].y]), { color: MC.retained, w: 17, layer: "back", obstacle: false, opacity: 0.2 });
+          }
+        const segs = [];
+        for (const m of p().edges) {
+          const [u, v] = edgeEnds(m),
+            selected = S.cut.includes(m),
+            f = whole.members[m];
+          let color = MC.member,
+            w = 5;
+          if (selected) (color = MC.cut), (w = 7);
+          else if (S.colorModel) color = Math.abs(f) < 1e-7 ? MC.zero : f > 0 ? MC.tension : MC.compression;
+          const [A, B] = fig.bar([N[u].x, N[u].y], [N[v].x, N[v].y], { w, color, dash: !selected && S.colorModel && Math.abs(f) < 1e-7 ? "8 6" : "" });
+          segs.push({ m, A, B, selected, color });
+        }
+        const bases = drawSupports(fig, N, ids);
+        drawSection(fig, N, info);
+        if (S.showMemberLabels || S.cut.length)
+          for (const g of segs) {
+            if (!S.showMemberLabels && !g.selected) continue;
+            let txt = g.m;
+            if (S.colorModel && !g.selected) {
+              const f = whole.members[g.m];
+              txt = Math.abs(f) < 1e-7 ? `${g.m} 0` : `${g.m} ${number(Math.abs(f), 1)} ${f > 0 ? "T" : "C"}`;
+            }
+            memberLabel(fig, g.A, g.B, txt, g.selected ? "#b54a22" : S.colorModel ? g.color : "#46626e", dense ? 11.5 : 12.5, g.selected ? 6 : 3);
+          }
+        const occ = occupancy(fig, N, new Set(ids));
+        for (const id of ids) {
+          const [fx, fy] = getLoad(id);
+          const extra = bases[id] ? [bases[id].side === "left" ? Math.PI : Math.PI / 2] : [];
+          drawLoad(fig, N, id, fx, fy, occ, extra);
+        }
+        if (S.showReactions) for (const r of whole.reactions) drawReaction(fig, N, r.id, r.axis, r.value, bases[r.id]);
+        for (const id of ids) {
+          const c = fig.P([N[id].x, N[id].y]);
+          fig.sCircle(c, 6.5, { fill: side.has(id) ? "#d6f1ed" : "#fff", stroke: "#1b3c4b", w: 2.5, layer: "front" });
+          const dirs = [[1, -1], [-1, -1], [0, -1], [1, 1], [-1, 1], [1, 0], [-1, 0], [0, 1]];
+          fig.label(id, c, { dist: 11, dirs, size: 14, weight: 850, color: "#1b3c4b", prio: 7 });
+        }
+        // click targets
+        for (const g of segs)
+          fig.add(
+            `<line x1="${g.A.x.toFixed(1)}" y1="${g.A.y.toFixed(1)}" x2="${g.B.x.toFixed(1)}" y2="${g.B.y.toFixed(1)}" class="hit-member" data-member="${g.m}" role="button" aria-label="Toggle cut member ${g.m}" tabindex="0"/>`,
+            "top",
+          );
+        axesIcon(fig, 26, 420);
+        return fig;
+      }
+      function loadText(fx, fy) {
+        if (Math.abs(fx) < EPS) return `${number(Math.abs(fy), 1)} kN`;
+        if (Math.abs(fy) < EPS) return `${number(Math.abs(fx), 1)} kN`;
+        return `(${number(fx, 1)}, ${number(fy, 1)}) kN`;
+      }
+      function fbdSvg(section) {
+        const N = nodeMap(),
+          side = section.side;
+        const ids = [...side];
+        // include the cut points so the cut-force arrows have room
+        const fig = (() => {
+          const pts = ids.map((id) => [N[id].x, N[id].y]);
+          for (const t of section.cutTerms) pts.push([(N[t.inside].x + N[t.outside].x) / 2, (N[t.inside].y + N[t.outside].y) / 2]);
+          if (!side.has(S.moment)) pts.push([N[S.moment].x, N[S.moment].y]);
+          const xs = pts.map((q) => q[0]),
+            ys = pts.map((q) => q[1]);
+          return new SD.Fig({ width: 950, height: 420, margin: { l: 130, r: 130, t: 95, b: 95 }, bounds: [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)], maxScale: 110, bg: null });
+        })();
+        const P = (id) => fig.P([N[id].x, N[id].y]);
+        for (const m of p().edges) {
+          if (S.cut.includes(m)) continue;
+          const [u, v] = edgeEnds(m);
+          if (!side.has(u) || !side.has(v)) continue;
+          const [A, B] = fig.bar([N[u].x, N[u].y], [N[v].x, N[v].y], { w: 5, color: "#7f9aa3" });
+          memberLabel(fig, A, B, m, "#7d939b", 11.5, 2, null);
+        }
+        const used = {};
+        const usedPush = (id, ang) => (used[id] ??= []).push(ang);
+        // cut members: stub to the section, then the unknown force (assumed tension: away from the section body)
+        for (const t of section.cutTerms) {
+          const A = P(t.inside),
+            O = P(t.outside);
+          const L = Math.hypot(O.x - A.x, O.y - A.y),
+            u = { x: (O.x - A.x) / L, y: (O.y - A.y) / L };
+          const cutLen = Math.min(L * 0.32, 110);
+          const C = { x: A.x + u.x * cutLen, y: A.y + u.y * cutLen };
+          fig.sLine(A, C, { color: "#7f9aa3", w: 5 });
+          // small cut mark
+          const n = { x: -u.y, y: u.x };
+          fig.sLine({ x: C.x - n.x * 9, y: C.y - n.y * 9 }, { x: C.x + n.x * 9, y: C.y + n.y * 9 }, { color: MC.cut, w: 2.4, obstacle: false });
+          const a = { x: C.x + u.x * 4, y: C.y + u.y * 4 },
+            b = { x: C.x + u.x * Math.min(58, L * 0.24), y: C.y + u.y * Math.min(58, L * 0.24) };
+          fig.sArrow(a, b, { color: MC.cutForce, w: 3, size: 12 });
+          fig.forceLabel(`F_{${t.id}}`, a, b, u, MC.cutForce, { end: "head", size: 14 });
+          usedPush(t.inside, Math.atan2(u.y, u.x));
+        }
+        const occ = occupancy(fig, N, side);
+        for (const k of Object.keys(used)) (occ[k] ??= []).push(...used[k]);
+        for (const f of section.ext) {
+          if (f.type === "load") drawLoad(fig, N, f.id, f.fx, f.fy, occ);
+          else {
+            const axis = Math.abs(f.fx) > 0 ? "x" : "y";
+            const val = axis === "x" ? f.fx : f.fy;
+            const s = supportSide(f.id);
+            // reaction drawn at the joint (no support symbol in a free-body diagram)
+            const ang = Math.atan2(-(axis === "y" ? val : 0), axis === "x" ? val : 0);
+            const used2 = occ[f.id] || [];
+            const pushFree = used2.every((a) => angD(a, ang + Math.PI) > 0.3);
+            const pullFree = used2.every((a) => angD(a, ang) > 0.3);
+            const mode = pushFree || !pullFree ? "push" : "pull";
+            const offset = !pushFree && !pullFree ? 14 : 0;
+            fig.force([N[f.id].x, N[f.id].y], axis === "x" ? [val, 0] : [0, val], {
+              mode,
+              gap: 9,
+              len: 50,
+              color: MC.reaction,
+              w: 2.8,
+              head: 12,
+              offset,
+              label: `R_{${f.id}${axis}} = ${number(Math.abs(val), 1)} kN`,
+              labelOpts: { size: 13, end: mode === "push" ? "tail" : "head" },
+            });
+            (occ[f.id] ??= []).push(mode === "push" ? ang + Math.PI : ang);
+            void s;
+          }
+        }
+        for (const id of side) {
+          const c = P(id);
+          const mc = id === S.moment;
+          if (mc) fig.sCircle(c, 13, { fill: "none", stroke: "#e09a3a", w: 2.5, layer: "front" });
+          fig.sCircle(c, 6.5, { fill: "#d6f1ed", stroke: "#1b3c4b", w: 2.5, layer: "front" });
+          fig.label(id, c, { dist: mc ? 16 : 11, size: 14, weight: 850, color: "#1b3c4b", prio: 7 });
+        }
+        if (!side.has(S.moment)) {
+          const c = P(S.moment);
+          fig.sCircle(c, 7, { fill: "#fff", stroke: "#e09a3a", w: 2.4, layer: "front", extra: 'stroke-dasharray="3 3"' });
+          fig.label(`${S.moment} (moment center, off the section)`, c, { dist: 12, size: 12, weight: 650, color: "#a5701f", prio: 6 });
+        }
+        fig.text(22, 26, "Cut-member forces drawn in the assumed tension direction (away from the section)", { size: 12, color: "#6f8a95", layer: "top" });
+        return fig;
+      }
+      function termsEquation(row, e) {
+        const pieces = [];
+        for (let i = 0; i < S.cut.length; i++) {
+          let c = row[i];
+          if (Math.abs(c) > 1e-7) pieces.push(`${signed(c, 3)} F_${S.cut[i]}`);
+        }
+        pieces.push(signed(e, 2));
+        return pieces.join(" ") + " = 0";
+      }
+      function systemMomentSummary(sec) {
+        const row = sec.C[2];
+        const nonzero = row.map((v, i) => ({ v, id: S.cut[i] })).filter((a) => Math.abs(a.v) > 1e-7);
+        const removed = row
+          .map((v, i) => ({ v, id: S.cut[i] }))
+          .filter((a) => Math.abs(a.v) <= 1e-7)
+          .map((x) => x.id);
+        let txt = `At ${S.moment}, `;
+        if (nonzero.length === 0)
+          txt += "all cut-member forces have zero moment arm; use the force-equilibrium equations instead.";
+        else if (nonzero.length === 1)
+          txt += `${removed.join(", ")} ${removed.length === 1 ? "passes" : "pass"} through the moment center, so the moment equation gives F_${nonzero[0].id} directly. Solve it before revealing the worked solution.`;
+        else if (removed.length)
+          txt += `${removed.join(" and ")} ${removed.length === 1 ? "has" : "have"} zero moment arm. ${nonzero.length} cut forces (${nonzero.map((a) => "F_" + a.id).join(", ")}) remain in the moment equation.`;
+        else txt += "no cut force is eliminated by the moment equation. A different moment center may simplify the algebra.";
+        if (S.cut.length > 3) {
+          const found = S.cut.filter((m, i) => sec.det[i]),
+            lost = S.cut.filter((m, i) => !sec.det[i]);
+          txt += found.length
+            ? ` With four cut members, only ${found.map((m) => "F_" + m).join(" and ")} can be determined from this section; ${lost.map((m) => "F_" + m).join(" and ")} cannot be separated (use a joint or another section).`
+            : " With four cut members, no single force can be determined from this section.";
+        }
+        return txt;
+      }
+      function workedSteps(sec) {
+        const known = {},
+          done = new Set(),
+          rows = [2, 1, 0],
+          names = ["ΣF_x", "ΣF_y", `ΣM_${S.moment}`],
+          steps = [],
+          n = sec.cutTerms.length;
+        const active = (row) =>
+          sec.C[row].map((v, i) => ({ v, i })).filter((o) => Math.abs(o.v) > 1e-7 && !done.has(o.i));
+        const constant = (row) => {
+          let c = sec.e[row];
+          for (const idx of done) c += sec.C[row][idx] * known[idx];
+          return c;
+        };
+        const cls = (f) => (Math.abs(f) < 1e-7 ? "zero force" : f >= 0 ? "tension" : "compression");
+        const usedRows = new Set();
+        for (let guard = 0; guard < 6 && done.size < n; guard++) {
+          let progressed = false;
+          for (const row of rows) {
+            if (usedRows.has(row)) continue;
+            const a = active(row);
+            if (a.length !== 1 || !sec.det[a[0].i]) continue;
+            const c = constant(row),
+              f = -c / a[0].v,
+              member = S.cut[a[0].i];
+            known[a[0].i] = f;
+            done.add(a[0].i);
+            usedRows.add(row);
+            steps.push(
+              `<div class="eqblock"><div class="eqname">STEP ${steps.length + 1} · ${names[row]}</div><div class="eqline">${signed(a[0].v, 3)} F_${member} ${signed(c, 2)} = 0</div><div class="eqline"><b>F_${member} = ${signed(f, 3)} kN</b> · ${cls(f)}</div></div>`,
+            );
+            progressed = true;
+            break;
+          }
+          if (progressed) continue;
+          // two rows that share the same two unknowns: solve them together
+          for (const r1 of rows)
+            for (const r2 of rows) {
+              if (progressed || r1 >= r2 || usedRows.has(r1) || usedRows.has(r2)) continue;
+              const a1 = active(r1),
+                a2 = active(r2);
+              const ids = [...new Set([...a1, ...a2].map((o) => o.i))];
+              if (ids.length !== 2 || !ids.every((i) => sec.det[i])) continue;
+              const [p, q] = ids;
+              const M = [
+                [sec.C[r1][p], sec.C[r1][q]],
+                [sec.C[r2][p], sec.C[r2][q]],
+              ];
+              const c1 = -constant(r1),
+                c2 = -constant(r2);
+              const D = M[0][0] * M[1][1] - M[0][1] * M[1][0];
+              if (Math.abs(D) < 1e-9) continue;
+              const fp = (c1 * M[1][1] - M[0][1] * c2) / D,
+                fq = (M[0][0] * c2 - M[1][0] * c1) / D;
+              const eq = (r, cc) =>
+                `${[p, q]
+                  .filter((i) => Math.abs(sec.C[r][i]) > 1e-7)
+                  .map((i) => `${signed(sec.C[r][i], 3)} F_${S.cut[i]}`)
+                  .join(" ")} ${signed(-cc, 2)} = 0`;
+              steps.push(
+                `<div class="eqblock"><div class="eqname">STEP ${steps.length + 1} · ${names[r1]} and ${names[r2]} together</div><div class="eqline">${eq(r1, c1)}</div><div class="eqline">${eq(r2, c2)}</div><div class="eqline"><b>F_${S.cut[p]} = ${signed(fp, 3)} kN</b> · ${cls(fp)} &nbsp; <b>F_${S.cut[q]} = ${signed(fq, 3)} kN</b> · ${cls(fq)}</div></div>`,
+              );
+              known[p] = fp;
+              known[q] = fq;
+              done.add(p);
+              done.add(q);
+              usedRows.add(r1);
+              usedRows.add(r2);
+              progressed = true;
+            }
+          if (!progressed) break;
+        }
+        const lost = S.cut.filter((m, i) => !sec.det[i]);
+        if (lost.length) {
+          const left = rows.filter((r) => !usedRows.has(r));
+          const eqs = left
+            .map((r) => {
+              const a = active(r);
+              if (!a.length) return "";
+              return `<div class="eqline">${names[r]}: ${a.map((o) => `${signed(o.v, 3)} F_${S.cut[o.i]}`).join(" ")} ${signed(constant(r), 2)} = 0</div>`;
+            })
+            .join("");
+          steps.push(
+            `<div class="eqblock"><div class="eqname">Cannot be separated with this section</div>${eqs}<div class="eqline">${lost.map((m) => "F_" + m).join(" and ")} appear only in combination, so this section cannot give them individually. Isolate a joint (for example the K-joint) or take another section to finish.</div></div>`,
+          );
+        } else if (done.size < n) {
+          steps.push(
+            `<div class="eqblock"><div class="eqname">Complete by simultaneous solution</div><div class="eqline">The selected moment center does not permit full sequential elimination. Solve the displayed independent equilibrium equations together, or choose another moment center.</div></div>`,
+          );
+        }
+        return steps.join("");
+      }
+      function globalEquations(whole) {
+        const N = nodeMap(),
+          base = p().supports.find((x) => x[1] === "x")?.[0] || p().nodes[0][0];
+        let external = p().nodes.map(([id]) => ({ id, fx: getLoad(id)[0], fy: getLoad(id)[1] }));
+        let Fx = external.reduce((s, t) => s + t.fx, 0),
+          Fy = external.reduce((s, t) => s + t.fy, 0),
+          M = external.reduce(
+            (s, t) => s + cross({ x: N[t.id].x - N[base].x, y: N[t.id].y - N[base].y }, { x: t.fx, y: t.fy }),
+            0,
+          );
+        const xParts = whole.reactions.filter((t) => t.axis === "x").map((t) => `R_${t.id}x`),
+          yParts = whole.reactions.filter((t) => t.axis === "y").map((t) => `R_${t.id}y`);
+        const mParts = whole.reactions
+          .map((t) => ({
+            s: t,
+            coef: cross(
+              { x: N[t.id].x - N[base].x, y: N[t.id].y - N[base].y },
+              { x: t.axis === "x" ? 1 : 0, y: t.axis === "y" ? 1 : 0 },
+            ),
+          }))
+          .filter((o) => Math.abs(o.coef) > 1e-8)
+          .map((o) => `${signed(o.coef, 2)} R_${o.s.id}${o.s.axis}`);
+        return `<div>ΣF<sub>x</sub>: ${xParts.join(" + ") || "0"} ${signed(Fx, 2)} = 0</div><div>ΣF<sub>y</sub>: ${yParts.join(" + ") || "0"} ${signed(Fy, 2)} = 0</div><div>ΣM<sub>${base}</sub>: ${mParts.join(" ") || "0"} ${signed(M, 2)} = 0</div>`;
+      }
+      function syncMomentSelect() {
+        el("momentNode").innerHTML = p()
+          .nodes.map(([id]) => `<option value="${id}">${id}</option>`)
+          .join("");
+        el("momentNode").value = S.moment;
+      }
+      function renderStatic() {
+        let P = p();
+        el("problemTabs").innerHTML = PROBLEMS.map(
+          (v, i) =>
+            `<button class="tab ${i === S.index ? "active" : ""}" aria-current="${i === S.index ? "step" : "false"}" data-problem="${i}"><span class="tab-num">LEVEL ${String(i + 1).padStart(2, "0")}</span><span class="tab-title">${v.name}</span><span class="tab-lvl">${v.level} · ${v.tag}</span></button>`,
+        ).join("");
+        el("problemTitle").textContent = P.name;
+        el("problemSummary").textContent = P.summary;
+        el("briefTitle").textContent = P.title;
+        el("difficultyPill").textContent = P.level;
+        el("problemBrief").innerHTML = P.brief;
+        el("problemTip").textContent = P.tip;
+        el("spanValue").textContent = Math.round(S.span * 100) + "%";
+        el("riseValue").textContent = Math.round(S.rise * 100) + "%";
+        el("loadNode").innerHTML = P.nodes
+          .map(([id]) => `<option value="${id}">Joint ${id}</option>`)
+          .join("");
+        el("loadNode").value = S.loadNode;
+        el("loadFx").value = getLoad(S.loadNode)[0];
+        el("loadFy").value = getLoad(S.loadNode)[1];
+        let loadItems = P.nodes.filter(([id]) => getLoad(id).some((v) => Math.abs(v) > EPS));
+        el("loadSummary").innerHTML = loadItems.length
+          ? loadItems
+              .map(
+                ([id]) =>
+                  `<span class="load-chip"><b>${id}</b>: (${number(getLoad(id)[0], 1)}, ${number(getLoad(id)[1], 1)}) kN</span>`,
+              )
+              .join("")
+          : '<span class="mini-note">No applied forces.</span>';
+        el("cutCount").textContent = `Cut members: ${S.cut.length} / ${MAX_CUT}`;
+        el("btnRevealModel").textContent = S.colorModel ? "Hide member-force colors" : "Color member forces";
+        el("btnToggleLabels").textContent = S.showMemberLabels ? "Hide member labels" : "Show member labels";
+      }
+      function renderAll() {
+        renderStatic();
+        const P = p();
+        let whole,
+          info = validateCut(),
+          sec = null;
+        try {
+          whole = analyzeWhole();
+          el("degreeBadge").textContent = `m + r = 2j = ${2 * P.nodes.length}`;
+          if (info.valid) {
+            if (!P.nodes.some((n) => n[0] === S.moment)) S.moment = P.moment;
+            if (!info.components.some((c) => c.has(S.anchor))) S.anchor = [...info.components[0]][0];
+            sec = sectionAnalysis(info, whole);
+          }
+        } catch (e) {
+          el("cutStatus").textContent = e.message;
+          el("cutStatus").className = "status invalid";
+          el("modelSvg").innerHTML = '<text x="30" y="40">Solver error: ' + esc(e.message) + "</text>";
+          el("analysisBody").hidden = true;
+          el("emptyMessage").hidden = false;
+          return;
+        }
+        modelSvg(whole, info).mount(el("modelSvg"));
+        el("cutStatus").textContent = info.message;
+        el("cutStatus").className = "status " + (info.valid ? "valid" : S.cut.length ? "invalid" : "");
+        el("cutInstruction").textContent = info.valid
+          ? `Section S–S cuts ${S.cut.join(", ")}. Green joints and bars belong to the retained side.${S.cut.length > 3 ? " Four members are cut, so only some forces can be found." : ""}`
+          : "Click up to four members. A valid cut separates the truss into two parts; with four cut members only some forces can be found.";
+        el("emptyMessage").hidden = info.valid;
+        el("analysisBody").hidden = !info.valid;
+        if (!info.valid) return;
+        let selectedSide = chooseSide(info),
+          other = info.components.find((c) => c !== selectedSide),
+          opts = [selectedSide, other];
+        el("isolateSide").innerHTML = opts
+          .map((c, i) => `<option value="${[...c][0]}">${[...c].sort().join(", ")}</option>`)
+          .join("");
+        el("isolateSide").value = [...selectedSide][0];
+        el("sectionDetails").textContent =
+          `Joints ${[...selectedSide].sort().join(", ")} · ${sec.cutTerms.length} cut forces`;
+        fbdSvg(sec).mount(el("fbdSvg"));
+        el("fbdExplanation").textContent =
+          `Forces on this isolated free body: ${sec.ext.length} applied/support load${sec.ext.length === 1 ? "" : "s"} and ${sec.cutTerms.length} unknown member forces${sec.cutTerms.length > 3 ? " (more unknowns than the three equilibrium equations, so not all of them can be found)" : ""}. Internal forces between retained joints cancel out.`;
+        syncMomentSelect();
+        el("eqFx").textContent = termsEquation(sec.C[0], sec.e[0]);
+        el("eqFy").textContent = termsEquation(sec.C[1], sec.e[1]);
+        el("eqMomentTitle").innerHTML = `ΣM<sub>${S.moment}</sub> = 0 (counterclockwise +)`;
+        el("eqMoment").textContent = termsEquation(sec.C[2], sec.e[2]);
+        el("momentHint").textContent = systemMomentSummary(sec);
+        el("answerInputs").innerHTML = S.cut
+          .filter((m, i) => sec.det[i])
+          .map(
+            (m) =>
+              `<div class="field"><label for="answer_${m}">F_${m} (kN)</label><input id="answer_${m}" data-answer="${m}" aria-label="Force in member ${m}" type="number" step="0.01" placeholder="Signed value" value="${esc(S.answers[m] ?? "")}"></div>`,
+          )
+          .join("") +
+          (S.cut.some((m, i) => !sec.det[i])
+            ? `<div class="mini-note" style="grid-column:1/-1">Not determinable from this section: ${S.cut
+                .filter((m, i) => !sec.det[i])
+                .map((m) => "F_" + m)
+                .join(", ")}.</div>`
+            : "");
+        el("solutions").hidden = !S.showSolution;
+        el("btnHideSolution").disabled = !S.showSolution;
+        el("solutionRows").innerHTML = sec.cutTerms
+          .map((t, i) => {
+            const f = sec.forces[i],
+              deg = (Math.atan2(t.uy, t.ux) * 180) / Math.PI;
+            if (!sec.det[i])
+              return `<tr><td><b>${t.id}</b></td><td class="force zero">—</td><td>Not determinable from this section</td><td>${number(deg, 1)}°</td></tr>`;
+            const classification = Math.abs(f) < 1e-7 ? "Zero force" : f > 0 ? "Tension" : "Compression";
+            return `<tr><td><b>${t.id}</b></td><td class="force ${Math.abs(f) < 1e-7 ? "zero" : f > 0 ? "tens" : "comp"}">${signed(f, 3)}</td><td>${classification}</td><td>${number(deg, 1)}°</td></tr>`;
+          })
+          .join("");
+        el("workedSteps").innerHTML = workedSteps(sec);
+        el("residualMessage").textContent =
+          `Check: sectional equilibrium residual = ${sec.residual.toExponential(2)}. Whole-truss joint-equilibrium residual = ${whole.residual.toExponential(2)}. Both should be essentially zero.`;
+        el("globalEq").innerHTML = globalEquations(whole);
+        el("reactionRows").innerHTML = whole.reactions
+          .map(
+            (t) =>
+              `<tr><td>R<sub>${t.id}${t.axis}</sub> (${t.axis === "x" ? "horizontal" : "vertical"})</td><td>${signed(t.value, 3)} kN</td></tr>`,
+          )
+          .join("");
+        if (!S.showSolution) el("answerFeedback").textContent = "";
+      }
+      function selectCutMember(m) {
+        if (!p().edges.includes(m)) return;
+        if (S.cut.includes(m)) {
+          S.cut = S.cut.filter((x) => x !== m);
+        } else {
+          if (S.cut.length >= MAX_CUT) {
+            el("cutStatus").className = "status invalid";
+            el("cutStatus").textContent =
+              `${MAX_CUT} members are already selected. Remove one before choosing another.`;
+            return;
+          }
+          S.cut.push(m);
+        }
+        const info = validateCut();
+        if (info.valid) {
+          let containing = info.components.find((c) => c.has(S.anchor));
+          if (!containing) S.anchor = [...info.components[0]][0];
+        }
+        S.showSolution = false;
+        S.answers = {};
+        renderAll();
+      }
+      function handleNumericInput(evt) {
+        const id = evt.target.id,
+          raw = evt.target.value;
+        const value = raw.trim() === "" ? 0 : Number(raw);
+        if (!Number.isFinite(value)) return;
+        let prev = getLoad(S.loadNode).slice();
+        prev[id === "loadFx" ? 0 : 1] = value;
+        S.loads[S.loadNode] = prev;
+        S.showSolution = false;
+        S.answers = {};
+        renderAll();
+      }
+      function checkAnswers() {
+        const info = validateCut();
+        if (!info.valid) return;
+        let sec;
+        try {
+          sec = sectionAnalysis(info, analyzeWhole());
+        } catch (e) {
+          return;
+        }
+        let results = [];
+        const asked = S.cut.filter((m, i) => sec.det[i]).length;
+        for (let i = 0; i < S.cut.length; i++) {
+          if (!sec.det[i]) continue;
+          const m = S.cut[i],
+            v = Number(S.answers[m]),
+            expected = sec.forces[i],
+            entered = S.answers[m];
+          if (entered === undefined || entered === "") {
+            results.push({ m, result: "missing" });
+            continue;
+          }
+          const ok =
+            Number.isFinite(v) && Math.abs(v - expected) <= Math.max(0.12, 0.015 * Math.abs(expected));
+          results.push({ m, result: ok ? "correct" : "incorrect" });
+        }
+        let good = results.filter((r) => r.result === "correct").length,
+          missing = results.filter((r) => r.result === "missing").length;
+        let txt =
+          good === asked
+            ? `Correct: all ${good} determinable cut-member forces satisfy the section equilibrium equations.`
+            : `${good} of ${asked} correct. ${missing ? "Some fields are blank. " : ""}Check the signs and the selected section before trying again.`;
+        const feedback = el("answerFeedback");
+        feedback.textContent = txt;
+        feedback.className = "feedback " + (good === asked ? "ok" : "err");
+      }
+      function setupEvents() {
+        el("problemTabs").addEventListener("click", (e) => {
+          let b = e.target.closest("[data-problem]");
+          if (b) resetProblem(+b.dataset.problem);
+        });
+        el("modelSvg").addEventListener("click", (e) => {
+          let x = e.target.closest("[data-member]");
+          if (x) selectCutMember(x.dataset.member);
+        });
+        el("modelSvg").addEventListener("keydown", (e) => {
+          let x = e.target.closest("[data-member]");
+          if (x && (e.key === "Enter" || e.key === " ")) {
+            e.preventDefault();
+            selectCutMember(x.dataset.member);
+          }
+        });
+        el("btnTeaching").addEventListener("click", () => {
+          S.cut = p().cut.slice();
+          S.anchor = p().anchor;
+          S.moment = p().moment;
+          S.showSolution = false;
+          S.colorModel = false;
+          S.answers = {};
+          renderAll();
+        });
+        el("btnClear").addEventListener("click", () => {
+          S.cut = [];
+          S.showSolution = false;
+          S.colorModel = false;
+          S.answers = {};
+          renderAll();
+        });
+        el("btnRevealModel").addEventListener("click", () => {
+          S.colorModel = !S.colorModel;
+          renderAll();
+        });
+        el("btnToggleLabels").addEventListener("click", () => {
+          S.showMemberLabels = !S.showMemberLabels;
+          renderAll();
+        });
+        el("spanScale").addEventListener("input", (e) => {
+          S.span = +e.target.value / 100;
+          S.showSolution = false;
+          renderAll();
+        });
+        el("riseScale").addEventListener("input", (e) => {
+          S.rise = +e.target.value / 100;
+          S.showSolution = false;
+          renderAll();
+        });
+        el("loadNode").addEventListener("change", (e) => {
+          S.loadNode = e.target.value;
+          renderAll();
+        });
+        el("loadFx").addEventListener("change", handleNumericInput);
+        el("loadFy").addEventListener("change", handleNumericInput);
+        el("btnResetGeometry").addEventListener("click", () => {
+          S.span = S.rise = 1;
+          el("spanScale").value = "100";
+          el("riseScale").value = "100";
+          S.showSolution = false;
+          renderAll();
+        });
+        el("btnResetLoads").addEventListener("click", () => {
+          S.loads = structuredClone(p().loads);
+          S.loadNode = Object.keys(S.loads)[0];
+          S.showSolution = false;
+          S.answers = {};
+          renderAll();
+        });
+        el("isolateSide").addEventListener("change", (e) => {
+          S.anchor = e.target.value;
+          S.showSolution = false;
+          S.answers = {};
+          renderAll();
+        });
+        el("momentNode").addEventListener("change", (e) => {
+          S.moment = e.target.value;
+          renderAll();
+        });
+        el("answerInputs").addEventListener("input", (e) => {
+          if (e.target.dataset.answer) S.answers[e.target.dataset.answer] = e.target.value;
+        });
+        el("btnCheck").addEventListener("click", checkAnswers);
+        el("btnShowSolution").addEventListener("click", () => {
+          S.showSolution = true;
+          renderAll();
+        });
+        el("btnHideSolution").addEventListener("click", () => {
+          S.showSolution = false;
+          renderAll();
+        });
+        el("btnToggleReactions").addEventListener("click", () => {
+          S.showReactions = !S.showReactions;
+          el("reactionContent").hidden = !S.showReactions;
+          el("reactionChevron").textContent = S.showReactions ? "−" : "＋";
+          el("btnToggleReactions").setAttribute("aria-expanded", String(S.showReactions));
+          el("btnToggleReactions").firstChild.textContent = S.showReactions
+            ? "Hide calculation of reactions "
+            : "Show calculation of reactions ";
+          renderAll();
+        });
+        el("btnPrint").addEventListener("click", () => window.print());
+      }
+      setupEvents();
+      resetProblem(0);
+    </script>
+  </body>
+</html>
